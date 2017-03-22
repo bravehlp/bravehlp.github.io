@@ -261,6 +261,365 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/03/22/共享单车思考二/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="小鹏鹏">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="脚印">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="脚印" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/22/共享单车思考二/" itemprop="url">
+                  共享单车思考二
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-22T18:23:48+08:00">
+                2017-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/22/共享单车思考二/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/22/共享单车思考二/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="APP找车"><a href="#APP找车" class="headerlink" title="APP找车"></a>APP找车</h2><h3 id="ofo"><a href="#ofo" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;那到底是怎么可以看出附近车子数量的呢？个人推测，是通过APP定位来实现的，当结束骑行后点击APP上的“结束骑行”，此时APP把位置上报到服务器，进而粗略统计某个位置附近可用车子数目。</p>
+<p><img src="../uploads/images/bike/ofo_app.jpg" alt=""></p>
+<p>&emsp;&emsp;大家可能有个疑问，那就是既然车子上没有定位装置，APP是如何来显示周围车子数目的呢？一方面靠的是ofo的车辆调度人员，另一方面个人推测是根据用户结束用车的位置来确定车子的位置。假设一个人正常骑车，行驶到目的地后，点击APP上的结束用车，这个时候会上传一个用户手机的位置，系统就会认为这是车子的位置，因为用户结束骑行后，一般都会在车子旁边来用APP结束用车而结费。但是这整个一套流程就有好多限制：</p>
+<ol>
+<li>用户严格按照这个流程来使用车子</li>
+<li>用户不会在获得车锁密码后，采用问题上报的形式来停止计费</li>
+<li>用户结束用车时，一定是在车子附近的</li>
+</ol>
+<p>&emsp;&emsp;虽然这个方法很不准确，但也能有个参照作用。没办法呀，没有智能车锁，就只能靠不严格的程序来进行记录了。等ofo的智能车锁研发出来后，相信会大大改善这个问题。</p>
+<h3 id="摩拜"><a href="#摩拜" class="headerlink" title="摩拜"></a>摩拜</h3><p>&emsp;&emsp;多亏了车子的定位装置，摩拜的车子找起来要方便很多了，但是就这么一个定位问题也影响了摩拜的用户体验，毕竟定位不会百分百准确，因为建筑物遮挡、网络缓慢、定位偏差等问题都会造成位置不是特别准确。我个人就碰到了好多次这个问题，到了APP指示的车子地点，却没有发现任何一辆车子，导致我一度都卸载了这个APP。不过，现在车子投放量很多了，大街上随处可见小橙车，基本可以直接过去扫码开锁。</p>
+<p><img src="../uploads/images/bike/mobike_app.jpg" alt=""></p>
+<p>&emsp;&emsp;摩拜还提供了预定车子的功能，可以提前把一辆车子预约好，在15分钟内过去开锁即可。走到车子附近时，可用APP上的“寻车铃”来进一步定位车子，但是我发现这个按钮一直都是灰色状态，所以一般只能靠运气和对照车辆编号来确定预定的车子。</p>
+<p><img src="../uploads/images/bike/mobike_date.jpg" alt=""></p>
+<h2 id="骑行轨迹"><a href="#骑行轨迹" class="headerlink" title="骑行轨迹"></a>骑行轨迹</h2><p>&emsp;&emsp;既然涉及到了定位，就不得不说一下轨迹的问题了。运动轨迹就是多个定位点组成的线路。根据收集到的位置在地图上进行线路绘制，就出现了我们在APP上看到的轨迹了。</p>
+<h3 id="ofo-1"><a href="#ofo-1" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;有朋友可能会有疑问，既然ofo车子上没有GPS装置，为什么还会有位置记录呢？我在上面的APP找车中提到过手机位置上报的问题，没错，ofo就是收集了用户在骑行中的位置，APP每隔几分钟就上报一次位置，位置多了，就可以绘制轨迹了。</p>
+<p><img src="../uploads/images/bike/ofo_route.jpg" alt=""></p>
+<p>&emsp;&emsp;但是从路径绘制这个功能上来说，还是有问题的。图片中的路径是我从北医三院附近骑行到安立路地铁站附近。但是路径中可以看出来，只给我统计到了北沙滩地铁站附近，并且路线也跑到了非马路上。平时骑ofo的时候，也会偶尔骑个三五分钟，那时候的路径更是只有起点和终点，路线更是横跨建筑物。</p>
+<p>&emsp;&emsp;所以，个人推测他们的路径只是按照时间顺序来连接经纬度，并且大概每隔5分钟左右来让APP上报一次。这就是一个粗略的统计，但是位置数据是很敏感也很有用的数据，数据多了之后就非常有用。</p>
+<p>&emsp;&emsp;某些电子地图就可以根据我们平时的行动变化，来猜测某个位置就是我们自己的家，某个位置就是我们工作的地方，进而进行一些商业上的使用。</p>
+<h3 id="摩拜-1"><a href="#摩拜-1" class="headerlink" title="摩拜"></a>摩拜</h3><p><img src="../uploads/images/bike/mobike_route.jpg" alt=""></p>
+<p>&emsp;&emsp;摩拜单车因为车子上本来就有GPS模块和GSM模块，所以，不管是基站定位还是GPS定位，自然可以进行很好的定位和位置上报。但是考虑到车锁中电池电量和使用时长的问题，不知道摩拜的工程师们有没有借助于手机的位置来上报。</p>
+<p>&emsp;&emsp;从他们绘制的路线上来看，偏差没那么大，还算是准确。能看出路线有大小的弯曲，所以，猜测他们收集位置的频率还是比较高的，骑行过程中收集的位置点还是比较密集的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;不管是小黄车、小橙车还是小蓝车，都是为了我们的生活更美好，他们的出现都说明我们生活中还有很多需要便利的地方，也正是他们的出现，大大的方便了我们短距离的出行。新生事物的出现总会引发社会的强烈反应和讨论，对于共享单车，甚至都得到了政府的很多鼓励，也是很少见，但是对于共享单车的监管还尚在萌芽阶段，各地政府也在积极采取办法来进行监管。</p>
+<p><img src="../uploads/images/bike/ofo_destroy.jpg" alt=""></p>
+<p>&emsp;&emsp;有人说，共享单车就是一面国人素质的照妖镜，把很多人公共素质的低下展现了出来。我们也不难发现到处都有共享单车乱停乱放，甚至毁坏或私用的情况，这种现象必将会持续一段时间，而且短时间内无法消除，毕竟我们无法否认民众素质存在发展不平衡的事实，但是相信这种现象毕竟越来越少，美好的事物总不会消亡。</p>
+<p>&emsp;&emsp;上面粗略的写了这多，其中也肯定有很多不合理甚至错误的地方，只是平时没事的时候，自己瞎捉摸的东西，在这里凑个热闹来写写，还望大家来交流，一起来探讨。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/03/22/共享单车思考一/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="小鹏鹏">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="脚印">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="脚印" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/22/共享单车思考一/" itemprop="url">
+                  共享单车思考一
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-22T18:17:32+08:00">
+                2017-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/22/共享单车思考一/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/22/共享单车思考一/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;&emsp;最近这些日子，各种共享单车是如火如荼的发展啊，大街小巷都是各种单车，从实际应用上来说，确实方便了大家的出行，尤其是5KM内的交通。网上关于这些共享单车的文章也是铺天盖地，有讲运营的，有讲公司架构的，有讲CEO的，总之囊括各个方面，今天我也来凑个热闹，写一下对于这些车子的简单思考。</p>
+<p>&emsp;&emsp;车子无论大小肯定是有车锁的，有智能的，有简单的，今天就粗糙的写一下个人思考。粗略的写写，大牛可以忽略了。选取的车子就是ofo和摩拜，也是我平时骑的两个。</p>
+<p><img src="../uploads/images/bike/bikes.jpg" alt=""></p>
+<h2 id="骑行体验"><a href="#骑行体验" class="headerlink" title="骑行体验"></a>骑行体验</h2><p>&emsp;&emsp;去年9月的时候开始骑这些车子，一开始接触的是摩拜的首批橙色小车，真的伸不开腿啊，而且好沉好沉，但是也确实起到了代步的作用，因为公司离得比较近，所以基本是隔三差五的骑。当时我只是在想一个问题：设计师有没有自己骑过，这么沉的车子，就没考虑过用户的骑行感受么？</p>
+<p>&emsp;&emsp;不过摩拜的开锁方式和实心胎还是比较新颖的，而且也方便管理和统计。</p>
+<p>&emsp;&emsp;后来就出现了ofo的小黄车，轮胎是打气的，虽然车座有点低，但因为是链条传送，并且是打气的轮胎，所以骑行起来还是比较轻便的。单就骑行感受上来讲，ofo更舒服。</p>
+<p>&emsp;&emsp;再后来不管是摩拜还是ofo都又退出了新款的车子，都力图在骑行体验上做提高。自己也都骑过他们各个款式的车子，个人总体感觉摩拜后来推出的带前筐的车子和ofo的小轮车都还不错。对于我来说，只要能升降车座，调整车座高度，骑起来能伸开腿就会比较舒服。</p>
+<p>&emsp;&emsp;骑行感受这个东西，也是仁者见仁，智者见智了。</p>
+<h2 id="开锁方式"><a href="#开锁方式" class="headerlink" title="开锁方式"></a>开锁方式</h2><h3 id="ofo"><a href="#ofo" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;ofo的车子，整个车身都没有一点智能元件，当然这也可能是ofo一开始的策略，管他智能不智能的呢，赶紧投放市场才是王道，让大家赶紧骑上小黄车。当然啦，这也是个人猜测而已。</p>
+<p>&emsp;&emsp;ofo的开锁方式很传统，也没那么智能，只是从APP上输入单车编号，APP就返回车锁密码，用户手动开锁即可。粗略的理解，ofo的后台管理说白了就是一堆开锁密码的管理，基本都是查询。细想的话，其实ofo的后台还是包括很多东西的，计费、行程记录、车辆位置、车辆举报等。但因为没有引入智能车锁，所以某些功能的业务上不会太复杂，这也是一种优势，可以迅速做出产品，投入使用。</p>
+<p>&emsp;&emsp;这种开锁方式也造成一个问题，用户只要开锁一次，就记住了这辆车子的密码，下次再碰到这辆车，又可以继续骑。个人感觉，虽然会有这种情况出现，但因为车子的流动性，以及不同用户去不同目的地，会让同一个用户碰到第二辆车子的几率降低，所以同一个人多次或多天骑同一辆车子的几率还是不会太高的。</p>
+<p>&emsp;&emsp;不过，据悉ofo的智能车锁也已经在研发中了，看报道ofo联合了中国电信和华为来共同研究智能车锁，据悉要用NB-IOT技术，因为采用传统的方式来制作智能车锁还是有诸多限制的。NB-IOT依托于电信运营商，又加上华为是NB-IOT的先驱，所以，无论对于华为、中国电信还是ofo，这件事情都是对NB-IOT技术的实际应用有强大的促进作用。个人猜测，ofo在做智能车锁的时候，应该会考虑到目前投放的小黄车后续的智能管理问题。智能车锁应该要可以安装在现在的这些非智能小黄车上，逐步的来完成智能管理。</p>
+<p>&emsp;&emsp;相信ofo肯定也不止于此，还在做很多工作，随着智能车锁的研发，对应车辆管理等功能会逐步研发出来。从信息系统管理上来说，其实智能车锁只是一部分，系统中的很多工作其实都可以不用去考虑是智能的车锁，还是手动的车锁，它们只需要关注来往数据的交互就可以，以行程记录为例，它自然不需要过多的考虑这些问题，只管处理以经纬度为核心的数据，进行路径的合理记录和绘制等工作即可。</p>
+<p>&emsp;&emsp;相信ofo在后续的信息化工作中会给人很多惊喜。</p>
+<h3 id="摩拜"><a href="#摩拜" class="headerlink" title="摩拜"></a>摩拜</h3><p>&emsp;&emsp;摩拜的车子开锁方式就智能很多了，后轮的智能车锁非常显眼，用摩拜APP扫码开锁。但这个智能车锁在实际使用中也碰到很多问题，比如开锁不及时了，车锁没电了，网络状态不好了等等，诸多问题都会影响正常开锁。</p>
+<p>&emsp;&emsp;技术角度来讲，个人推测的开锁流程如下：</p>
+<ol>
+<li>用户从APP扫码</li>
+<li>APP发出车子的开锁请求到摩拜服务端，请求中包括车子编号和车锁操作（开）</li>
+<li><strong>摩拜服务端给车子的车锁发送开锁指令</strong></li>
+<li>车锁收到开锁指令后，执行开锁动作</li>
+<li><strong>车子开锁成功后，发送开锁成功到摩拜服务端</strong></li>
+<li>APP端或服务端开始计费</li>
+<li>开始骑行</li>
+<li><strong>结束骑行，手动关闭车锁，车锁发送关锁消息到摩拜服务端</strong></li>
+<li>服务端收到关锁消息，执行扣费等业务动作，然后发送消息到用户的APP</li>
+<li>APP上显示骑行结束并显示扣费信息</li>
+</ol>
+<p>&emsp;&emsp;粗略猜测，摩拜单车的整个使用过程大概是这样的。刚开始觉得这也就是一个带有通信模块的硬件设备与服务器交互而已，自己也做过一些。可是后来一想觉得有些不一样的地方，在步骤3中服务端是通过什么途径发送消息到车锁上的呢。<strong>刚开始以为也就是网络，可是因为电量、流量等硬件问题，车锁不会时刻与服务端保持SOCKET连接。</strong>就算车锁每隔一段时间就去连接一次摩拜服务器，来查看是否有开车锁的命令，这也不合理啊，毕竟用户开锁是一个随时都可能发生的事情。<strong>所以猜测可能用到了短信。</strong></p>
+<p>&emsp;&emsp;<strong>服务器收到APP发来的开锁请求后，服务器会给车锁发送开锁短信，短信是特别设计的开锁命令。车锁收到短信后，解析短信内容为开锁命令，执行开锁动作。</strong></p>
+<p>&emsp;&emsp;车子开锁成功后，会发送一个开锁成功的确认信息到服务端，这个时候有两种选择，一是与服务器建立网络连接；二是给服务器回一条短信，服务器解析短信来识别车锁的消息。考虑到后面骑行中还可能有车锁位置上报的问题，所以开锁后车锁可能与服务端建立了一个网络连接。</p>
+<p>&emsp;&emsp;骑行结束，关闭车锁后，车锁也可能是通过网络发送消息到服务端来结束骑行。</p>
+<p>&emsp;&emsp;考虑到单车的常年使用，所以摩拜车锁中硬件部分还是很厉害的，电池是关键，整个车锁的功耗也必须很低，所以在于服务器的连接和GPS位置上报的策略上的设计还是很用心的。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/02/17/MINA消息过长/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -451,336 +810,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/02/15/《皮囊》笔记三/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="小鹏鹏">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="脚印">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="脚印" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/15/《皮囊》笔记三/" itemprop="url">
-                  《皮囊》笔记三
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T23:09:15+08:00">
-                2017-02-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/book/" itemprop="url" rel="index">
-                    <span itemprop="name">读书</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/02/15/《皮囊》笔记三/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/15/《皮囊》笔记三/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&emsp;&emsp;已经有些日子没写这本书的笔记了，虽然很早就读完了，但因为最近事情比较多，所以一直拖着没写，今天得空写一篇。</p>
-<ul>
-<li>我的神明朋友</li>
-</ul>
-<p>&emsp;&emsp;今天想写一下“我的神明朋友”这个小节，以作者的母亲为主线，加上和父亲的故事叙事而成。作者此处写到的神明以及他的母亲对待神明的态度，可能和中国其他地方很像，在这个传统文化传承多年的国度里，自然有很多现代人不以为然而老人家们却一直相信的东西。</p>
-<p>&emsp;&emsp;作者的母亲一开始是不相信什么神明的，而后来经过一系列的事情后，自然也就对神明有了很多的敬畏和依赖。很多人都说我们太多的人没有信仰了，内心没有一些依靠，其实仔细想来的话，这些神明也可能就算是我们很多人的信仰吧。因为内心里一直有这些神明，所以时时怀揣着一种敬畏和一种依赖，相信人是有灵魂的，是可以在另一个世界里继续生活的。有了心灵的寄托，便始终感觉背后有个依靠，总觉得冥冥之中自己不是一个人。</p>
-<p>&emsp;&emsp;读完这一小节后，让我联想到了我所在的地方，我也是出生在农村，成长在农村，至今仍然可以看到家里人各种祭天祭地祭神，祈求神明保佑家人平安，祈求整年风调雨顺，也祈求财运滚滚来。尤其是在碰到一些事情的时候，总觉得可能是没有照顾好哪个神，所以总会赶紧去烧纸烧香来祈求一切都顺利。</p>
-<p>&emsp;&emsp;记得上小学的时候，自己生过一场怪病，连续多天发烧头疼咳嗽不止，各种治疗都不管用，只能卧床休息靠吃药打针来维持身体运转。记得那时候还正好赶上外祖父去世办丧事，而我因为身体难以支撑，也没能一直在场，只得休息一阵去一阵。后来，听闻附近村子有个神婆治的不错，于是家人便带我去求诊。因为我之前从来没经历过这种场景，所以当时的我感觉空气都是凝结的，非常的安静。每个人都小心翼翼，生怕高声说话会惊扰了神明。具体也忘记了当时是怎样的一个流程和方式，只记得回来后没几天，我便恢复了正常。</p>
-<p>&emsp;&emsp;至今仍然想不明白我为什么恢复了正常，只知道不敢再去对神明说三道四。不敢说自己相信了这种东西，但至少不会完全的去怀疑。内心有一些信仰和依靠，便会有很多的平心静气和对天地的敬意。</p>
-<p>&emsp;&emsp;<strong>人总要信一些什么，才不至于有一个空洞的心。</strong>至少我是这么觉得的。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/02/08/《皮囊》笔记二/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="小鹏鹏">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="脚印">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="脚印" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/08/《皮囊》笔记二/" itemprop="url">
-                  《皮囊》笔记二
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-08T22:57:53+08:00">
-                2017-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/book/" itemprop="url" rel="index">
-                    <span itemprop="name">读书</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/02/08/《皮囊》笔记二/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/08/《皮囊》笔记二/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="../uploads/pinang.jpg" alt=""><br>&emsp;&emsp;我想把这两部分放在一起写，也是因为这两部分基本都是有关于作者的父亲生病的故事。有时候，人就是那么脆弱，受不得病魔的折磨，不得已而低头。每个人也少不了面对别人的生老病死，也不可避免的会迎来自己的这一天，而在我们这一辈子的过程中，最好的日子就是健康快乐的时候。</p>
-<ul>
-<li>残疾</li>
-</ul>
-<p>&emsp;&emsp;作者父亲因为这样那样的生活经历，无奈最后身体撑不住，落下了残疾。他的父亲起初还想着过段时间就可以恢复，也一直在积极锻炼着，没想到却没有效果，反倒恼羞成怒，把对自己的不满或者怨气直接的发泄出来。</p>
-<p>&emsp;&emsp;当面对身体的不便，自己不能自由的做很多事情，内心自然无法平静，刚开始肯定也无法淡然的接受，尤其是在希望破灭后的失望和沮丧以及对以后生活的无奈等复杂内心，可能是我们健全的人所无法理解的。</p>
-<p>&emsp;&emsp;这也让我想起了家里的一位祖父，从我上中学的时候就一直很关照我，很多话题也能说到一块。在多年前也身体开始了不方便，但也没大碍，生活可以自理。但是，记得大概是前年的时候，一次假日回家还能和他聊天说笑，随后的一段时间里，他突然间病情加重，住院几次，再到国庆节我回家的时候，竟然也不能流利的说话，也竟然不能一下子认出我，再也不能那么聊天说笑。心里突然间很悲伤、很无力，两次见面竟然有如此大的差别，心里甚是不快。人的健康和生命真的是很脆弱，若不用心照顾，真的不堪一击。希望祖父健康顺利下去。</p>
-<ul>
-<li>重症病房里的圣诞节</li>
-</ul>
-<p>&emsp;&emsp;这一章节同样是关于作者父亲生病的事情，不同的是这一段主要发生在医院里，是关于他父亲住院期间作者的见闻和思考，有关于病友的，有关于病人家属的，也有关于医生和护士的……</p>
-<p>&emsp;&emsp;而我个人对于医院的感觉就是压抑和排斥，每次去医院，在走廊里都会有一种非常压抑的感觉，总会感觉到人的渺小和面对疾病时的无力和无奈。也正是一次次的去到那里才更坚定了我努力锻炼身体的决心，身体健康一切都好，只要身体在，一切都还有希望，一切都还有机会。</p>
-<p>&emsp;&emsp;人的生命很宝贵，就只有一次，当感觉到自己的亲人可能在预料的时间内离开我们时，内心自然是阴霾的，会想努力去完成亲人在生前那些愿望，因为能让他们平静的离开可能是我们最可能办到的了。</p>
-<p>&emsp;&emsp;通过这两节的阅读，让我对健康、对生命、对亲人有了更多的认识和思考，一定要在我们有机会的时候，努力去建设我们的身体，善待我们的每一位亲人，珍惜与他们相处的每一天。</p>
-<p>注：此仅为个人即兴想法和感受，每个人的经历不一样，可能感受也会不同吧。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -823,7 +857,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -841,7 +875,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
