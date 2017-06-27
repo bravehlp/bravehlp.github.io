@@ -372,58 +372,14 @@
 
       
         
-          
-            <p>&emsp;&emsp;MINA在处理网络编程问题的时候不失为一个好助手，但使用过程中总会碰到大大小小的问题，最近在使用时便碰到了如此的一个小问题，出现问题的时候查阅源码是个好习惯。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>&emsp;&emsp;用MINA发送字符串消息的时候，出现了消息过长的问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.apache.mina.common.BufferDataException: Line is too long</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;消息编码和解码的时候用到了TextLineCodecFactory，其实消息过长的问题出现在了解码的时候。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Decode a line using the default delimiter on the current system</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">decodeAuto</span><span class="params">(Context ctx, IoSession session, IoBuffer in, ProtocolDecoderOutput out)</span></span></div><div class="line">        <span class="keyword">throws</span> CharacterCodingException, ProtocolDecoderException &#123;</div><div class="line">    <span class="keyword">int</span> matchCount = ctx.getMatchCount();</div><div class="line"></div><div class="line">    <span class="comment">// Try to find a match</span></div><div class="line">    <span class="keyword">int</span> oldPos = in.position();</div><div class="line">    <span class="keyword">int</span> oldLimit = in.limit();</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (in.hasRemaining()) &#123;</div><div class="line">        <span class="keyword">byte</span> b = in.get();</div><div class="line">        <span class="keyword">boolean</span> matched = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">        <span class="keyword">switch</span> (b) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">'\r'</span>:</div><div class="line">            <span class="comment">// Might be Mac, but we don't auto-detect Mac EOL</span></div><div class="line">            <span class="comment">// to avoid confusion.</span></div><div class="line">            matchCount++;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> <span class="string">'\n'</span>:</div><div class="line">            <span class="comment">// UNIX</span></div><div class="line">            matchCount++;</div><div class="line">            matched = <span class="keyword">true</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            matchCount = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (matched) &#123;</div><div class="line">            <span class="comment">// Found a match.</span></div><div class="line">            <span class="keyword">int</span> pos = in.position();</div><div class="line">            in.limit(pos);</div><div class="line">            in.position(oldPos);</div><div class="line"></div><div class="line">            ctx.append(in);</div><div class="line"></div><div class="line">            in.limit(oldLimit);</div><div class="line">            in.position(pos);</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (ctx.getOverflowPosition() == <span class="number">0</span>) &#123;</div><div class="line">                IoBuffer buf = ctx.getBuffer();</div><div class="line">                buf.flip();</div><div class="line">                buf.limit(buf.limit() - matchCount);</div><div class="line"></div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[buf.limit()];</div><div class="line">                    buf.get(data);</div><div class="line">                    CharsetDecoder decoder = ctx.getDecoder();</div><div class="line"></div><div class="line">                    CharBuffer buffer = decoder.decode(ByteBuffer.wrap(data));</div><div class="line">                    String str = buffer.toString();</div><div class="line">                    writeText(session, str, out);</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    buf.clear();</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">int</span> overflowPosition = ctx.getOverflowPosition();</div><div class="line">                ctx.reset();</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RecoverableProtocolDecoderException(<span class="string">"Line is too long: "</span> + overflowPosition);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            oldPos = pos;</div><div class="line">            matchCount = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Put remainder to buf.</span></div><div class="line">    in.position(oldPos);</div><div class="line">    ctx.append(in);</div><div class="line"></div><div class="line">    ctx.setMatchCount(matchCount);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当读取到消息结束标识后，剩余的空间不够用，所以抛出异常。</p>
-<h2 id="办法"><a href="#办法" class="headerlink" title="办法"></a>办法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TextLineCodecFactory lineCodec=<span class="keyword">new</span> TextLineCodecFactory();</div><div class="line">lineCodec.setDecoderMaxLineLength(<span class="number">1024</span>*<span class="number">1024</span>); <span class="comment">//1M</span></div><div class="line"></div><div class="line">filterChain.addLast(<span class="string">"codec"</span>, <span class="keyword">new</span> ProtocolCodecFilter(lineCodec));</div></pre></td></tr></table></figure>
-<p>给decode中每一行的读取长度做了定义，默认是1K，可以按照自己的需要来改动。</p>
-<h2 id="多看看"><a href="#多看看" class="headerlink" title="多看看"></a>多看看</h2><ul>
-<li>TextLineCodecFactory中设置decoder的长度</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Sets the allowed maximum size of the line to be decoded.</div><div class="line"> * If the size of the line to be decoded exceeds this value, the</div><div class="line"> * decoder will throw a &#123;<span class="doctag">@link</span> BufferDataException&#125;.  The default</div><div class="line"> * value is &lt;tt&gt;1024&lt;/tt&gt; (1KB).</div><div class="line"> * &lt;p&gt;</div><div class="line"> * This method does the same job with &#123;<span class="doctag">@link</span> TextLineDecoder#setMaxLineLength(int)&#125;.</div><div class="line"> * </div><div class="line"> * <span class="doctag">@param</span> maxLineLength the maximum decoded line length</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDecoderMaxLineLength</span><span class="params">(<span class="keyword">int</span> maxLineLength)</span> </span>&#123;</div><div class="line">    decoder.setMaxLineLength(maxLineLength);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>做了这样的设置之后，每次再读取一行数据的时候就会按照1M的数据量去读。</p>
-<ul>
-<li>MINA中的ProtocolCodecFactory自己有4个实现类，来进行编码处理。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Provides &#123;<span class="doctag">@link</span> ProtocolEncoder&#125; and &#123;<span class="doctag">@link</span> ProtocolDecoder&#125; which translates</div><div class="line"> * binary or protocol specific data into message object and vice versa.</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Please refer to</div><div class="line"> * &lt;a href="../../../../../xref-examples/org/apache/mina/examples/reverser/ReverseProtocolProvider.html"&gt;&lt;code&gt;ReverserProtocolProvider&lt;/code&gt;&lt;/a&gt;</div><div class="line"> * example.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@author</span> &lt;a href="http://mina.apache.org"&gt;Apache MINA Project&lt;/a&gt;</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProtocolCodecFactory</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a new (or reusable) instance of &#123;<span class="doctag">@link</span> ProtocolEncoder&#125; which</div><div class="line">     * encodes message objects into binary or protocol-specific data.</div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> session The current session</div><div class="line">     * <span class="doctag">@return</span> The encoder instance</div><div class="line">     * <span class="doctag">@throws</span> Exception If an error occurred while retrieving the encoder</div><div class="line">     */</div><div class="line">    <span class="function">ProtocolEncoder <span class="title">getEncoder</span><span class="params">(IoSession session)</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a new (or reusable) instance of &#123;<span class="doctag">@link</span> ProtocolDecoder&#125; which</div><div class="line">     * decodes binary or protocol-specific data into message objects.</div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> session The current session</div><div class="line">     * <span class="doctag">@return</span> The decoder instance</div><div class="line">     * <span class="doctag">@throws</span> Exception If an error occurred while retrieving the decoder</div><div class="line">     */</div><div class="line">    <span class="function">ProtocolDecoder <span class="title">getDecoder</span><span class="params">(IoSession session)</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<table>
-<thead>
-<tr>
-<th>类名</th>
-<th>作用</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>TextLineCodecFactory</td>
-<td>文本消息，按行处理，识别回车换行符</td>
-<td></td>
-</tr>
-<tr>
-<td>DemuxingProtocolCodecFactory</td>
-<td>转送消息到对应CodeFactory</td>
-<td></td>
-</tr>
-<tr>
-<td>PrefixedStringCodecFactory</td>
-<td>处理有固定前缀长度的字符串</td>
-<td></td>
-</tr>
-<tr>
-<td>ObjectSerializationCodecFactory</td>
-<td>Java对象的序列化</td>
-<td>传输对象必须实现序列化接口，且服务端和客户端包路径必须一致</td>
-</tr>
-</tbody>
-</table>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;MINA是一个优秀的网络编程辅助工具，但我们不一定能使用到它里面的所有功能，因此应该有选择性的进行学习，以及碰到问题的时候进行适当的源码查阅可以加深我们对于MINA的理解。</p>
-<p>&emsp;&emsp;其实，不只是针对MINA应该查阅源码，对于很多其他的开源框架或类库，多查阅源码和API总会有好处的。</p>
-
-          
+          <p>&emsp;&emsp;MINA在处理网络编程问题的时候不失为一个好助手，但使用过程中总会碰到大大小小的问题，最近在使用时便碰到了如此的一个小问题，出现问题的时候查阅源码是个好习惯。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/17/MINA消息过长/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -571,19 +527,14 @@
 
       
         
-          
-            <p>&emsp;&emsp;已经有些日子没写这本书的笔记了，虽然很早就读完了，但因为最近事情比较多，所以一直拖着没写，今天得空写一篇。</p>
-<ul>
-<li>我的神明朋友</li>
-</ul>
-<p>&emsp;&emsp;今天想写一下“我的神明朋友”这个小节，以作者的母亲为主线，加上和父亲的故事叙事而成。作者此处写到的神明以及他的母亲对待神明的态度，可能和中国其他地方很像，在这个传统文化传承多年的国度里，自然有很多现代人不以为然而老人家们却一直相信的东西。</p>
-<p>&emsp;&emsp;作者的母亲一开始是不相信什么神明的，而后来经过一系列的事情后，自然也就对神明有了很多的敬畏和依赖。很多人都说我们太多的人没有信仰了，内心没有一些依靠，其实仔细想来的话，这些神明也可能就算是我们很多人的信仰吧。因为内心里一直有这些神明，所以时时怀揣着一种敬畏和一种依赖，相信人是有灵魂的，是可以在另一个世界里继续生活的。有了心灵的寄托，便始终感觉背后有个依靠，总觉得冥冥之中自己不是一个人。</p>
-<p>&emsp;&emsp;读完这一小节后，让我联想到了我所在的地方，我也是出生在农村，成长在农村，至今仍然可以看到家里人各种祭天祭地祭神，祈求神明保佑家人平安，祈求整年风调雨顺，也祈求财运滚滚来。尤其是在碰到一些事情的时候，总觉得可能是没有照顾好哪个神，所以总会赶紧去烧纸烧香来祈求一切都顺利。</p>
-<p>&emsp;&emsp;记得上小学的时候，自己生过一场怪病，连续多天发烧头疼咳嗽不止，各种治疗都不管用，只能卧床休息靠吃药打针来维持身体运转。记得那时候还正好赶上外祖父去世办丧事，而我因为身体难以支撑，也没能一直在场，只得休息一阵去一阵。后来，听闻附近村子有个神婆治的不错，于是家人便带我去求诊。因为我之前从来没经历过这种场景，所以当时的我感觉空气都是凝结的，非常的安静。每个人都小心翼翼，生怕高声说话会惊扰了神明。具体也忘记了当时是怎样的一个流程和方式，只记得回来后没几天，我便恢复了正常。</p>
-<p>&emsp;&emsp;至今仍然想不明白我为什么恢复了正常，只知道不敢再去对神明说三道四。不敢说自己相信了这种东西，但至少不会完全的去怀疑。内心有一些信仰和依靠，便会有很多的平心静气和对天地的敬意。</p>
-<p>&emsp;&emsp;<strong>人总要信一些什么，才不至于有一个空洞的心。</strong>至少我是这么觉得的。</p>
-
-          
+          <p>&emsp;&emsp;已经有些日子没写这本书的笔记了，虽然很早就读完了，但因为最近事情比较多，所以一直拖着没写，今天得空写一篇。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/15/《皮囊》笔记三/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -731,24 +682,14 @@
 
       
         
-          
-            <p><img src="/2017/02/08/《皮囊》笔记二/uploads/pinang.jpg" alt=""><br>&emsp;&emsp;我想把这两部分放在一起写，也是因为这两部分基本都是有关于作者的父亲生病的故事。有时候，人就是那么脆弱，受不得病魔的折磨，不得已而低头。每个人也少不了面对别人的生老病死，也不可避免的会迎来自己的这一天，而在我们这一辈子的过程中，最好的日子就是健康快乐的时候。</p>
-<ul>
-<li>残疾</li>
-</ul>
-<p>&emsp;&emsp;作者父亲因为这样那样的生活经历，无奈最后身体撑不住，落下了残疾。他的父亲起初还想着过段时间就可以恢复，也一直在积极锻炼着，没想到却没有效果，反倒恼羞成怒，把对自己的不满或者怨气直接的发泄出来。</p>
-<p>&emsp;&emsp;当面对身体的不便，自己不能自由的做很多事情，内心自然无法平静，刚开始肯定也无法淡然的接受，尤其是在希望破灭后的失望和沮丧以及对以后生活的无奈等复杂内心，可能是我们健全的人所无法理解的。</p>
-<p>&emsp;&emsp;这也让我想起了家里的一位祖父，从我上中学的时候就一直很关照我，很多话题也能说到一块。在多年前也身体开始了不方便，但也没大碍，生活可以自理。但是，记得大概是前年的时候，一次假日回家还能和他聊天说笑，随后的一段时间里，他突然间病情加重，住院几次，再到国庆节我回家的时候，竟然也不能流利的说话，也竟然不能一下子认出我，再也不能那么聊天说笑。心里突然间很悲伤、很无力，两次见面竟然有如此大的差别，心里甚是不快。人的健康和生命真的是很脆弱，若不用心照顾，真的不堪一击。希望祖父健康顺利下去。</p>
-<ul>
-<li>重症病房里的圣诞节</li>
-</ul>
-<p>&emsp;&emsp;这一章节同样是关于作者父亲生病的事情，不同的是这一段主要发生在医院里，是关于他父亲住院期间作者的见闻和思考，有关于病友的，有关于病人家属的，也有关于医生和护士的……</p>
-<p>&emsp;&emsp;而我个人对于医院的感觉就是压抑和排斥，每次去医院，在走廊里都会有一种非常压抑的感觉，总会感觉到人的渺小和面对疾病时的无力和无奈。也正是一次次的去到那里才更坚定了我努力锻炼身体的决心，身体健康一切都好，只要身体在，一切都还有希望，一切都还有机会。</p>
-<p>&emsp;&emsp;人的生命很宝贵，就只有一次，当感觉到自己的亲人可能在预料的时间内离开我们时，内心自然是阴霾的，会想努力去完成亲人在生前那些愿望，因为能让他们平静的离开可能是我们最可能办到的了。</p>
-<p>&emsp;&emsp;通过这两节的阅读，让我对健康、对生命、对亲人有了更多的认识和思考，一定要在我们有机会的时候，努力去建设我们的身体，善待我们的每一位亲人，珍惜与他们相处的每一天。</p>
-<p>注：此仅为个人即兴想法和感受，每个人的经历不一样，可能感受也会不同吧。</p>
-
-          
+          <p>&emsp;&emsp;我想把这两部分放在一起写，也是因为这两部分基本都是有关于作者的父亲生病的故事。有时候，人就是那么脆弱，受不得病魔的折磨，不得已而低头。每个人也少不了面对别人的生老病死，也不可避免的会迎来自己的这一天，而在我们这一辈子的过程中，最好的日子就是健康快乐的时候。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/08/《皮囊》笔记二/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

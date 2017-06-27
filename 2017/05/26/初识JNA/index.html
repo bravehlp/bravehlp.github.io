@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/26/初识JNA/dlllib.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/26/初识JNA/result.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/26/初识JNA/types.png">
-<meta property="og:updated_time" content="2017-05-26T07:17:01.000Z">
+<meta property="og:updated_time" content="2017-06-27T04:19:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识JNA">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;JNA（Java Native Access）对JNI进行了包装，提供了一组工具类用于访问本地程序，不需要编写任何Native或JNI代码。只需要在Java接口文件中定义与本地类库中的方法结构一样的native类型的方法即可，不需要实现，JNA会自动联系Java中的接口与本地类库中的方法。
@@ -376,6 +376,7 @@
       
         <p>&emsp;&emsp;JNA（Java Native Access）对JNI进行了包装，提供了一组工具类用于访问本地程序，不需要编写任何Native或JNI代码。只需要在Java接口文件中定义与本地类库中的方法结构一样的native类型的方法即可，不需要实现，JNA会自动联系Java中的接口与本地类库中的方法。</p>
 <p>&emsp;&emsp;原则上来说在有本地类库时，并不需要再写本地代码，而是直接写Java代码即可，但这样做的前提是要有一个编写良好又明确标明方法的类库。如果碰到任务需要在原来本地类库的基础上进行二次包装，就不得不继续编写本地代码了，而我写的这个例子就是按照这样的步骤来的。</p>
+<a id="more"></a>
 <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>步骤1：<br>    新建一个接口文件，定义需要调用的本地方法。</p>
 <p>步骤2：<br>    编写本地方法，用C/C++实现Java接口中的方法。方法声明前要加上  __declspec(dllexport) 即把声明的方法对外暴露。</p>
 <p>步骤3：<br>    生产动态库，放到对应目录下。本程序中，在Windows下，生成了dll文件，放到了JDK的bin中。</p>

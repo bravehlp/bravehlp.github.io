@@ -96,7 +96,7 @@
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/24/初识JNI/main.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/24/初识JNI/javah-error1.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/24/初识JNI/javah-error2.png">
-<meta property="og:updated_time" content="2017-05-24T02:08:42.000Z">
+<meta property="og:updated_time" content="2017-06-27T04:20:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识JNI">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出">
@@ -376,6 +376,7 @@
       
         <p>&emsp;&emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出现了。当然也会有其他方式来实现本机应用和Java程序间的通讯，但某些情况下确实会用到JNI的方式来实现Java和本地程序的互相调用。</p>
 <p>&emsp;&emsp;JNI (Java Native Interface)是一个标准的编程接口，定义了一种方式来实现JVM中的Java代码和本地代码间的交互。</p>
+<a id="more"></a>
 <p>&emsp;&emsp;因为工作需要，需要实现Java和C++类库间的调用，所以才了解到JNI，涉及到了JNI中Java调用C++中的方法，以及C++中回调Java方法。研究了些日子，也学习了很多。所以特此记录。</p>
 <h2 id="JNI基础概念"><a href="#JNI基础概念" class="headerlink" title="JNI基础概念"></a>JNI基础概念</h2><ol>
 <li>JavaVM、JNIEnv、Jobject</li>

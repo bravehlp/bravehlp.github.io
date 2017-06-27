@@ -85,23 +85,20 @@
 
 
 <meta name="description" content="&amp;emsp;&amp;emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。
-&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。
-1、定义回调方法123456789/** * C++程序回调本方法，并传递数据到此 * @param strArg */">
+&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JNI回调">
 <meta property="og:url" content="https://bravehlp.github.io/2017/05/24/JNI回调/index.html">
 <meta property="og:site_name" content="脚印">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。
-&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。
-1、定义回调方法123456789/** * C++程序回调本方法，并传递数据到此 * @param strArg */">
+&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/24/JNI回调/result.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/24/JNI回调/sign.png">
-<meta property="og:updated_time" content="2017-05-24T10:37:01.000Z">
+<meta property="og:updated_time" content="2017-06-27T04:20:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JNI回调">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。
-&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。
-1、定义回调方法123456789/** * C++程序回调本方法，并传递数据到此 * @param strArg */">
+&amp;emsp;&amp;emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。">
 <meta name="twitter:image" content="https://bravehlp.github.io/2017/05/24/JNI回调/result.png">
 
 
@@ -378,6 +375,7 @@
       
         <p>&emsp;&emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。</p>
 <p>&emsp;&emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。</p>
+<a id="more"></a>
 <h2 id="1、定义回调方法"><a href="#1、定义回调方法" class="headerlink" title="1、定义回调方法"></a>1、定义回调方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * C++程序回调本方法，并传递数据到此</div><div class="line"> * <span class="doctag">@param</span> strArg</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveCPPTest</span><span class="params">(String strArg)</span></span>&#123;</div><div class="line"></div><div class="line">    System.out.println(<span class="string">"来自C++程序的回调，数据："</span> + strArg);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="2、本地语言中调用Java方法"><a href="#2、本地语言中调用Java方法" class="headerlink" title="2、本地语言中调用Java方法"></a>2、本地语言中调用Java方法</h2><p>&emsp;&emsp;在C++的源码文件中按照步骤来找到Java中的对应的方法并调用。</p>
 <h3 id="1）获取Java中的目标类"><a href="#1）获取Java中的目标类" class="headerlink" title="1）获取Java中的目标类"></a>1）获取Java中的目标类</h3><ul>

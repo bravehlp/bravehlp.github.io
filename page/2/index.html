@@ -372,37 +372,15 @@
 
       
         
-          
-            <p>&emsp;&emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。</p>
+          <p>&emsp;&emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。</p>
 <p>&emsp;&emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。</p>
-<h2 id="1、定义回调方法"><a href="#1、定义回调方法" class="headerlink" title="1、定义回调方法"></a>1、定义回调方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * C++程序回调本方法，并传递数据到此</div><div class="line"> * <span class="doctag">@param</span> strArg</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveCPPTest</span><span class="params">(String strArg)</span></span>&#123;</div><div class="line"></div><div class="line">    System.out.println(<span class="string">"来自C++程序的回调，数据："</span> + strArg);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="2、本地语言中调用Java方法"><a href="#2、本地语言中调用Java方法" class="headerlink" title="2、本地语言中调用Java方法"></a>2、本地语言中调用Java方法</h2><p>&emsp;&emsp;在C++的源码文件中按照步骤来找到Java中的对应的方法并调用。</p>
-<h3 id="1）获取Java中的目标类"><a href="#1）获取Java中的目标类" class="headerlink" title="1）获取Java中的目标类"></a>1）获取Java中的目标类</h3><ul>
-<li>根据类名获取<br>&emsp;&emsp;JNIEnv中的FindClass方法可以根据方法名直接得到Java中的类</li>
-<li>根据类对象获取<br>&emsp;&emsp;JNIEnv中同样提供了根据Java类的对象来获取Java类的方法，GetObjectClass。</li>
-</ul>
-<h3 id="2）获取要调用Java中的方法"><a href="#2）获取要调用Java中的方法" class="headerlink" title="2）获取要调用Java中的方法"></a>2）获取要调用Java中的方法</h3><p>&emsp;&emsp;此处的获取目标方法，会需要用到方法的标识，即方法名和方法签名（参数和返回值）。</p>
-<h3 id="3）执行目标方法"><a href="#3）执行目标方法" class="headerlink" title="3）执行目标方法"></a>3）执行目标方法</h3><p>&esmp;&emsp;在执行目标方法的时候要注意，如果方法有参数需要传入，应该特别注意进行类型和编码的转换。</p>
-<p>执行回调的c++源码如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testCallback</span><span class="params">(JNIEnv *env, jobject obj)</span> </span>&#123;</div><div class="line">	<span class="comment">//  1. 获取目标类</span></div><div class="line">	<span class="keyword">char</span>* classname = <span class="string">"JNIDemo"</span>;</div><div class="line">	jclass     objClass = env-&gt;FindClass(classname); </div><div class="line"></div><div class="line">	<span class="comment">//jclass objClass = env-&gt;GetObjectClass(obj);</span></div><div class="line"></div><div class="line">	<span class="comment">//  2. 获取要调用的方法，需要传入类、方法名、方法签名</span></div><div class="line">	jmethodID methodID = env-&gt;GetMethodID(objClass, <span class="string">"receiveCPPTest"</span>, <span class="string">"(Ljava/lang/String;)V"</span>);</div><div class="line"></div><div class="line">	jstring methodArg = StringUtils::str2jstring(env, <span class="string">"C++ call Java method."</span>);</div><div class="line"></div><div class="line">	<span class="comment">//  3. 执行目标方法：类对象，方法ID，方法参数……</span></div><div class="line">	env-&gt;CallVoidMethod(obj, methodID, methodArg);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test1</div><div class="line">* Signature: ()V</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj)</span> </div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World, this is C++ printer."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	testCallback(env, obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="3、触发本地代码中的回调方法"><a href="#3、触发本地代码中的回调方法" class="headerlink" title="3、触发本地代码中的回调方法"></a>3、触发本地代码中的回调方法</h2><p>&emsp;&emsp;此处有多种选择，毕竟C++执行Java回调的方法在任何地方都可以调用，此例子中我在Java中定义了一个测试方法来触发。</p>
-<p>Java中调用test1来触发此回调函数。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line"><span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">jniDemo.test1();</div></pre></td></tr></table></figure>
-<h2 id="4、执行回调"><a href="#4、执行回调" class="headerlink" title="4、执行回调"></a>4、执行回调</h2><p>运行此程序，得到下图的结果。</p>
-<p><img src="/2017/05/24/JNI回调/result.png" alt=""></p>
-<p>可以看到C++中的代码正确的调用了Java中的方法，并传递了参数到Java中。</p>
-<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><h3 id="查看方法签名"><a href="#查看方法签名" class="headerlink" title="查看方法签名"></a>查看方法签名</h3><p>JDK中本身提供了查看签名的方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javap -s JNIDemo</div></pre></td></tr></table></figure>
-<p><img src="/2017/05/24/JNI回调/sign.png" alt=""></p>
-<p>&emsp;&emsp;可以很清晰的看到receiveCPPTest方法的签名是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(Ljava/lang/String;)V</div></pre></td></tr></table></figure>
-<p>参数是String类型，返回值是void。</p>
-<h3 id="jstring和string"><a href="#jstring和string" class="headerlink" title="jstring和string"></a>jstring和string</h3><p>&emsp;&emsp;因为Java和C++中数据类型的区别，所以需要进行转换。上面例子中已经写好了一个，代码贴出来。</p>
-<h4 id="头文件StringUtils-h"><a href="#头文件StringUtils-h" class="headerlink" title="头文件StringUtils.h"></a>头文件StringUtils.h</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> StringUtils</div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	StringUtils();</div><div class="line">	~StringUtils();</div><div class="line">	<span class="function"><span class="keyword">static</span> jstring <span class="title">str2jstring</span><span class="params">(JNIEnv* env, <span class="keyword">const</span> <span class="keyword">char</span>* pat)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">jstring2str</span><span class="params">(JNIEnv* env, jstring jstr)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">char</span>* <span class="title">str2chars</span><span class="params">(<span class="built_in">string</span> jstr)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">char</span>* <span class="title">jstring2chars</span><span class="params">(JNIEnv* env, jstring jstr)</span></span>;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h4 id="源码文件StringUtils-cpp"><a href="#源码文件StringUtils-cpp" class="headerlink" title="源码文件StringUtils.cpp"></a>源码文件StringUtils.cpp</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"StringUtils.h"</span></span></div><div class="line"></div><div class="line"></div><div class="line">StringUtils::StringUtils()</div><div class="line">&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">StringUtils::~StringUtils()</div><div class="line">&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">jstring StringUtils::str2jstring(JNIEnv* env, <span class="keyword">const</span> <span class="keyword">char</span>* pat)</div><div class="line">&#123;</div><div class="line">	<span class="comment">//定义java String类 strClass  </span></div><div class="line">	jclass strClass = (env)-&gt;FindClass(<span class="string">"Ljava/lang/String;"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//获取String(byte[],String)的构造器,用于将本地byte[]数组转换为一个新String  </span></div><div class="line">	jmethodID ctorID = (env)-&gt;GetMethodID(strClass, <span class="string">"&lt;init&gt;"</span>, <span class="string">"([BLjava/lang/String;)V"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//建立byte数组  </span></div><div class="line">	jbyteArray bytes = (env)-&gt;NewByteArray(<span class="built_in">strlen</span>(pat));</div><div class="line"></div><div class="line">	<span class="comment">//将char* 转换为byte数组  </span></div><div class="line">	(env)-&gt;SetByteArrayRegion(bytes, <span class="number">0</span>, <span class="built_in">strlen</span>(pat), (jbyte*)pat);</div><div class="line"></div><div class="line">	<span class="comment">// 设置String, 保存语言类型,用于byte数组转换至String时的参数  </span></div><div class="line">	jstring encoding = (env)-&gt;NewStringUTF(<span class="string">"GB2312"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//将byte数组转换为java String,并输出  </span></div><div class="line">	<span class="keyword">return</span> (jstring)(env)-&gt;NewObject(strClass, ctorID, bytes, encoding);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">string</span> StringUtils::jstring2str(JNIEnv* env, jstring jstr)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>*   rtn = jstring2chars(env, jstr);</div><div class="line">	<span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">stemp</span><span class="params">(rtn)</span></span>;</div><div class="line">	<span class="built_in">free</span>(rtn);</div><div class="line">	<span class="keyword">return</span> stemp;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">char</span>* StringUtils::str2chars(<span class="built_in">string</span> strArg)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>* c;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> len = strArg.length();</div><div class="line">	c = <span class="keyword">new</span> <span class="keyword">char</span>[len + <span class="number">1</span>];</div><div class="line">	strcpy_s(c, len + <span class="number">1</span>, strArg.c_str());</div><div class="line"></div><div class="line">	<span class="keyword">return</span> c;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//jstring to char*</span></div><div class="line"><span class="keyword">char</span>* StringUtils::jstring2chars(JNIEnv* env, jstring jstr)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>* rtn = <span class="literal">NULL</span>;</div><div class="line">	jclass clsstring = env-&gt;FindClass(<span class="string">"java/lang/String"</span>);</div><div class="line">	jstring strencode = env-&gt;NewStringUTF(<span class="string">"utf-8"</span>);</div><div class="line">	jmethodID mid = env-&gt;GetMethodID(clsstring, <span class="string">"getBytes"</span>, <span class="string">"(Ljava/lang/String;)[B"</span>);</div><div class="line">	jbyteArray barr = (jbyteArray)env-&gt;CallObjectMethod(jstr, mid, strencode);</div><div class="line">	jsize alen = env-&gt;GetArrayLength(barr);</div><div class="line">	jbyte* ba = env-&gt;GetByteArrayElements(barr, JNI_FALSE);</div><div class="line">	<span class="keyword">if</span> (alen &gt; <span class="number">0</span>)</div><div class="line">	&#123;</div><div class="line">		rtn = (<span class="keyword">char</span>*)<span class="built_in">malloc</span>(alen + <span class="number">1</span>);</div><div class="line">		<span class="built_in">memcpy</span>(rtn, ba, alen);</div><div class="line">		rtn[alen] = <span class="number">0</span>;</div><div class="line">	&#125;</div><div class="line">	env-&gt;ReleaseByteArrayElements(barr, ba, <span class="number">0</span>);</div><div class="line">	<span class="keyword">return</span> rtn;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;其实，JNI也没有太难，只是需要注意的细节挺多的，再加上需要同时了解本地语言，所以可能一定程度增加了点难度（对于不懂本地语言的童鞋），总体来说还算简洁。</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/24/JNI回调/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -550,114 +528,15 @@
 
       
         
-          
-            <p>&emsp;&emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出现了。当然也会有其他方式来实现本机应用和Java程序间的通讯，但某些情况下确实会用到JNI的方式来实现Java和本地程序的互相调用。</p>
+          <p>&emsp;&emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出现了。当然也会有其他方式来实现本机应用和Java程序间的通讯，但某些情况下确实会用到JNI的方式来实现Java和本地程序的互相调用。</p>
 <p>&emsp;&emsp;JNI (Java Native Interface)是一个标准的编程接口，定义了一种方式来实现JVM中的Java代码和本地代码间的交互。</p>
-<p>&emsp;&emsp;因为工作需要，需要实现Java和C++类库间的调用，所以才了解到JNI，涉及到了JNI中Java调用C++中的方法，以及C++中回调Java方法。研究了些日子，也学习了很多。所以特此记录。</p>
-<h2 id="JNI基础概念"><a href="#JNI基础概念" class="headerlink" title="JNI基础概念"></a>JNI基础概念</h2><ol>
-<li>JavaVM、JNIEnv、Jobject</li>
-</ol>
-<ul>
-<li>JavaVM</li>
-</ul>
-<p>&emsp;&emsp;提供调用接口的函数，可以用来获取JNIEnv，可以跨线程使用。</p>
-<ul>
-<li>JNIEnv</li>
-</ul>
-<p>&emsp;&emsp;JNI Environment，用此类型的实例便可以调用JNI提供的函数。它提供了大多数的JNI函数，是一个线程内的本地变量，无法跨线程访问。如果不得不在其他线程引用JNIEnv，则可以使用JavaVM的GetEnv来获取JNIEnv。</p>
-<ul>
-<li>Jobject</li>
-</ul>
-<p>&emsp;&emsp;Jobject是本地方法中访问的Java中的具体对象。</p>
-<ol>
-<li>Global and Local References</li>
-</ol>
-<p>&emsp;&emsp;JNI把本地代码使用的对象引用分成了两种：局部引用和全局引用。</p>
-<ul>
-<li>局部引用</li>
-</ul>
-<p>&emsp;&emsp;局部对象引用在在本地方法的调用期间有效，一旦这个本地方法执行完成后，就会自动释放掉这个局部的对象引用。局部引用只在本线程中有效，跨线程无效。本地代码也不可以把本地引用从一个线程传递到另一个线程。</p>
-<ul>
-<li>全局引用</li>
-</ul>
-<p>&emsp;&emsp;全局对象引用会一直有效，除非显式的把这个引用释放掉。</p>
-<h2 id="JNI使用步骤"><a href="#JNI使用步骤" class="headerlink" title="JNI使用步骤"></a>JNI使用步骤</h2><p>1、新建一个类。</p>
-<ul>
-<li><p>&emsp;&emsp;声明native类型的方法，只声明；</p>
-</li>
-<li><p>&emsp;&emsp;声明需要回调的方法，进行实现。</p>
-</li>
-</ul>
-<p>2、编译Java源文件为class文件</p>
-<p>3、用javah命令编译class文件为C++头文件</p>
-<p>4、根据头文件编写C++源码文件</p>
-<p>5、编译C++代码为动态库</p>
-<pre><code>* Windows：\*.dll
-* linux/unix：\*.so
-* os x：\*.jnilib
-</code></pre><p>6、把动态库放到系统的对应目录下<br>&emsp;&emsp;本程序中，在Windows下，生成了dll文件，放到了JDK的bin中</p>
-<p>7、加载动态库，运行Java程序</p>
-<h2 id="JNI调用C"><a href="#JNI调用C" class="headerlink" title="JNI调用C++"></a>JNI调用C++</h2><p>1、新建JNIDemo类，定义native方法和回调方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * JNI测试类</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNIDemo</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 无返回值，无参方法测试</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 有返回值，有参方法测试</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     * <span class="doctag">@return</span></div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> String <span class="title">test2</span><span class="params">(String strArg)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * C++程序回调本方法，并传递数据到此</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveCPPTest</span><span class="params">(String strArg)</span></span>&#123;</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"来自C++程序的回调，数据："</span> + strArg);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>2、把Java源文件编译为class文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javac -encoding UTF-8 JNIDemo.java</div></pre></td></tr></table></figure>
-<p>&emsp;&emsp;编译java文件的时候我加了一个参数encoding，因为我的电脑默认编码时GBK，而我用的Java文件编码为UTF-8，所以指定UTF-8编码来编译，避免编码不一致而出错的问题。</p>
-<p><img src="/2017/05/24/初识JNI/javac.png" alt=""></p>
-<p>3、用javah命令把class文件编译为头文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javah JNIDemo</div></pre></td></tr></table></figure>
-<p>此命令把class文件编译为C++的头文件。</p>
-<p><img src="/2017/05/24/初识JNI/javah.png" alt=""></p>
-<p>头文件JNIDemo.h中的内容如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></div><div class="line"><span class="comment">/* Header for class JNIDemo */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test1</div><div class="line"> * Signature: ()V</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject)</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test2</div><div class="line"> * Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject, jstring)</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line">&#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<p>&emsp;&emsp;可以看出，头文件中已经自动导入了jni.h文件，我们在Java文件中声明的native方法也自动用C++语言声明了出来。而没有被native修饰的方法不会被识别。</p>
-<p>&emsp;&emsp;生成的函数名明明规则为： Java_Java类名_Java中的方法名。</p>
-<p>&emsp;&emsp;如果这个类是存在于一个包中，则生成的头文件中的方法名还会加入此Java类的包目录，因此，头文件中的方法声明规则如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT 返回值类型 JNICALL Java_包目录_类名_方法名(JNI的参数);</div><div class="line"></div><div class="line">JNIEXPORT jstring JNICALL Java_com_example_jni_JNIDemo_test2(JNIEnv *, jobject, jstring);</div></pre></td></tr></table></figure>
-<p>&emsp;&emsp;此处的参数只是声明，并没有给出参数的标识，在自己编写源码文件时，应该都加上。</p>
-<p>4、用对应的本地语言实现头文件中的函数</p>
-<p>&emsp;&emsp;源码文件JNIDemo.cpp如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"JNIDemo.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"StringUtils.h"</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test1</div><div class="line">* Signature: ()V</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj)</span> </div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World, this is C++ printer."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test2</div><div class="line">* Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj, jstring strArg)</span></div><div class="line">&#123;</div><div class="line">	<span class="comment">//  打印来自Java的字符串</span></div><div class="line">	<span class="built_in">cout</span> &lt;&lt; StringUtils::jstring2str(env, strArg) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	jstring returnstr = StringUtils::str2jstring(env, <span class="string">"From C++ dll."</span>);</div><div class="line"></div><div class="line">	<span class="comment">//  向Java端返回字符串</span></div><div class="line">	<span class="keyword">return</span> returnstr;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>5、生成动态库，放到对应目录下</p>
-<p>&emsp;&emsp;本程序中，在Windows下，生成了dll文件，放到了JDK的bin中</p>
-<p><img src="/2017/05/24/初识JNI/dllpath.png" alt=""></p>
-<p>6、加载动态库，调用Java类中对应的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * JNI调用测试</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNITest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">//  加载C++编译的动态类库，</span></div><div class="line">        <span class="comment">// 不用写.dll，直接写文件名字即可，这样是为了跨平台，linux上和windows上的类库后缀不一样</span></div><div class="line">        System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">        JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line">        <span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">        jniDemo.test1();</div><div class="line"></div><div class="line">        <span class="comment">//  2、测试有参有返回值的方法。</span></div><div class="line">        String test2Result = jniDemo.test2(<span class="string">"From Java"</span>);</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"-----test2---begin---"</span>);</div><div class="line">        System.out.println(<span class="string">"strArg--&gt;"</span> + test2Result);</div><div class="line">        System.out.println(<span class="string">"-----test2---end---"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>7、运行</p>
-<p>运行main方法，得到如下输出内容</p>
-<p><img src="/2017/05/24/初识JNI/main.png" alt=""></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>&emsp;&emsp;以上的例子是我在研究完工作内容后做的，工作工程中针对此部分还碰到了很多问题，有几个比较典型的，做一下记录。</p>
-<h3 id="1、class文件到头文件"><a href="#1、class文件到头文件" class="headerlink" title="1、class文件到头文件"></a>1、class文件到头文件</h3><p>   <img src="/2017/05/24/初识JNI/javah-error1.png" alt=""></p>
-<p>&emsp;&emsp;在class的目中执行javah命令时，碰到了找不到文件的情况，一开始一头雾水，后来多方查找后发现是目录问题。</p>
-<p>   <img src="/2017/05/24/初识JNI/javah-error2.png" alt=""></p>
-<p>&emsp;&emsp;切换到class类的顶层目录，再次执行此命令，通过。</p>
-<h3 id="2、JNI调用dll报错找不到依赖的类库"><a href="#2、JNI调用dll报错找不到依赖的类库" class="headerlink" title="2、JNI调用dll报错找不到依赖的类库"></a>2、JNI调用dll报错找不到依赖的类库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">java.lang.UnsatisfiedLinkError: </div><div class="line">D:\develop\Java\1.8\32\jdk1.8.0_65\bin\EasemobLib.dll: </div><div class="line">Can&apos;t find dependent libraries</div></pre></td></tr></table></figure>
-<p>&emsp;&emsp;意思是EasemobLib.dll中依赖的dll没有加载进来，这里推荐一类工具，dll依赖查看工具。可以直接看出自己的dll中都依赖哪些dll，里面缺少哪些。再对应的去找。</p>
-<p>&emsp;&emsp;我也是这个步骤找到了自己没有加入的dll，然后copy到我的jdk的bin中就好了。</p>
-<h3 id="3、JNI与C-交互时中文乱码"><a href="#3、JNI与C-交互时中文乱码" class="headerlink" title="3、JNI与C++交互时中文乱码"></a>3、JNI与C++交互时中文乱码</h3><p>&emsp;&emsp;所谓的乱码，其实就是字符的表示不一致，也就是字符的编码或者说占用的字节长短不一样所造成的。</p>
-<ul>
-<li>C/C++用的都是最原始的数据，一个字符占用一个字节，如果处理中文，一般都是用GB2312，而此时就是1个汉字占用两个自己了。</li>
-<li>JNI中则是使用了UTF-8，一个ASCII字符占1个字节，中文占3个</li>
-</ul>
-<p>&emsp;&emsp;正是因为对于数据占用字节长度的不一致才造成了乱码现象，因此在本地代码中进行转码即可。</p>
-<p><strong>Java–&gt;C++</strong></p>
-<p>&emsp;&emsp;从Java端传递字符串到C++中时，C++中收到的是jstring。此时可以用JNIEnv中的方法来进行转换。</p>
-<p>&emsp;&emsp;GetStringUTFChars，得到UTF-8的字符串；</p>
-<p>&emsp;&emsp;GetStringChars，得到UTF-16的字符串。</p>
-<p>&emsp;&emsp;然后可以进一步转换为GB2312的编码内容。</p>
-<p><strong>C++–&gt;Java</strong></p>
-<p>&emsp;&emsp;从C++到Java，传递字符串到Java中，不管是回调还是函数返回值，都要进行转换，转为jstring。JNIEnv中也提供了对应的方法来转换。</p>
-<p>NewStringUTF，得到UTF-8的jstring；</p>
-<p>NewString，得到UTF-16的jstring。</p>
-<h2 id="参考资料地址"><a href="#参考资料地址" class="headerlink" title="参考资料地址"></a>参考资料地址</h2><p><strong>JNI官方介绍</strong></p>
-<p><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/" target="_blank" rel="external">https://docs.oracle.com/javase/8/docs/technotes/guides/jni/</a></p>
-<p><strong>Android 开发者官网对JNI的介绍</strong></p>
-<p><a href="https://developer.android.com/training/articles/perf-jni.html" target="_blank" rel="external">https://developer.android.com/training/articles/perf-jni.html</a></p>
-<p><strong>JNI简要介绍</strong></p>
-<p><a href="http://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html#zz-3" target="_blank" rel="external">http://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html#zz-3</a>.</p>
-<p><strong>JNI具体内容翻译</strong></p>
-<p><a href="http://blog.csdn.net/android_hasen/article/details/27679165" target="_blank" rel="external">http://blog.csdn.net/android_hasen/article/details/27679165</a></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/24/初识JNI/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -805,23 +684,14 @@
 
       
         
-          
-            <p>&emsp;&emsp;可能我们会碰到很多小时候很厉害，长大了却一般般的人，还有那种一直都在激情生活却一直都不落地的人。</p>
-<ul>
-<li>天才文展</li>
-</ul>
-<p>&emsp;&emsp;文展，这个在小时候的同龄人中相当有想法，也相当出色的人，最后却没有发展处理想的样子。在作者刚接触文展的时候，便被文展极为成熟的思想所震撼，而我在独到文展整理历史事件和规划自己考试的时候，也是一副惊呆了的样子。一个人在如此小的年纪，便能想清楚自己要做什么和为了自己的目标做规划，是相当难得的。</p>
-<p>&emsp;&emsp;文展，作为一个小小年纪，思想却极为成熟的人，极大地震撼和激烈了作者。我在读完这一章后，也颇为受启发。不管年纪大小，一个能对自己以后的生活做如此细致规划，已经是非常不容易的了。而我们在这个宝贵的年级里，在对待自己的生活时，又是一种怎样的态度呢，相信很多人都是混沌一片。</p>
-<p>&emsp;&emsp;这几年以来，越来越觉得人的一辈子其实很短暂，我们年轻时的每一天都是在为以后的日子做准备，为了能以后过的更理想，现在的每一天都是如此的重要，因为稍有粗心，可能就会大大影响以后的生活感受。因此，<strong>在这个有限的年轻日子里，为自己做一个规划，去实现一些自己极为渴望的目标。</strong></p>
-<ul>
-<li>厚朴</li>
-</ul>
-<p>&emsp;&emsp;厚朴，这个一腔热血，一心热爱青春的人，但是却一直不落地，一直活在自己的想象中。一直没能有一个明朗的生活，导致了最后的悲剧出现。而作者作为厚朴的朋友，多次提到自己想和厚朴说些什么，却总也没能说出口，或者不想说。我对这样的说辞甚是观点不一致。我觉得，作为朋友，应当在很多时候，给予朋友适当的提醒或者引导，干嘛扭扭捏捏欲言又止的，如果能帮助一个朋友更好的进入生活，那干嘛不去做呢，大老爷们的，不需要那么矫情。</p>
-<p>&emsp;&emsp;作者在这一部分还提到了一个女生，到底是否是作者当时的女朋友，作者也没明确的说明，从他的叙述中感觉一直都没和那个女孩有一个清晰的关系。个人觉得，在一段两性关系中，一定要明确好彼此的关系，而不是把自己放在什么清高的地位。所以，作为一个男人，应该果断的给出关系的定义。</p>
-<p>&emsp;&emsp;不过，我对于作者搬出宿舍，自己租房住还是比较认同的，给自己一个清净又舒适的环境。一个自己舒心的住所，是自己一切动力的基础。</p>
-<p>&emsp;&emsp;在这一章节中，让我觉得作为朋友，应该尽朋友的责任，能帮助一个朋友就要及时的去做，而不是只停留在思考中。对于感情的事情，应该及时的做果断的决定，而不是拖拖拉拉的不清不楚，一个清晰的关系，对两个人都好。</p>
-
-          
+          <p>&emsp;&emsp;可能我们会碰到很多小时候很厉害，长大了却一般般的人，还有那种一直都在激情生活却一直都不落地的人。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/03/22/《皮囊》笔记五/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

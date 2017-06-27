@@ -85,22 +85,19 @@
 
 
 <meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。
-&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。
-定义回调接口及其对应实现类&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;回调">
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JNA回调">
 <meta property="og:url" content="https://bravehlp.github.io/2017/05/26/JNA回调/index.html">
 <meta property="og:site_name" content="脚印">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。
-&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。
-定义回调接口及其对应实现类&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;回调">
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。">
 <meta property="og:image" content="https://bravehlp.github.io/2017/05/26/JNA回调/result.png">
-<meta property="og:updated_time" content="2017-05-26T07:18:23.000Z">
+<meta property="og:updated_time" content="2017-06-27T04:19:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JNA回调">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。
-&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。
-定义回调接口及其对应实现类&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;回调">
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。">
 <meta name="twitter:image" content="https://bravehlp.github.io/2017/05/26/JNA回调/result.png">
 
 
@@ -377,6 +374,7 @@
       
         <p>&emsp;&emsp;&emsp;&emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。</p>
 <p>&emsp;&emsp;&emsp;&emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。</p>
+<a id="more"></a>
 <h2 id="定义回调接口及其对应实现类"><a href="#定义回调接口及其对应实现类" class="headerlink" title="定义回调接口及其对应实现类"></a>定义回调接口及其对应实现类</h2><p>&emsp;&emsp;&emsp;&emsp;回调接口一定要继承于Callback类，定义的回调方法的方法名绝对不能是hashCode，equals，toString。这个方法名必须是独一无二的。</p>
 <h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.jna.Callback;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 消息回调接口</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IMsgCallback</span> <span class="keyword">extends</span> <span class="title">Callback</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * C++回调Java代码时会调用到的方法</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">invoke</span><span class="params">(String strArg)</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="实现类"><a href="#实现类" class="headerlink" title="实现类"></a>实现类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 回调类的实现类</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MsgCallbackImpl</span> <span class="keyword">implements</span> <span class="title">IMsgCallback</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(String strArg)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"C++回调Java测试，来自C++的内容："</span> + strArg);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>

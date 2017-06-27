@@ -100,7 +100,7 @@
 在计算机程序设计中，回调函数，或简称回调（Callback 即call then back 被主函数调">
 <meta property="og:image" content="https://bravehlp.github.io/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/spring.png">
 <meta property="og:image" content="https://bravehlp.github.io/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/redis.jpg">
-<meta property="og:updated_time" content="2017-06-22T16:23:14.000Z">
+<meta property="og:updated_time" content="2017-06-27T04:18:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从Spring乘舟回调到Jedis自我发育回调">
 <meta name="twitter:description" content="从Spring乘舟回调到Jedis自我发育回调
@@ -388,6 +388,7 @@
 <blockquote>
 <p>在计算机程序设计中，回调函数，或简称回调（Callback 即call then back 被主函数调用运算后会返回主函数），是指通过函数参数传递到其它代码的，某一块可执行代码的引用。这一设计允许了底层代码调用在高层定义的子程序。</p>
 </blockquote>
+<a id="more"></a>
 <h2 id="Spring中的回调"><a href="#Spring中的回调" class="headerlink" title="Spring中的回调"></a>Spring中的回调</h2><p>&emsp;&emsp;&emsp;&emsp;此处简要说一下Spring中在数据库操作方面的回调使用，涉及到JdbcTemplate 和 HibernateTemplate。这两个类都需要打开资源进行数据库操作，操作完后进行资源释放。</p>
 <p><img src="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/spring.png" alt=""></p>
 <p>&emsp;&emsp;&emsp;&emsp;我们在进行JDBC操作数据库的时候，往往会按照API写一大堆重叠的代码，为了进行一个简单的操作，就必须要重复写诸如打开连接、执行操作等代码。我们在写DAO层的时候，会对JDBC进行封装，依此来简化我们上层的使用。</p>

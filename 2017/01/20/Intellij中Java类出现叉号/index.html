@@ -84,22 +84,16 @@
 
 
 
-<meta name="description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：
-
-找到project的目录下.idea文件夹中compiler.xml。里面有一个标签叫”&amp;lt;">
+<meta name="description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Intellij中Java类出现叉号">
 <meta property="og:url" content="https://bravehlp.github.io/2017/01/20/Intellij中Java类出现叉号/index.html">
 <meta property="og:site_name" content="脚印">
-<meta property="og:description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：
-
-找到project的目录下.idea文件夹中compiler.xml。里面有一个标签叫”&amp;lt;">
-<meta property="og:updated_time" content="2017-01-20T15:27:33.000Z">
+<meta property="og:description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：">
+<meta property="og:updated_time" content="2017-06-27T04:23:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Intellij中Java类出现叉号">
-<meta name="twitter:description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：
-
-找到project的目录下.idea文件夹中compiler.xml。里面有一个标签叫”&amp;lt;">
+<meta name="twitter:description" content="刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。在尝试中找到一条解决办法：">
 
 
 
@@ -374,6 +368,7 @@
 
       
         <p>刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。<br>在尝试中找到一条解决办法：</p>
+<a id="more"></a>
 <ol>
 <li><p>找到project的目录下.idea文件夹中compiler.xml。里面有一个标签叫”&lt;excludeFromCompile&gt;&lt;resourceExtensions /&gt;”，里面列了那个不被编译的类，把这个标签对删掉。</p>
 </li>
