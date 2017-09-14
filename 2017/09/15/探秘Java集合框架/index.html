@@ -85,22 +85,19 @@
 
 
 <meta name="description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
-&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
-Java中的集合主要分为两">
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="探秘Java集合框架">
 <meta property="og:url" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/index.html">
 <meta property="og:site_name" content="脚印">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
-&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
-Java中的集合主要分为两">
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。">
 <meta property="og:image" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/Collection-UML.png">
-<meta property="og:updated_time" content="2017-09-14T17:20:11.000Z">
+<meta property="og:updated_time" content="2017-09-14T17:25:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="探秘Java集合框架">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
-&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
-Java中的集合主要分为两">
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。">
 <meta name="twitter:image" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/Collection-UML.png">
 
 
@@ -377,6 +374,7 @@ Java中的集合主要分为两">
       
         <p>&emsp;&emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。</p>
 <p>&emsp;&emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。</p>
+<a id="more"></a>
 <p>Java中的集合主要分为两大类，<code>Collection</code>和<code>Map</code>。</p>
 <h1 id="集合分类"><a href="#集合分类" class="headerlink" title="集合分类"></a>集合分类</h1><h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p>在集合中的每个位置只有一个元素。继承自Iterable接口，用来产生获取迭代器。</p>
 <p>Collection是所有集合接口的根本父接口，一个Collection中包含有一组Object元素，Collection并没有直接的可直接使用的实现类，而是作为其他具体集合的父集合。</p>
