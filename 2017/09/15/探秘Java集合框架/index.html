@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Java," />
 
 
 
@@ -84,15 +84,24 @@
 
 
 
-<meta name="description" content="一路迈步，印记满途">
-<meta property="og:type" content="website">
-<meta property="og:title" content="脚印">
-<meta property="og:url" content="https://bravehlp.github.io/index.html">
+<meta name="description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
+Java中的集合主要分为两">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探秘Java集合框架">
+<meta property="og:url" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/index.html">
 <meta property="og:site_name" content="脚印">
-<meta property="og:description" content="一路迈步，印记满途">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
+Java中的集合主要分为两">
+<meta property="og:image" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/Collection-UML.png">
+<meta property="og:updated_time" content="2017-09-14T17:20:11.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="脚印">
-<meta name="twitter:description" content="一路迈步，印记满途">
+<meta name="twitter:title" content="探秘Java集合框架">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。
+&amp;emsp;&amp;emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。
+Java中的集合主要分为两">
+<meta name="twitter:image" content="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/Collection-UML.png">
 
 
 
@@ -120,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://bravehlp.github.io/"/>
+  <link rel="canonical" href="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/"/>
 
 
 
 
 
-  <title> 脚印 </title>
+  <title> 探秘Java集合框架 | 脚印 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,9 +156,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -250,9 +257,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -285,10 +292,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/09/15/探秘Java集合框架/" itemprop="url">
-                  探秘Java集合框架
-                </a>
+                探秘Java集合框架
               
             
           </h1>
@@ -371,9 +375,7 @@
       
 
       
-        
-          
-            <p>&emsp;&emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。</p>
+        <p>&emsp;&emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。</p>
 <p>&emsp;&emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。</p>
 <p>Java中的集合主要分为两大类，<code>Collection</code>和<code>Map</code>。</p>
 <h1 id="集合分类"><a href="#集合分类" class="headerlink" title="集合分类"></a>集合分类</h1><h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p>在集合中的每个位置只有一个元素。继承自Iterable接口，用来产生获取迭代器。</p>
@@ -445,357 +447,62 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">Set&lt;K&gt; <span class="title">keySet</span><span class="params">()</span></span></div><div class="line">Collection&lt;K&gt; <span class="title">values</span><span class="params">()</span></div><div class="line">Set&lt;Map.Entry&lt;K, V&gt;&gt; <span class="title">entrySet</span><span class="params">()</span></div></pre></td></tr></table></figure>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面写的有些乱，当然这只是简单的记录，后面还会针对每一种数据结构做进一步的学习和记录，小弟才疏学浅，难免会有错误或偏差的地方，还望朋友能针对我的不准确的地方给予提醒，万分感谢。</p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/07/10/Spring-Data-Redis初步探秘/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="葫芦八娃">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="脚印">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="脚印" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/10/Spring-Data-Redis初步探秘/" itemprop="url">
-                  Spring Data Redis初步探秘
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-10T09:39:53+08:00">
-                2017-07-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tech/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/07/10/Spring-Data-Redis初步探秘/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/10/Spring-Data-Redis初步探秘/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>&emsp;&emsp;&emsp;&emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。</p>
-<p>&emsp;&emsp;&emsp;&emsp;在我上一篇文章中，介绍了我按照Spring中JDBC的方式封装Jedis。其实在那个时候我并不知道有SDR，所以就索性自己用回调的方式来写的，后面几天继续研究Redis才了解到了SDR，瞬间觉得世界好大。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/10/Spring-Data-Redis初步探秘/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/10/Spring-Data-Redis初步探秘/" rel="next" title="Spring Data Redis初步探秘">
+                <i class="fa fa-chevron-left"></i> Spring Data Redis初步探秘
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
+          <span class="post-nav-divider"></span>
 
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://bravehlp.github.io/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="葫芦八娃">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="脚印">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="脚印" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/" itemprop="url">
-                  从Spring乘舟回调到Jedis自我发育回调
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-23T00:21:34+08:00">
-                2017-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tech/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/23/从Spring乘舟回调到Jedis自我发育回调/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>从Spring乘舟回调到Jedis自我发育回调</p>
-<p>&emsp;&emsp;&emsp;&emsp;最近这段时间，接触回调模式比较多，使用也比较多，所以今天来简单写一下关于回调的思考。在实际开发中，回调是一种常见且常用的方式，用来实现把一块代码传递到其他代码处来执行。</p>
-<p>下面是<strong>维基百科</strong>对回调的定义：</p>
-<blockquote>
-<p>在计算机程序设计中，回调函数，或简称回调（Callback 即call then back 被主函数调用运算后会返回主函数），是指通过函数参数传递到其它代码的，某一块可执行代码的引用。这一设计允许了底层代码调用在高层定义的子程序。</p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -803,6 +510,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/09/15/探秘Java集合框架/"
+           data-title="探秘Java集合框架" data-url="https://bravehlp.github.io/2017/09/15/探秘Java集合框架/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -822,8 +537,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
@@ -879,6 +603,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集合分类"><span class="nav-number">1.</span> <span class="nav-text">集合分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Collection"><span class="nav-number">1.1.</span> <span class="nav-text">Collection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#List"><span class="nav-number">1.1.1.</span> <span class="nav-text">List</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set"><span class="nav-number">1.1.2.</span> <span class="nav-text">Set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quene"><span class="nav-number">1.1.3.</span> <span class="nav-text">Quene</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">1.2.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合UML"><span class="nav-number">1.3.</span> <span class="nav-text">集合UML</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合特点"><span class="nav-number">2.</span> <span class="nav-text">集合特点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#接口和实现类分离"><span class="nav-number">2.1.</span> <span class="nav-text">接口和实现类分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器"><span class="nav-number">2.2.</span> <span class="nav-text">迭代器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Iterator"><span class="nav-number">2.2.1.</span> <span class="nav-text">Iterator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-each"><span class="nav-number">2.2.2.</span> <span class="nav-text">for each</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据结构"><span class="nav-number">3.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数组"><span class="nav-number">3.1.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链表"><span class="nav-number">3.2.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组列表"><span class="nav-number">3.3.</span> <span class="nav-text">数组列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#散列集"><span class="nav-number">3.4.</span> <span class="nav-text">散列集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树集"><span class="nav-number">3.5.</span> <span class="nav-text">树集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#队列与双端队列"><span class="nav-number">3.6.</span> <span class="nav-text">队列与双端队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优先级队列"><span class="nav-number">3.7.</span> <span class="nav-text">优先级队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#映射表"><span class="nav-number">3.8.</span> <span class="nav-text">映射表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
@@ -986,6 +726,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
