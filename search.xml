@@ -1,0 +1,1072 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[探秘Java集合框架]]></title>
+      <url>/2017/09/15/%E6%8E%A2%E7%A7%98Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。</p>
+<p>&emsp;&emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。</p>
+<a id="more"></a>
+<p>Java中的集合主要分为两大类，<code>Collection</code>和<code>Map</code>。</p>
+<h1 id="集合分类"><a href="#集合分类" class="headerlink" title="集合分类"></a>集合分类</h1><h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p>在集合中的每个位置只有一个元素。继承自Iterable接口，用来产生获取迭代器。</p>
+<p>Collection是所有集合接口的根本父接口，一个Collection中包含有一组Object元素，Collection并没有直接的可直接使用的实现类，而是作为其他具体集合的父集合。</p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>元素有序，允许重复元素出现。</p>
+<p>可以基于数组也可以基于双向链表来存储元素。</p>
+<p>插入和删除元素会引起其他元素索引位置的变化，所以其插入和删除的效率不会太高。</p>
+<p>也会根据需要动态增加List的长度来容纳更多元素。</p>
+<p>因为每个元素都有确切的位置，所以其检索效率也要高一些。</p>
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>元素无序，不允许重复元素出现。</p>
+<p>因为元素无序，所以元素没有确切的位置，因此插入和删除效率高，但是其查询效率不高。</p>
+<h3 id="Quene"><a href="#Quene" class="headerlink" title="Quene"></a>Quene</h3><p>队列结构，元素先进先出。</p>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>一组键值对对象。在集合中每一个位置都是按照一个“键”对应一个“值”的结构。替代了之前的Dictionary类。</p>
+<h2 id="集合UML"><a href="#集合UML" class="headerlink" title="集合UML"></a>集合UML</h2><p>对于JDK中的常用集合类做了一个简单的整理，画了一个UML类图，用来帮助理解和记录。</p>
+<p><img src="/2017/09/15/探秘Java集合框架/Collection-UML.png" alt=""></p>
+<h1 id="集合特点"><a href="#集合特点" class="headerlink" title="集合特点"></a>集合特点</h1><h2 id="接口和实现类分离"><a href="#接口和实现类分离" class="headerlink" title="接口和实现类分离"></a>接口和实现类分离</h2><p>&emsp;&emsp;Java集合类把接口与实现类做了分离，在程序中只要使用某种接口的集合，只需要在实例化集合类时选择合适的实现类即可，在更换时，也可指更换接口的实现类，而不需要更改接口调用的方法。</p>
+<p>&emsp;&emsp;集合框架中所有的接口都不是有直接的实现类，而是继承对应接口的抽象类，抽象类实现了接口中的方法。</p>
+<p>循环数组是一个有界集合，即内部的元素数量是有限的，如果碰到某些不可预估数量的对象集合，还是用链表比较好。</p>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><h3 id="Iterator"><a href="#Iterator" class="headerlink" title="Iterator"></a>Iterator</h3><p><code>Collection</code>接口中有一个<code>iterator()</code>可以返回一个迭代器，用此迭代器便可依次访问集合中的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</div><div class="line">    <span class="function">E <span class="title">next</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"remove"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">forEachRemaining</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> E&gt; action)</span> </span>&#123;</div><div class="line">        Objects.requireNonNull(action);</div><div class="line">        <span class="keyword">while</span> (hasNext())</div><div class="line">            action.accept(next());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>通过调用<code>next()</code>可以逐个访问集合中的元素</li>
+<li><code>hasNext()</code>用来确认集合中是否还有可以访问的元素</li>
+</ul>
+<p>调用<code>next()</code>到集合的最后一个元素时，如果继续调用<code>next()</code>就会出错，所以在每次调用<code>next()</code>前应当先调用<code>hasnext()</code>来确认集合中是否还有元素可以读取。</p>
+<p>&emsp;&emsp;删除元素时，可以调用<code>remve()</code>，用来删除上一次调用<code>next()</code>时返回的元素。因为<code>next()</code>只会返回一个元素，所以在调用<code>next()</code>后只能调用一次<code>remove()</code>。</p>
+<p>&emsp;&emsp;如果在调用<code>remove()</code>前未调用<code>next()</code>或成功执行了一次<code>remove()</code>后又调用一次，则会抛出<code>IllegalStateException</code>异常。</p>
+<p>&emsp;&emsp;<code>Collection</code>和<code>Iterator</code>都是泛型接口，Java的设计者也在JDK中为我们提供了预先写好的很多重要的方法，如<code>size()</code>、<code>isEmpty()</code>、<code>clear()</code>等。</p>
+<h3 id="for-each"><a href="#for-each" class="headerlink" title="for each"></a>for each</h3><p>从Java5.0开始，Java中加入了<code>for each</code>循环，可以遍历任何实现了<code>Iterable</code>接口的对象。<code>Collection</code>接口继承了<code>Iterable</code>接口，因此<code>for each</code>自然可以遍历所有集合。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (Element e : 集合)&#123;</div><div class="line">  集合中元素e的操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><p>&emsp;&emsp;集合的实现有多种数据结构，比较普遍的是数组的方式，另外还有链表、树等结构。</p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>此种数据结构下，在指定位置添加和删除元素比较费时，因为增加或删除元素后，此位置后的数据都要进行位置变动。</p>
+<p>添加元素时，后面的元素往后移动；<br>删除元素时，后面的元素往前移动。</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>链表中元素通过标记前一个元素和后一个元素来连接所有元素，因此在插入和删除的操作上比较省力。如果要查看链表中第N个元素，就必须越过链表中N-1个元素，效率很低。因此，不推荐在用索引访问元素时采取链表结构，如果需要使用数字索引来访问元素，那就使用数组或ArrayList。</p>
+<p>如果集合数据中元素不多，可以使用ArrayList，如果元素过多，就选择使用链表结构LinkedList。</p>
+<h2 id="数组列表"><a href="#数组列表" class="headerlink" title="数组列表"></a>数组列表</h2><p>此种结构下，元素都是存储在独立的节点中，在每个节点上也都保存着下一个节点的引用。双向链表结构中，每个节点除了保存着下一个元素的引用外，还保留着前一个节点的引用。</p>
+<p>&emsp;&emsp;不管是单向还是双向链表，在插入和删除元素时，都较之数组结构高效很多，因为不再需要移动元素，而只需要改变插入（或删除）点前后元素的引用即可。</p>
+<p>如果要从数组或数组列表中删除一个元素时，会非常费力，因为元素被删除后，其后面的元素都要向前端移动。同样的，如果在数组或数组列表的中间插入一个元素也会费力。</p>
+<p>List接口来表示有序集合，有两种方式来访问其中的元素：迭代器，get方法。get方法并不适用于链表结构的集合，虽然在Java的LinkedList中个提供了get方法来获取元素，但效率并不高。而ArrayList则封装了一个动态改变的数组来实现数组列表。</p>
+<p>Vector也可以用来做动态数组的操作，并且内部的方式也是同步的，是线程安全的。但是ArrayList就不是同步的，线程不安全的，在不需要进行同步和跨线程操作时，就可以使用ArrayList。 </p>
+<h2 id="散列集"><a href="#散列集" class="headerlink" title="散列集"></a>散列集</h2><p>散列集也就是哈希表，可以实现快速查找对象。在散列集中，每一个对象都有一个唯一的散列码，就是我们通常所说的，hash code，是一个整数类型，可能为正也可能为负。</p>
+<p>每个列表叫做桶（bucket），元素按照索引存放在这一个桶中，不管是插入还是删除都要先把元素的索引计算出来。首先计算出桶的散列码，然后用这个散列码除以桶的数目所得到的余数就是元素的索引。</p>
+<p>在散列集中还有一个装填因子（load factor），用来决定何时对散列表进行再散列，通常为（0, 1]，当散列集中的元素超过‘因子 * 100%’时，会用双倍桶数进行再散列。75%的因子是比较何时的。</p>
+<p>散列集还有迭代器，会依次访问所有的桶。因为所有的元素都是分散性的存放在散列集中的各个位置，所以访问时也是随机的，没有确定的顺序来访问这些元素。</p>
+<p>Java中有一个HashSet实现了散列集合，但是其内部还是用了HashMap来存储数据，把放入HashSet中的元素放入HashMap中的key，并根据key来计算哈希值，而对应的value都是统一的假对象Object。</p>
+<h2 id="树集"><a href="#树集" class="headerlink" title="树集"></a>树集</h2><p>树集是有序集合，内部元素按照顺序排列。元素插入时，就会按照一定顺序来存储，所以在遍历时也会按照顺序来访问内部元素。树集中元素的排序用到了树形结构来完成。</p>
+<p>因为插入时要对元素排序，所以插入效率自然没有散列集高，但是仍然会优于数组或链表。</p>
+<p>Java中提供了TreeSet来实现树形集合，要想实现元素的排序，插入的每个元素就都要实现Comparable接口，此接口内部只有一个方法compareTo。如果两个元素a、b比较，则根据a、b的顺序可以得到不同的返回值：</p>
+<ul>
+<li>a排序在前，b排序在后，compareTo返回值小于0；</li>
+<li>a排序在后，b排序在前，compareTo返回值大于0；</li>
+<li>a与b排序相同，compareTo返回值等于0。</li>
+</ul>
+<p>TreeSet与HashSet有些类似的地方是，都用了Map的键来存储数据。<strong>HashSet内部实际用到的是HashMap，而TreeSet其内部的存储实际用到了TreeMap。</strong>都是把要存入Set中的数据放在了Map中的key上，而对应的value就是一个傀儡般的Object对象。</p>
+<p>Object类中没有提供compareTo的默认实现，因此如果想往TreeSet中添加自定义对象时，内部的元素就必须实现Comparable接口，并在compareTo方法内部提供排序规则。但是有一个问题就是，如果在此元素对象的类中实现了这个接口，也规定了排序规则，但是元素被插入到了不同的TreeSet中，不同的TreeSet中的元素排序规则又不一样，那要怎么办呢？</p>
+<p>此时要了解另一个接口叫做Comparator，其内部用于比较的方法为<code>int compare(T o1, T o2)</code>，应该把需要比较的两个对象传入其中。TreeSet也提供了一个构造方法用来传入Comparator对象用于比较。Comparator的实现类只是一个定义了规则的比较器，其内部并没有任何的数据，不像Comparable的实现类中有数据存在。</p>
+<p>树集与散列集相比较而言，树集虽然插入效率会比散列集略低，但是其元素是有序的，并且效率也没有低太多，后续操作会更方便。但是这个排序的过程是费时的，需要对元素内部的某些属性做运算对比，是更为精确的比较。而散列函数就是把数据随机存储而已。</p>
+<p>所以，实际使用中到底用散列集HashSet还是用树集TreeSet，还是应该具体看业务如何安排，也要看比较的规则是否复杂等多种情况。</p>
+<h2 id="队列与双端队列"><a href="#队列与双端队列" class="headerlink" title="队列与双端队列"></a>队列与双端队列</h2><p>队列支持在消息的尾部添加元素，在头部删除元素。有两个端头的队列叫双端队列，可在头部和尾部都添加和删除元素。</p>
+<p>Java中有Deque接口来定义队列，实现类有ArrayDeque和LinkedList，可在需要的时候增加队列的长度。</p>
+<h2 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h2><p>优先级队列是一种特殊的队列，元素是随机插入，但是在取的时候却是按照排序来获取优先级最高的元素，如果删除元素的话，也是删除优先级最低的元素。但是当迭代遍历这个队列时，就不会按照一定的顺序来读取了。</p>
+<p>优先级队列采用队（heap）实现，是一个可以自我调整的二叉树，在对树进行增删时可以让最小的元素移动到根。</p>
+<p>既然是可以排序的集合，则元素也都必须是实现了Comparable接口，或者提供一个比较器，就类似于TreeSet一样。</p>
+<p>Java中提供了PriorityQueue来做优先级队列，在初始化方法中可以自定义队列容量和比较器，如果不提供队列容量，默认为11。</p>
+<h2 id="映射表"><a href="#映射表" class="headerlink" title="映射表"></a>映射表</h2><p>映射表（map）用来存放键值对的数据，提供键然后找到对应的值。</p>
+<p>Java中提供了两个基本的映射表的实现，散列型的HashMap和树类型的TreeMap。无论是散列型还是树型，都是对键进行的散列或排序。散列型的映射表因为是无序的，所以要稍微快一些；树型映射表因为要对键进行排序，速度上多少会有些影响。</p>
+<p>映射表中的键是唯一的，不能出现多个相同的键，如果往映射表中前后插入相同键，后插入的键对应的值会取代之前插入的值。</p>
+<p>映射表有3个视图：键集，值集合，键值对集。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">Set&lt;K&gt; <span class="title">keySet</span><span class="params">()</span></span></div><div class="line">Collection&lt;K&gt; <span class="title">values</span><span class="params">()</span></div><div class="line">Set&lt;Map.Entry&lt;K, V&gt;&gt; <span class="title">entrySet</span><span class="params">()</span></div></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面写的有些乱，当然这只是简单的记录，后面还会针对每一种数据结构做进一步的学习和记录，小弟才疏学浅，难免会有错误或偏差的地方，还望朋友能针对我的不准确的地方给予提醒，万分感谢。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Spring Data Redis初步探秘]]></title>
+      <url>/2017/07/10/Spring-Data-Redis%E5%88%9D%E6%AD%A5%E6%8E%A2%E7%A7%98/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;&emsp;&emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。</p>
+<p>&emsp;&emsp;&emsp;&emsp;在我上一篇文章中，介绍了我按照Spring中JDBC的方式封装Jedis。其实在那个时候我并不知道有SDR，所以就索性自己用回调的方式来写的，后面几天继续研究Redis才了解到了SDR，瞬间觉得世界好大。</p>
+<a id="more"></a>
+<h2 id="一、配置"><a href="#一、配置" class="headerlink" title="一、配置"></a>一、配置</h2><p>&emsp;&emsp;&emsp;&emsp;想要在项目中正常使用SDR，需要进行简单的配置，在Spring的配置文件中分别配置RedisConnectionFactory、RedisTemplate等，即可在代码中注入使用。</p>
+<h3 id="1-1-配置RedisConnectionFactory"><a href="#1-1-配置RedisConnectionFactory" class="headerlink" title="1.1 配置RedisConnectionFactory"></a>1.1 配置RedisConnectionFactory</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">    &lt;property name=&quot;hostName&quot; value=&quot;$&#123;redis.host&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;port&quot; value=&quot;$&#123;redis.port&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;password&quot; value=&quot;$&#123;redis.password&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;usePool&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;!--&lt;property name=&quot;poolConfig&quot; ref=&quot;&quot; /&gt;--&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;RedisConnection是用来与Redis交互，内容形式都是byte数组形式的二进制。</p>
+<h3 id="1-2-配置RedisTemplate"><a href="#1-2-配置RedisTemplate" class="headerlink" title="1.2 配置RedisTemplate"></a>1.2 配置RedisTemplate</h3><p>&emsp;&emsp;&emsp;&emsp;RedisTemplate提供了Redis的高层级方法，对Redis的各种操作进行了抽象，用来管理数据的序列化和Redis连接等，使用RedisTemplate时，不用再去关心连接的打开和释放等问题，SDR把开发者应该考虑的重点-业务开发，突出了出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisTemplate&quot; class=&quot;org.springframework.data.redis.core.RedisTemplate&quot;&gt;</div><div class="line">    &lt;property name=&quot;connectionFactory&quot; ref=&quot;jedisConnectionFactory&quot; /&gt;</div><div class="line">    &lt;property name=&quot;keySerializer&quot; value=&quot;org.springframework.data.redis.serializer.StringRedisSerializer&quot; /&gt;</div><div class="line">    &lt;property name=&quot;valueSerializer&quot; value=&quot;org.springframework.data.redis.serializer.JdkSerializationRedisSerializer&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<h3 id="1-3-进行Redis操作"><a href="#1-3-进行Redis操作" class="headerlink" title="1.3 进行Redis操作"></a>1.3 进行Redis操作</h3><h4 id="1-3-1-RedisConnection进行操作"><a href="#1-3-1-RedisConnection进行操作" class="headerlink" title="1.3.1 RedisConnection进行操作"></a>1.3.1 RedisConnection进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;要通过上面配置的RedisConnectionFactory来获取JedisConnection，通过这个连接去进行Redis操作，操作完成后，再手动关闭和归还JedisConnection对象。</p>
+<p>&emsp;&emsp;&emsp;&emsp;此种方式的麻烦在于依然需要自己控制connection对象的获取与归还，依然会在我们实际开发中有一些羁绊。</p>
+<h4 id="1-3-2-RedisTemplate进行操作"><a href="#1-3-2-RedisTemplate进行操作" class="headerlink" title="1.3.2 RedisTemplate进行操作"></a>1.3.2 RedisTemplate进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;在配置完RedisTemplate后，其实就把JedisConnection的管理工作交给了SDR，这样就把开发者从繁琐的资源管理中解放了出来，可以集中精力在业务开发上。</p>
+<p>&emsp;&emsp;&emsp;&emsp;RedisTemplate像HibernateTemplate和JdbcTemplate一样，使用了在Spring中利用率很高的回调模式。此时可以自定义Serializer进行数据的序列化，通过回调来使用RedisConnection进行Redis操作。</p>
+<p>&emsp;&emsp;&emsp;&emsp;除了Redis各种数据结构的操作外的那些操作，如事务、管道、持久化等操作，也要通过RedisTemplate来执行。</p>
+<h4 id="1-3-3-Operational-views进行操作"><a href="#1-3-3-Operational-views进行操作" class="headerlink" title="1.3.3 Operational views进行操作"></a>1.3.3 Operational views进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;SDR还提供了很多的操作视图来帮助我们更方便的使用Redis，对RedisTemplate进行了进一步的封装。此部分将在下面做介绍。</p>
+<p>&emsp;&emsp;&emsp;&emsp;Redis中每种数据类型都有其对应的Operations，这些Operations也可通过RedisTemplate中获得。</p>
+<h2 id="二、序列化"><a href="#二、序列化" class="headerlink" title="二、序列化"></a>二、序列化</h2><p>&emsp;&emsp;&emsp;&emsp;SDR中也提供了存储内容的序列化方法，这个框架把存储到Redis中的数据都认为是bytes。SDR通过<strong>org.springframework.data.redis.serializer.RedisSerializer</strong>接口把数据进行序列化。此接口有多个实现类，均可用于Redis中key和value的序列化。但是比较常用的就是<strong>JdkSerializationRedisSerializer</strong>和<strong>StringRedisSerializer</strong>。</p>
+<p><img src="/2017/07/10/Spring-Data-Redis初步探秘/sdr-serial.png" alt=""></p>
+<h3 id="2-1-JdkSerializationRedisSerializer"><a href="#2-1-JdkSerializationRedisSerializer" class="headerlink" title="2.1 JdkSerializationRedisSerializer"></a>2.1 JdkSerializationRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类使用的是JDK自带的序列化机制，通过<strong>ObjectInputStream 和 ObjectOutputStream</strong>进行转换。RedisTemplate中默认开启使用预定义的序列化类，默认为此类，要使用此类进行key和value的序列化，要求被序列化的内容必须实现<strong>Serializable</strong>接口。</p>
+<h3 id="2-2-StringRedisSerializer"><a href="#2-2-StringRedisSerializer" class="headerlink" title="2.2 StringRedisSerializer"></a>2.2 StringRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;专门对字符串类型的key和value进行序列化，根据指定的字符编码进行字符串的转换，默认编码为UTF-8。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>(Charset.forName(<span class="string">"UTF8"</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">(Charset charset)</span> </span>&#123;</div><div class="line">	Assert.notNull(charset, <span class="string">"Charset must not be null!"</span>);</div><div class="line">	<span class="keyword">this</span>.charset = charset;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> (bytes == <span class="keyword">null</span> ? <span class="keyword">null</span> : <span class="keyword">new</span> String(bytes, charset));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(String string) &#123;</div><div class="line">	<span class="keyword">return</span> (string == <span class="keyword">null</span> ? <span class="keyword">null</span> : string.getBytes(charset));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-3-GenericToStringSerializer"><a href="#2-3-GenericToStringSerializer" class="headerlink" title="2.3 GenericToStringSerializer"></a>2.3 GenericToStringSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类也可以实现对象和字节数组间的转换，但是要依赖于Spring中的ConversionService，进行对象和String之间的转换，然后再进行String与字节数组间的转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (bytes == <span class="keyword">null</span>) &#123;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		String string = <span class="keyword">new</span> String(bytes, charset);</div><div class="line">		<span class="keyword">return</span> converter.convert(string, type);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(T object) &#123;</div><div class="line">		<span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">		&#125;</div><div class="line">		String string = converter.convert(object, String.class);</div><div class="line">		<span class="keyword">return</span> string.getBytes(charset);</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-4-Jackson2JsonRedisSerializer-和-JacksonJsonRedisSerializer"><a href="#2-4-Jackson2JsonRedisSerializer-和-JacksonJsonRedisSerializer" class="headerlink" title="2.4 Jackson2JsonRedisSerializer 和 JacksonJsonRedisSerializer"></a>2.4 Jackson2JsonRedisSerializer 和 JacksonJsonRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;这两个类内部都使用了jackson进行对象与json之间的转换，使用的时候需要指定对象的Class类型，也都是泛型类，需要指定对象的类型。其实这两个类的内部是一样的，只是在1.7版本后就废弃了JacksonJsonRedisSerializer，而使用Jackson2JsonRedisSerializer。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">JacksonJsonRedisSerializer</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>.javaType = getJavaType(type);</div><div class="line">&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">JacksonJsonRedisSerializer</span><span class="params">(JavaType javaType)</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>.javaType = javaType;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> <span class="keyword">throws</span> SerializationException </span>&#123;</div><div class="line">	<span class="keyword">if</span> (SerializationUtils.isEmpty(bytes)) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">return</span> (T) <span class="keyword">this</span>.objectMapper.readValue(bytes, <span class="number">0</span>, bytes.length, javaType);</div><div class="line">	&#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Could not read JSON: "</span> + ex.getMessage(), ex);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(Object t) <span class="keyword">throws</span> SerializationException &#123;</div><div class="line">	<span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123;</div><div class="line">		<span class="keyword">return</span> SerializationUtils.EMPTY_ARRAY;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.objectMapper.writeValueAsBytes(t);</div><div class="line">	&#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Could not write JSON: "</span> + ex.getMessage(), ex);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-5-GenericJackson2JsonRedisSerializer"><a href="#2-5-GenericJackson2JsonRedisSerializer" class="headerlink" title="2.5 GenericJackson2JsonRedisSerializer"></a>2.5 GenericJackson2JsonRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类与Jackson2JsonRedisSerializer内部的序列化和反序列化基本类似，方法都一样，只不过GenericJackson2JsonRedisSerializer是通用类型的，并非泛型类。</p>
+<h3 id="2-6-OxmSerializer"><a href="#2-6-OxmSerializer" class="headerlink" title="2.6 OxmSerializer"></a>2.6 OxmSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;执行xml与对象间的序列化和反序列化，有多种实现方式。几乎没用过，也没怎么去研究过。</p>
+<h2 id="三、Operations"><a href="#三、Operations" class="headerlink" title="三、Operations"></a>三、Operations</h2><p>&emsp;&emsp;&emsp;&emsp;RedisTemplate提供了操作视图的方式来执行Redis动作，在各种Operations中仍然是用到了RedisTemplate中执行Redis时的回调方式，即对RedisTemplate中的多种API进行了封装，以方便开发者来使用。</p>
+<h3 id="3-1-初探SDR的Operations"><a href="#3-1-初探SDR的Operations" class="headerlink" title="3.1 初探SDR的Operations"></a>3.1 初探SDR的Operations</h3><p>&emssp;&emsp;&emsp;&emsp;对于Redis中各种类型的数据也都有对应的Operations来操作，下面的表格引用自SDR的官方文档，自己简单翻译了一下。</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ValueOperations</td>
+<td>string类型数据的操作</td>
+</tr>
+<tr>
+<td>ListOperations</td>
+<td>list数据操作</td>
+</tr>
+<tr>
+<td>SetOperations</td>
+<td>set数据操作</td>
+</tr>
+<tr>
+<td>ZSetOperations</td>
+<td>sorted set数据操作</td>
+</tr>
+<tr>
+<td>HashOperations</td>
+<td>hash数据操作</td>
+</tr>
+<tr>
+<td>HyperLogLogOperations</td>
+<td>HyperLogLog操作</td>
+</tr>
+<tr>
+<td>GeoOperations</td>
+<td>地理空间操作</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;&emsp;&emsp;上面这个表格里各个接口中的方法，都可以自由指定<code>key</code>和<code>value</code>，而下面这个表格中就是已经绑定好key，直接进行对应操作即可。</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BoundValueOperations</td>
+<td>string类型数据的操作</td>
+</tr>
+<tr>
+<td>BoundListOperations</td>
+<td>list数据操作</td>
+</tr>
+<tr>
+<td>BoundSetOperations</td>
+<td>set数据操作</td>
+</tr>
+<tr>
+<td>BoundZSetOperations</td>
+<td>sorted set数据操作</td>
+</tr>
+<tr>
+<td>BoundHashOperations</td>
+<td>hash数据操作</td>
+</tr>
+<tr>
+<td>BoundGeoOperations</td>
+<td>地理空间操作操作</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-2-源码观察Operations"><a href="#3-2-源码观察Operations" class="headerlink" title="3.2 源码观察Operations"></a>3.2 源码观察Operations</h4><p>SDR中提供的Operations需要通过<code>RedisTemplate</code>来产生，都通过<code>bound类型Ops</code>和<code>opsFor类型</code>来产生<code>Bound类型Operations</code>和<code>类型Operations</code>，类型都是上面表格中写的那些。</p>
+<p>&emsp;&emsp;&emsp;&emsp;下面这段代码中，展示了RedisTemplate中获取绑定和非绑定Operations的源码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> BoundValueOperations&lt;K, V&gt; <span class="title">boundValueOps</span><span class="params">(K key)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span> DefaultBoundValueOperations&lt;K, V&gt;(key, <span class="keyword">this</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> ValueOperations&lt;K, V&gt; <span class="title">opsForValue</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> (valueOps == <span class="keyword">null</span>) &#123;</div><div class="line">		valueOps = <span class="keyword">new</span> DefaultValueOperations&lt;K, V&gt;(<span class="keyword">this</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> valueOps;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;目前，SDR中提供的都是各种接口的默认实现，并没有给定自定义实现Operations的接口的方式。</p>
+<h3 id="3-3-Operations简单使用"><a href="#3-3-Operations简单使用" class="headerlink" title="3.3 Operations简单使用"></a>3.3 Operations简单使用</h3><p>&emsp;&emsp;&emsp;&emsp;下面的代码中是Operations使用的举例，用最简单的方式来编写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 非绑定形式的Operation设值和取值</div><div class="line"> * <span class="doctag">@param</span> key</div><div class="line"> * <span class="doctag">@param</span> value</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStringValueSample</span><span class="params">(String key, String value)</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 非绑定key的形式下需要指定key</div><div class="line">     */</div><div class="line">    ValueOperations&lt;String, String&gt; valueOperations = redisTemplate.opsForValue();</div><div class="line">    valueOperations.set(key, value);</div><div class="line"></div><div class="line">    valueOperations.get(key);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 绑定形式的Operation设置和取值</div><div class="line"> * <span class="doctag">@param</span> key</div><div class="line"> * <span class="doctag">@param</span> value</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBoundSample</span><span class="params">(String key, String value)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 绑定形式下，在获取Operations时，就指定好key，后续操作无需再指定key</div><div class="line">     */</div><div class="line">    BoundValueOperations&lt;String, String&gt; boundValueOperations = redisTemplate.boundValueOps(key);</div><div class="line">    boundValueOperations.set(value);</div><div class="line"></div><div class="line">    boundValueOperations.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;这篇文章是我对于Spring Data Redis的一个认识总结，简要概括了我对于这个小型框架的了解。其实对于Redis来讲，它的源码本身就不多，很多人也都积极去研究源码，这对于我们深刻了解和使用有很大帮助。对于Java的开发者们来说，Jedis源码也没那么多，再到Spring Data Redis逻辑也没有太过于复杂和繁多，所以，不管是在学习的时候还是在工作的时候，多看看源码，整体做掌握还是很有帮助的。</p>
+<p>&emsp;&emsp;&emsp;&emsp;本篇博客是我初次基础SDR所写，如果有不正确或者缺漏的地方，还望大家予以指正和补充，一起学习。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Redis </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[从Spring乘舟回调到Jedis自我发育回调]]></title>
+      <url>/2017/06/23/%E4%BB%8ESpring%E4%B9%98%E8%88%9F%E5%9B%9E%E8%B0%83%E5%88%B0Jedis%E8%87%AA%E6%88%91%E5%8F%91%E8%82%B2%E5%9B%9E%E8%B0%83/</url>
+      <content type="html"><![CDATA[<p>从Spring乘舟回调到Jedis自我发育回调</p>
+<p>&emsp;&emsp;&emsp;&emsp;最近这段时间，接触回调模式比较多，使用也比较多，所以今天来简单写一下关于回调的思考。在实际开发中，回调是一种常见且常用的方式，用来实现把一块代码传递到其他代码处来执行。</p>
+<p>下面是<strong>维基百科</strong>对回调的定义：</p>
+<blockquote>
+<p>在计算机程序设计中，回调函数，或简称回调（Callback 即call then back 被主函数调用运算后会返回主函数），是指通过函数参数传递到其它代码的，某一块可执行代码的引用。这一设计允许了底层代码调用在高层定义的子程序。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Spring中的回调"><a href="#Spring中的回调" class="headerlink" title="Spring中的回调"></a>Spring中的回调</h2><p>&emsp;&emsp;&emsp;&emsp;此处简要说一下Spring中在数据库操作方面的回调使用，涉及到JdbcTemplate 和 HibernateTemplate。这两个类都需要打开资源进行数据库操作，操作完后进行资源释放。</p>
+<p><img src="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/spring.png" alt=""></p>
+<p>&emsp;&emsp;&emsp;&emsp;我们在进行JDBC操作数据库的时候，往往会按照API写一大堆重叠的代码，为了进行一个简单的操作，就必须要重复写诸如打开连接、执行操作等代码。我们在写DAO层的时候，会对JDBC进行封装，依此来简化我们上层的使用。</p>
+<p>&emsp;&emsp;&emsp;&emsp;Spring也是本着封装和减少我们出错等的原则来设计了其内部中对于持久化的集成。尤其在其中的与JDB和Hibernate的融合上，在Spring中使用他们变得更简洁，我们无需手动关心资源的打开与释放等，这要得益于Spring在进行封装的时候使用了回调的一个小机制。</p>
+<p>&emsp;&emsp;&emsp;&emsp;此处我们以JdbcTemplate的部分代码来做分析，下面贴出来的源码只贴出了必要的部分。</p>
+<p>&emsp;&emsp;&emsp;&emsp;定义回调接口，用来标准化回调的接口和函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 回调接口，把基于此接口的实现类传入到JdbcTemplate的封装方法中，供回调使用</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StatementCallback</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line">	<span class="function">T <span class="title">doInStatement</span><span class="params">(Statement stmt)</span> <span class="keyword">throws</span> SQLException, DataAccessException</span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;JdbcTemplate作为一个模板类，其中主要包括对JDBC操作流程的封装，还包括对外的调用方法，用来传入sql，参数等来执行JDBC操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcTemplate</span> <span class="keyword">extends</span> <span class="title">JdbcAccessor</span> <span class="keyword">implements</span> <span class="title">JdbcOperations</span> </span>&#123;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 把JDBC的基本操作流程封装起来，供其他方法直接调用，传入回调接口的实现类</div><div class="line"> * <span class="doctag">@param</span> action</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(StatementCallback&lt;T&gt; action)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</div><div class="line">		Assert.notNull(action, <span class="string">"Callback object must not be null"</span>);</div><div class="line">		</div><div class="line">		<span class="comment">/*</span></div><div class="line">		 *  1、获取数据库连接Connection</div><div class="line">		 */</div><div class="line">		Connection con = DataSourceUtils.getConnection(getDataSource());</div><div class="line">		Statement stmt = <span class="keyword">null</span>;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			Connection conToUse = con;</div><div class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span> &amp;&amp;</div><div class="line">					<span class="keyword">this</span>.nativeJdbcExtractor.isNativeConnectionNecessaryForNativeStatements()) &#123;</div><div class="line">				conToUse = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeConnection(con);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="comment">/*</span></div><div class="line">			 * 2、创建SQL执行清单Statement</div><div class="line">			 */</div><div class="line">			stmt = conToUse.createStatement();</div><div class="line">			applyStatementSettings(stmt);</div><div class="line">			Statement stmtToUse = stmt;</div><div class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span>) &#123;</div><div class="line">				stmtToUse = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeStatement(stmt);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="comment">//  3、执行Statement，获取操作结果</span></div><div class="line">			T result = action.doInStatement(stmtToUse);</div><div class="line">			handleWarnings(stmt);</div><div class="line">			<span class="keyword">return</span> result;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">catch</span> (SQLException ex) &#123;</div><div class="line">			<span class="comment">// Release Connection early, to avoid potential connection pool deadlock</span></div><div class="line">			<span class="comment">// in the case when the exception translator hasn't been initialized yet.</span></div><div class="line">			JdbcUtils.closeStatement(stmt);</div><div class="line">			stmt = <span class="keyword">null</span>;</div><div class="line">			DataSourceUtils.releaseConnection(con, getDataSource());</div><div class="line">			con = <span class="keyword">null</span>;</div><div class="line">			<span class="keyword">throw</span> getExceptionTranslator().translate(<span class="string">"StatementCallback"</span>, getSql(action), ex);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">finally</span> &#123;</div><div class="line">			<span class="comment">/*</span></div><div class="line">			 * 4、释放资源</div><div class="line">			 */</div><div class="line">			JdbcUtils.closeStatement(stmt);</div><div class="line">			DataSourceUtils.releaseConnection(con, getDataSource());</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">   <span class="comment">/**</span></div><div class="line">    * 可供自定义的DAO中使用的execute方法，可以自己传入sql来执行自定义的sql操作</div><div class="line">    * <span class="doctag">@param</span> sql</div><div class="line">    */</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">final</span> String sql)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</div><div class="line">		<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</div><div class="line">			logger.debug(<span class="string">"Executing SQL statement ["</span> + sql + <span class="string">"]"</span>);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		<span class="comment">/*</span></div><div class="line">		 * 实现SQL清单回调接口，定义回调函数</div><div class="line">		 */</div><div class="line">		<span class="class"><span class="keyword">class</span> <span class="title">ExecuteStatementCallback</span> <span class="keyword">implements</span> <span class="title">StatementCallback</span>&lt;<span class="title">Object</span>&gt;, <span class="title">SqlProvider</span> </span>&#123;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> Object <span class="title">doInStatement</span><span class="params">(Statement stmt)</span> <span class="keyword">throws</span> SQLException </span>&#123;</div><div class="line">			   <span class="comment">/*</span></div><div class="line">			    * 执行SQL</div><div class="line">			    */</div><div class="line">				stmt.execute(sql);</div><div class="line">				<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">			&#125;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> String <span class="title">getSql</span><span class="params">()</span> </span>&#123;</div><div class="line">				<span class="keyword">return</span> sql;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		execute(<span class="keyword">new</span> ExecuteStatementCallback());</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;在我们的DAO中，就可以直接注入JdbcTemplate，来调用其中的<strong>execute(final String sql)</strong>方法来传递进入sql来执行，而无需考虑连接打开，连接释放等问题。</p>
+<h2 id="回调应用"><a href="#回调应用" class="headerlink" title="回调应用"></a>回调应用</h2><p>&emsp;&emsp;&emsp;&emsp;起初在研究到Spring中的回调时，并没有太留意，只是觉得很方便，可到了最近几天也在做类似的内容，才发现原来还是有相通的地方。最近这几天在研究Redis，准备在项目中加入简单的消息队列和对象缓存，刚开始写就发现在获取Jedis和归还Jedis上有些许可以改进的地方。</p>
+<p><img src="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/redis.jpg" alt=""></p>
+<p>&emsp;&emsp;&emsp;&emsp;用Java语言来操作Redis，选用了Jedis来作为客户端操作Redis。用到了Jedis中的连接池来操作，所以会涉及到获取Jedis对象，连接池资源的释放等问题，也有很多重复代码的存在。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(参数)</span></span>&#123;</div><div class="line">    T result = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    Jedis jedis = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        jedis = <span class="keyword">this</span>.getJedisPool().getResource();</div><div class="line">        result = jedis的各种操作</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">//返还到连接池</span></div><div class="line">        jedis.close();</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如此一来便和JDBC应用时碰到了非常类似的问题，在做每一次实际操作的时候，操作之前和之后的代码都是相同的，唯独这些操作的代码是不一样的，所以就考虑抽取这些操作的代码出来，每次只要把这部分操作代码灵活的传递到Jedis代码执行处便可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 执行Redis操作</div><div class="line"> * <span class="doctag">@param</span> callback 回调函数</div><div class="line"> * <span class="doctag">@param</span> &lt;T&gt;</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(JedisCallback&lt;T&gt; callback)</span></span>&#123;</div><div class="line">    T result = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    Jedis jedis = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        jedis = <span class="keyword">this</span>.getJedisPool().getResource();</div><div class="line">        <span class="comment">//  引用回调函数中的方法执行Redis操作</span></div><div class="line">        result = callback.doWithJedis(jedis);</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">//返还到连接池</span></div><div class="line">        jedis.close();</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;所以就很自然的联想到了Spring中在JDBC和Hibernate方面的思想，用回调机制来进行传递操作内容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 执行Redis操作的回调接口</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">JedisCallback</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 用Jedis对象来进行Redis的操作</div><div class="line">     * <span class="doctag">@param</span> jedis</div><div class="line">     * <span class="doctag">@return</span></div><div class="line">     */</div><div class="line">    <span class="function">T <span class="title">doWithJedis</span><span class="params">(Jedis jedis)</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;再定义一个JedisTemplate类来声明各种操作Redis的方法，然后在每个方法中定义局部类实现回调接口来实现具体Redis操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 设置多个哈希值</div><div class="line"> * <span class="doctag">@param</span> key</div><div class="line"> * <span class="doctag">@param</span> hash</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">setMHash</span><span class="params">(String key, Map&lt;String, String&gt; hash)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">SetMultiHashCallback</span> <span class="keyword">implements</span> <span class="title">JedisCallback</span>&lt;<span class="title">String</span>&gt;</span>&#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">doWithJedis</span><span class="params">(Jedis jedis)</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> jedis.hmset(key, hash);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> jedisManager.execute(<span class="keyword">new</span> SetMultiHashCallback());</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;通过这样一种简单的封装，便可以对程序中的其他模块灵活的提供服务而无需让其他地方关心资源等问题。</p>
+<p>&emsp;&emsp;&emsp;&emsp;从本质上来说，回调都是一样的，只是不同语言可能有不同的表现形式，但只要抓住精髓，举一反三，便可熟练掌握，不管推塔还是打水晶，便都可以不在话下。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 回调 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[JNA回调]]></title>
+      <url>/2017/05/26/JNA%E5%9B%9E%E8%B0%83/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;&emsp;&emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。</p>
+<p>&emsp;&emsp;&emsp;&emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。</p>
+<a id="more"></a>
+<h2 id="定义回调接口及其对应实现类"><a href="#定义回调接口及其对应实现类" class="headerlink" title="定义回调接口及其对应实现类"></a>定义回调接口及其对应实现类</h2><p>&emsp;&emsp;&emsp;&emsp;回调接口一定要继承于Callback类，定义的回调方法的方法名绝对不能是hashCode，equals，toString。这个方法名必须是独一无二的。</p>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.jna.Callback;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 消息回调接口</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IMsgCallback</span> <span class="keyword">extends</span> <span class="title">Callback</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * C++回调Java代码时会调用到的方法</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">invoke</span><span class="params">(String strArg)</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="实现类"><a href="#实现类" class="headerlink" title="实现类"></a>实现类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 回调类的实现类</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MsgCallbackImpl</span> <span class="keyword">implements</span> <span class="title">IMsgCallback</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(String strArg)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"C++回调Java测试，来自C++的内容："</span> + strArg);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="本地代码中注册回调函数"><a href="#本地代码中注册回调函数" class="headerlink" title="本地代码中注册回调函数"></a>本地代码中注册回调函数</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">   <span class="comment">//  定义回调函数指针</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="title">int</span><span class="params">(*MsgCallback)</span><span class="params">(<span class="keyword">char</span>* strArg)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 注册回调函数                                                         */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line">__declspec(dllexport) <span class="function"><span class="keyword">void</span> <span class="title">regisMsgCallback</span><span class="params">(<span class="keyword">int</span>(*callback)</span><span class="params">(<span class="keyword">char</span>*)</span>)</span>;</div><div class="line"></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 测试回调函数                                                         */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line">__declspec(dllexport) <span class="function"><span class="keyword">void</span> <span class="title">testCallback</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;定义了回调函数的指针MsgCallback，可以在需要进行回调的地方调用。</p>
+<h3 id="源码文件"><a href="#源码文件" class="headerlink" title="源码文件"></a>源码文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 注册回调函数，把Java中的回调接口加入到此处                            */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">regisMsgCallback</span><span class="params">(<span class="keyword">int</span>(*callback)</span><span class="params">(<span class="keyword">char</span>*)</span>)</span></div><div class="line">&#123;</div><div class="line">	MsgCallback = callback;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 测试回调函数                                                          */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testCallback</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	MsgCallback(<span class="string">"C++ callback test."</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;在本例中只是从Java里面调用了一个测试方法testCallback()来触发回调，实际应用中可以根据业务来实际操作。</p>
+<h2 id="Java中注册回调函数"><a href="#Java中注册回调函数" class="headerlink" title="Java中注册回调函数"></a>Java中注册回调函数</h2><pre><code class="java"><span class="keyword">import</span> com.sun.jna.Native;
+
+<span class="comment">/**
+ *  JNA测试
+ */</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>{
+
+    <span class="meta">@org</span>.junit.<span class="function">Test
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEasemob</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>{
+
+        JNADemo jnaDemo = Native.loadLibrary(<span class="string">"JavaCpp"</span>, JNADemo.class);
+
+        <span class="comment">//  调用Java接口中的方法，执行C++中的方法体</span>
+<span class="comment">//        jnaDemo.test1();</span>
+<span class="comment">//</span>
+<span class="comment">//        //  向C++类库中传递字符串参数，并得到字符串返回值</span>
+<span class="comment">//        String cpprt = jnaDemo.test2("FROM Java");</span>
+<span class="comment">//</span>
+<span class="comment">//        System.out.println("来自C++动态类库：" + cpprt);</span>
+
+        <span class="comment">//  注册消息回调接口</span>
+        jnaDemo.regisMsgCallback(<span class="keyword">new</span> MsgCallbackImpl());
+
+        <span class="comment">//  测试回调接口中的回调函数</span>
+        jnaDemo.testCallback();
+    }
+
+}
+</code></pre>
+<p>&emsp;&emsp;&emsp;&emsp;运行此回调测试，得到以下结果。</p>
+<p><img src="/2017/05/26/JNA回调/result.png" alt=""></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>&emsp;&emsp;&emsp;&emsp;上面的例子中，用了简单的逻辑来实现回调，实际应用中可能伴随着复杂的逻辑，此处只是抽丝剥茧。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JNA </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[初识JNA]]></title>
+      <url>/2017/05/26/%E5%88%9D%E8%AF%86JNA/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;JNA（Java Native Access）对JNI进行了包装，提供了一组工具类用于访问本地程序，不需要编写任何Native或JNI代码。只需要在Java接口文件中定义与本地类库中的方法结构一样的native类型的方法即可，不需要实现，JNA会自动联系Java中的接口与本地类库中的方法。</p>
+<p>&emsp;&emsp;原则上来说在有本地类库时，并不需要再写本地代码，而是直接写Java代码即可，但这样做的前提是要有一个编写良好又明确标明方法的类库。如果碰到任务需要在原来本地类库的基础上进行二次包装，就不得不继续编写本地代码了，而我写的这个例子就是按照这样的步骤来的。</p>
+<a id="more"></a>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>步骤1：<br>    新建一个接口文件，定义需要调用的本地方法。</p>
+<p>步骤2：<br>    编写本地方法，用C/C++实现Java接口中的方法。方法声明前要加上  __declspec(dllexport) 即把声明的方法对外暴露。</p>
+<p>步骤3：<br>    生产动态库，放到对应目录下。本程序中，在Windows下，生成了dll文件，放到了JDK的bin中。</p>
+<p>步骤4：<br>    加载动态库，用JNA对于接口的实例来调用接口中的方法。</p>
+<h2 id="分步实现"><a href="#分步实现" class="headerlink" title="分步实现"></a>分步实现</h2><h3 id="新建接口类，定义接口方法"><a href="#新建接口类，定义接口方法" class="headerlink" title="新建接口类，定义接口方法"></a>新建接口类，定义接口方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.jna.Library;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * JNA的接口类</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">JNADemo</span> <span class="keyword">extends</span> <span class="title">Library</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 无返回值，无参方法测试</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 有返回值，有参方法测试</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     * <span class="doctag">@return</span></div><div class="line">     */</div><div class="line">    <span class="function">String <span class="title">test2</span><span class="params">(String strArg)</span></span>;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;这个接口一定要继承Library的父类，对于所有的本地类库定义都源自于这个类。</p>
+<h3 id="编写本地方法"><a href="#编写本地方法" class="headerlink" title="编写本地方法"></a>编写本地方法</h3><h4 id="头文件jnainterface-h"><a href="#头文件jnainterface-h" class="headerlink" title="头文件jnainterface.h"></a>头文件jnainterface.h</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_jnainterface</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_jnainterface</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">	<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line">	<span class="comment">/************************************************************************/</span></div><div class="line">	<span class="comment">/* 无返回值，无参测试方法                                                */</span></div><div class="line">	<span class="comment">/************************************************************************/</span></div><div class="line">	__declspec(dllexport) <span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">	<span class="comment">/************************************************************************/</span></div><div class="line">	<span class="comment">/* 有返回值，有参测试方法                                                */</span></div><div class="line">	<span class="comment">/************************************************************************/</span></div><div class="line">	__declspec(dllexport) <span class="function"><span class="keyword">char</span>* <span class="title">test2</span><span class="params">(<span class="keyword">char</span>* strArg)</span></span>;</div><div class="line">	</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line">&#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<p>注意方法声明的前面添加了__declspec(dllexport)。</p>
+<h4 id="源码文件jnainterface-cpp"><a href="#源码文件jnainterface-cpp" class="headerlink" title="源码文件jnainterface.cpp"></a>源码文件jnainterface.cpp</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">#include "stdafx.h"</div><div class="line">#include "jnainterface.h"</div><div class="line"></div><div class="line">/************************************************************************/</div><div class="line">/* 无返回值，无参测试方法                                                */</div><div class="line">/************************************************************************/</div><div class="line">void test1() &#123;</div><div class="line">	cout &lt;&lt; "Hello World, this is C++ printer." &lt;&lt; endl;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/************************************************************************/</div><div class="line">/* 有返回值，有参测试方法                                                */</div><div class="line">/************************************************************************/</div><div class="line">char* test2(char* strArg) &#123;</div><div class="line">	//  打印来自Java的字符串</div><div class="line">	cout &lt;&lt; strArg &lt;&lt; endl;</div><div class="line"></div><div class="line">	//  向Java端返回字符串</div><div class="line">	return "From C++ dll.";</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="生成动态库"><a href="#生成动态库" class="headerlink" title="生成动态库"></a>生成动态库</h3><p>&emsp;&emsp;&emsp;&emsp;本地代码完成后，随即就要编译为本地类库，并放到对应目录下。本程序中，在windows下，我把生成的dll文件放到了JDK的bin目录下。</p>
+<p><img src="/2017/05/26/初识JNA/dlllib.png" alt=""></p>
+<h3 id="加载动态库"><a href="#加载动态库" class="headerlink" title="加载动态库"></a>加载动态库</h3><p>&emsp;&emsp;&emsp;&emsp;加载动态库，用JNA对于接口的实例来调用接口中的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.jna.Native;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  JNA测试</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@org</span>.junit.<span class="function">Test</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEasemob</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</div><div class="line"></div><div class="line">        JNADemo jnaDemo = Native.loadLibrary(<span class="string">"JavaCpp"</span>, JNADemo.class);</div><div class="line"></div><div class="line">        <span class="comment">//  调用Java接口中的方法，执行C++中的方法体</span></div><div class="line">        jnaDemo.test1();</div><div class="line"></div><div class="line">        <span class="comment">//  向C++类库中传递字符串参数，并得到字符串返回值</span></div><div class="line">        String cpprt = jnaDemo.test2(<span class="string">"FROM Java"</span>);</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"来自C++动态类库："</span> + cpprt);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;执行上面的代码，得到下面的结果。</p>
+<p><img src="/2017/05/26/初识JNA/result.png" alt=""></p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>&emsp;&emsp;&emsp;&emsp;不管是使用JNI还是JNA都要特别注意Java与本地类库中类型的对应。在JNA的网站上给出了Java与C的类型对照，可以做参考。</p>
+<p><img src="/2017/05/26/初识JNA/types.png" alt=""></p>
+<p>&emsp;&emsp;&emsp;&emsp;对于其中的boolean我也用过，在C++中因为有boolean类型，所以C++代码中可以直接用boolean。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JNA </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[JNI回调]]></title>
+      <url>/2017/05/24/JNI%E5%9B%9E%E8%B0%83/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。</p>
+<p>&emsp;&emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。</p>
+<a id="more"></a>
+<h2 id="1、定义回调方法"><a href="#1、定义回调方法" class="headerlink" title="1、定义回调方法"></a>1、定义回调方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * C++程序回调本方法，并传递数据到此</div><div class="line"> * <span class="doctag">@param</span> strArg</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveCPPTest</span><span class="params">(String strArg)</span></span>&#123;</div><div class="line"></div><div class="line">    System.out.println(<span class="string">"来自C++程序的回调，数据："</span> + strArg);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2、本地语言中调用Java方法"><a href="#2、本地语言中调用Java方法" class="headerlink" title="2、本地语言中调用Java方法"></a>2、本地语言中调用Java方法</h2><p>&emsp;&emsp;在C++的源码文件中按照步骤来找到Java中的对应的方法并调用。</p>
+<h3 id="1）获取Java中的目标类"><a href="#1）获取Java中的目标类" class="headerlink" title="1）获取Java中的目标类"></a>1）获取Java中的目标类</h3><ul>
+<li>根据类名获取<br>&emsp;&emsp;JNIEnv中的FindClass方法可以根据方法名直接得到Java中的类</li>
+<li>根据类对象获取<br>&emsp;&emsp;JNIEnv中同样提供了根据Java类的对象来获取Java类的方法，GetObjectClass。</li>
+</ul>
+<h3 id="2）获取要调用Java中的方法"><a href="#2）获取要调用Java中的方法" class="headerlink" title="2）获取要调用Java中的方法"></a>2）获取要调用Java中的方法</h3><p>&emsp;&emsp;此处的获取目标方法，会需要用到方法的标识，即方法名和方法签名（参数和返回值）。</p>
+<h3 id="3）执行目标方法"><a href="#3）执行目标方法" class="headerlink" title="3）执行目标方法"></a>3）执行目标方法</h3><p>&esmp;&emsp;在执行目标方法的时候要注意，如果方法有参数需要传入，应该特别注意进行类型和编码的转换。</p>
+<p>执行回调的c++源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testCallback</span><span class="params">(JNIEnv *env, jobject obj)</span> </span>&#123;</div><div class="line">	<span class="comment">//  1. 获取目标类</span></div><div class="line">	<span class="keyword">char</span>* classname = <span class="string">"JNIDemo"</span>;</div><div class="line">	jclass     objClass = env-&gt;FindClass(classname); </div><div class="line"></div><div class="line">	<span class="comment">//jclass objClass = env-&gt;GetObjectClass(obj);</span></div><div class="line"></div><div class="line">	<span class="comment">//  2. 获取要调用的方法，需要传入类、方法名、方法签名</span></div><div class="line">	jmethodID methodID = env-&gt;GetMethodID(objClass, <span class="string">"receiveCPPTest"</span>, <span class="string">"(Ljava/lang/String;)V"</span>);</div><div class="line"></div><div class="line">	jstring methodArg = StringUtils::str2jstring(env, <span class="string">"C++ call Java method."</span>);</div><div class="line"></div><div class="line">	<span class="comment">//  3. 执行目标方法：类对象，方法ID，方法参数……</span></div><div class="line">	env-&gt;CallVoidMethod(obj, methodID, methodArg);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test1</div><div class="line">* Signature: ()V</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj)</span> </div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World, this is C++ printer."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	testCallback(env, obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3、触发本地代码中的回调方法"><a href="#3、触发本地代码中的回调方法" class="headerlink" title="3、触发本地代码中的回调方法"></a>3、触发本地代码中的回调方法</h2><p>&emsp;&emsp;此处有多种选择，毕竟C++执行Java回调的方法在任何地方都可以调用，此例子中我在Java中定义了一个测试方法来触发。</p>
+<p>Java中调用test1来触发此回调函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line"><span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">jniDemo.test1();</div></pre></td></tr></table></figure>
+<h2 id="4、执行回调"><a href="#4、执行回调" class="headerlink" title="4、执行回调"></a>4、执行回调</h2><p>运行此程序，得到下图的结果。</p>
+<p><img src="/2017/05/24/JNI回调/result.png" alt=""></p>
+<p>可以看到C++中的代码正确的调用了Java中的方法，并传递了参数到Java中。</p>
+<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><h3 id="查看方法签名"><a href="#查看方法签名" class="headerlink" title="查看方法签名"></a>查看方法签名</h3><p>JDK中本身提供了查看签名的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javap -s JNIDemo</div></pre></td></tr></table></figure>
+<p><img src="/2017/05/24/JNI回调/sign.png" alt=""></p>
+<p>&emsp;&emsp;可以很清晰的看到receiveCPPTest方法的签名是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(Ljava/lang/String;)V</div></pre></td></tr></table></figure>
+<p>参数是String类型，返回值是void。</p>
+<h3 id="jstring和string"><a href="#jstring和string" class="headerlink" title="jstring和string"></a>jstring和string</h3><p>&emsp;&emsp;因为Java和C++中数据类型的区别，所以需要进行转换。上面例子中已经写好了一个，代码贴出来。</p>
+<h4 id="头文件StringUtils-h"><a href="#头文件StringUtils-h" class="headerlink" title="头文件StringUtils.h"></a>头文件StringUtils.h</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> StringUtils</div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	StringUtils();</div><div class="line">	~StringUtils();</div><div class="line">	<span class="function"><span class="keyword">static</span> jstring <span class="title">str2jstring</span><span class="params">(JNIEnv* env, <span class="keyword">const</span> <span class="keyword">char</span>* pat)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">jstring2str</span><span class="params">(JNIEnv* env, jstring jstr)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">char</span>* <span class="title">str2chars</span><span class="params">(<span class="built_in">string</span> jstr)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">char</span>* <span class="title">jstring2chars</span><span class="params">(JNIEnv* env, jstring jstr)</span></span>;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="源码文件StringUtils-cpp"><a href="#源码文件StringUtils-cpp" class="headerlink" title="源码文件StringUtils.cpp"></a>源码文件StringUtils.cpp</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"StringUtils.h"</span></span></div><div class="line"></div><div class="line"></div><div class="line">StringUtils::StringUtils()</div><div class="line">&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">StringUtils::~StringUtils()</div><div class="line">&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">jstring StringUtils::str2jstring(JNIEnv* env, <span class="keyword">const</span> <span class="keyword">char</span>* pat)</div><div class="line">&#123;</div><div class="line">	<span class="comment">//定义java String类 strClass  </span></div><div class="line">	jclass strClass = (env)-&gt;FindClass(<span class="string">"Ljava/lang/String;"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//获取String(byte[],String)的构造器,用于将本地byte[]数组转换为一个新String  </span></div><div class="line">	jmethodID ctorID = (env)-&gt;GetMethodID(strClass, <span class="string">"&lt;init&gt;"</span>, <span class="string">"([BLjava/lang/String;)V"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//建立byte数组  </span></div><div class="line">	jbyteArray bytes = (env)-&gt;NewByteArray(<span class="built_in">strlen</span>(pat));</div><div class="line"></div><div class="line">	<span class="comment">//将char* 转换为byte数组  </span></div><div class="line">	(env)-&gt;SetByteArrayRegion(bytes, <span class="number">0</span>, <span class="built_in">strlen</span>(pat), (jbyte*)pat);</div><div class="line"></div><div class="line">	<span class="comment">// 设置String, 保存语言类型,用于byte数组转换至String时的参数  </span></div><div class="line">	jstring encoding = (env)-&gt;NewStringUTF(<span class="string">"GB2312"</span>);</div><div class="line"></div><div class="line">	<span class="comment">//将byte数组转换为java String,并输出  </span></div><div class="line">	<span class="keyword">return</span> (jstring)(env)-&gt;NewObject(strClass, ctorID, bytes, encoding);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">string</span> StringUtils::jstring2str(JNIEnv* env, jstring jstr)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>*   rtn = jstring2chars(env, jstr);</div><div class="line">	<span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">stemp</span><span class="params">(rtn)</span></span>;</div><div class="line">	<span class="built_in">free</span>(rtn);</div><div class="line">	<span class="keyword">return</span> stemp;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">char</span>* StringUtils::str2chars(<span class="built_in">string</span> strArg)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>* c;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> len = strArg.length();</div><div class="line">	c = <span class="keyword">new</span> <span class="keyword">char</span>[len + <span class="number">1</span>];</div><div class="line">	strcpy_s(c, len + <span class="number">1</span>, strArg.c_str());</div><div class="line"></div><div class="line">	<span class="keyword">return</span> c;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//jstring to char*</span></div><div class="line"><span class="keyword">char</span>* StringUtils::jstring2chars(JNIEnv* env, jstring jstr)</div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span>* rtn = <span class="literal">NULL</span>;</div><div class="line">	jclass clsstring = env-&gt;FindClass(<span class="string">"java/lang/String"</span>);</div><div class="line">	jstring strencode = env-&gt;NewStringUTF(<span class="string">"utf-8"</span>);</div><div class="line">	jmethodID mid = env-&gt;GetMethodID(clsstring, <span class="string">"getBytes"</span>, <span class="string">"(Ljava/lang/String;)[B"</span>);</div><div class="line">	jbyteArray barr = (jbyteArray)env-&gt;CallObjectMethod(jstr, mid, strencode);</div><div class="line">	jsize alen = env-&gt;GetArrayLength(barr);</div><div class="line">	jbyte* ba = env-&gt;GetByteArrayElements(barr, JNI_FALSE);</div><div class="line">	<span class="keyword">if</span> (alen &gt; <span class="number">0</span>)</div><div class="line">	&#123;</div><div class="line">		rtn = (<span class="keyword">char</span>*)<span class="built_in">malloc</span>(alen + <span class="number">1</span>);</div><div class="line">		<span class="built_in">memcpy</span>(rtn, ba, alen);</div><div class="line">		rtn[alen] = <span class="number">0</span>;</div><div class="line">	&#125;</div><div class="line">	env-&gt;ReleaseByteArrayElements(barr, ba, <span class="number">0</span>);</div><div class="line">	<span class="keyword">return</span> rtn;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;其实，JNI也没有太难，只是需要注意的细节挺多的，再加上需要同时了解本地语言，所以可能一定程度增加了点难度（对于不懂本地语言的童鞋），总体来说还算简洁。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JNI </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[初识JNI]]></title>
+      <url>/2017/05/24/%E5%88%9D%E8%AF%86JNI/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出现了。当然也会有其他方式来实现本机应用和Java程序间的通讯，但某些情况下确实会用到JNI的方式来实现Java和本地程序的互相调用。</p>
+<p>&emsp;&emsp;JNI (Java Native Interface)是一个标准的编程接口，定义了一种方式来实现JVM中的Java代码和本地代码间的交互。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;因为工作需要，需要实现Java和C++类库间的调用，所以才了解到JNI，涉及到了JNI中Java调用C++中的方法，以及C++中回调Java方法。研究了些日子，也学习了很多。所以特此记录。</p>
+<h2 id="JNI基础概念"><a href="#JNI基础概念" class="headerlink" title="JNI基础概念"></a>JNI基础概念</h2><ol>
+<li>JavaVM、JNIEnv、Jobject</li>
+</ol>
+<ul>
+<li>JavaVM</li>
+</ul>
+<p>&emsp;&emsp;提供调用接口的函数，可以用来获取JNIEnv，可以跨线程使用。</p>
+<ul>
+<li>JNIEnv</li>
+</ul>
+<p>&emsp;&emsp;JNI Environment，用此类型的实例便可以调用JNI提供的函数。它提供了大多数的JNI函数，是一个线程内的本地变量，无法跨线程访问。如果不得不在其他线程引用JNIEnv，则可以使用JavaVM的GetEnv来获取JNIEnv。</p>
+<ul>
+<li>Jobject</li>
+</ul>
+<p>&emsp;&emsp;Jobject是本地方法中访问的Java中的具体对象。</p>
+<ol>
+<li>Global and Local References</li>
+</ol>
+<p>&emsp;&emsp;JNI把本地代码使用的对象引用分成了两种：局部引用和全局引用。</p>
+<ul>
+<li>局部引用</li>
+</ul>
+<p>&emsp;&emsp;局部对象引用在在本地方法的调用期间有效，一旦这个本地方法执行完成后，就会自动释放掉这个局部的对象引用。局部引用只在本线程中有效，跨线程无效。本地代码也不可以把本地引用从一个线程传递到另一个线程。</p>
+<ul>
+<li>全局引用</li>
+</ul>
+<p>&emsp;&emsp;全局对象引用会一直有效，除非显式的把这个引用释放掉。</p>
+<h2 id="JNI使用步骤"><a href="#JNI使用步骤" class="headerlink" title="JNI使用步骤"></a>JNI使用步骤</h2><p>1、新建一个类。</p>
+<ul>
+<li><p>&emsp;&emsp;声明native类型的方法，只声明；</p>
+</li>
+<li><p>&emsp;&emsp;声明需要回调的方法，进行实现。</p>
+</li>
+</ul>
+<p>2、编译Java源文件为class文件</p>
+<p>3、用javah命令编译class文件为C++头文件</p>
+<p>4、根据头文件编写C++源码文件</p>
+<p>5、编译C++代码为动态库</p>
+<pre><code>* Windows：\*.dll
+* linux/unix：\*.so
+* os x：\*.jnilib
+</code></pre><p>6、把动态库放到系统的对应目录下<br>&emsp;&emsp;本程序中，在Windows下，生成了dll文件，放到了JDK的bin中</p>
+<p>7、加载动态库，运行Java程序</p>
+<h2 id="JNI调用C"><a href="#JNI调用C" class="headerlink" title="JNI调用C++"></a>JNI调用C++</h2><p>1、新建JNIDemo类，定义native方法和回调方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * JNI测试类</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNIDemo</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 无返回值，无参方法测试</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 有返回值，有参方法测试</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     * <span class="doctag">@return</span></div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> String <span class="title">test2</span><span class="params">(String strArg)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * C++程序回调本方法，并传递数据到此</div><div class="line">     * <span class="doctag">@param</span> strArg</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveCPPTest</span><span class="params">(String strArg)</span></span>&#123;</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"来自C++程序的回调，数据："</span> + strArg);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2、把Java源文件编译为class文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javac -encoding UTF-8 JNIDemo.java</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;编译java文件的时候我加了一个参数encoding，因为我的电脑默认编码时GBK，而我用的Java文件编码为UTF-8，所以指定UTF-8编码来编译，避免编码不一致而出错的问题。</p>
+<p><img src="/2017/05/24/初识JNI/javac.png" alt=""></p>
+<p>3、用javah命令把class文件编译为头文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javah JNIDemo</div></pre></td></tr></table></figure>
+<p>此命令把class文件编译为C++的头文件。</p>
+<p><img src="/2017/05/24/初识JNI/javah.png" alt=""></p>
+<p>头文件JNIDemo.h中的内容如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></div><div class="line"><span class="comment">/* Header for class JNIDemo */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test1</div><div class="line"> * Signature: ()V</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject)</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test2</div><div class="line"> * Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject, jstring)</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line">&#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;可以看出，头文件中已经自动导入了jni.h文件，我们在Java文件中声明的native方法也自动用C++语言声明了出来。而没有被native修饰的方法不会被识别。</p>
+<p>&emsp;&emsp;生成的函数名明明规则为： Java_Java类名_Java中的方法名。</p>
+<p>&emsp;&emsp;如果这个类是存在于一个包中，则生成的头文件中的方法名还会加入此Java类的包目录，因此，头文件中的方法声明规则如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT 返回值类型 JNICALL Java_包目录_类名_方法名(JNI的参数);</div><div class="line"></div><div class="line">JNIEXPORT jstring JNICALL Java_com_example_jni_JNIDemo_test2(JNIEnv *, jobject, jstring);</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;此处的参数只是声明，并没有给出参数的标识，在自己编写源码文件时，应该都加上。</p>
+<p>4、用对应的本地语言实现头文件中的函数</p>
+<p>&emsp;&emsp;源码文件JNIDemo.cpp如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"JNIDemo.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"StringUtils.h"</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test1</div><div class="line">* Signature: ()V</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj)</span> </div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World, this is C++ printer."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test2</div><div class="line">* Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj, jstring strArg)</span></div><div class="line">&#123;</div><div class="line">	<span class="comment">//  打印来自Java的字符串</span></div><div class="line">	<span class="built_in">cout</span> &lt;&lt; StringUtils::jstring2str(env, strArg) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	jstring returnstr = StringUtils::str2jstring(env, <span class="string">"From C++ dll."</span>);</div><div class="line"></div><div class="line">	<span class="comment">//  向Java端返回字符串</span></div><div class="line">	<span class="keyword">return</span> returnstr;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>5、生成动态库，放到对应目录下</p>
+<p>&emsp;&emsp;本程序中，在Windows下，生成了dll文件，放到了JDK的bin中</p>
+<p><img src="/2017/05/24/初识JNI/dllpath.png" alt=""></p>
+<p>6、加载动态库，调用Java类中对应的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * JNI调用测试</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNITest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">//  加载C++编译的动态类库，</span></div><div class="line">        <span class="comment">// 不用写.dll，直接写文件名字即可，这样是为了跨平台，linux上和windows上的类库后缀不一样</span></div><div class="line">        System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">        JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line">        <span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">        jniDemo.test1();</div><div class="line"></div><div class="line">        <span class="comment">//  2、测试有参有返回值的方法。</span></div><div class="line">        String test2Result = jniDemo.test2(<span class="string">"From Java"</span>);</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"-----test2---begin---"</span>);</div><div class="line">        System.out.println(<span class="string">"strArg--&gt;"</span> + test2Result);</div><div class="line">        System.out.println(<span class="string">"-----test2---end---"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>7、运行</p>
+<p>运行main方法，得到如下输出内容</p>
+<p><img src="/2017/05/24/初识JNI/main.png" alt=""></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>&emsp;&emsp;以上的例子是我在研究完工作内容后做的，工作工程中针对此部分还碰到了很多问题，有几个比较典型的，做一下记录。</p>
+<h3 id="1、class文件到头文件"><a href="#1、class文件到头文件" class="headerlink" title="1、class文件到头文件"></a>1、class文件到头文件</h3><p>   <img src="/2017/05/24/初识JNI/javah-error1.png" alt=""></p>
+<p>&emsp;&emsp;在class的目中执行javah命令时，碰到了找不到文件的情况，一开始一头雾水，后来多方查找后发现是目录问题。</p>
+<p>   <img src="/2017/05/24/初识JNI/javah-error2.png" alt=""></p>
+<p>&emsp;&emsp;切换到class类的顶层目录，再次执行此命令，通过。</p>
+<h3 id="2、JNI调用dll报错找不到依赖的类库"><a href="#2、JNI调用dll报错找不到依赖的类库" class="headerlink" title="2、JNI调用dll报错找不到依赖的类库"></a>2、JNI调用dll报错找不到依赖的类库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">java.lang.UnsatisfiedLinkError: </div><div class="line">D:\develop\Java\1.8\32\jdk1.8.0_65\bin\EasemobLib.dll: </div><div class="line">Can&apos;t find dependent libraries</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;意思是EasemobLib.dll中依赖的dll没有加载进来，这里推荐一类工具，dll依赖查看工具。可以直接看出自己的dll中都依赖哪些dll，里面缺少哪些。再对应的去找。</p>
+<p>&emsp;&emsp;我也是这个步骤找到了自己没有加入的dll，然后copy到我的jdk的bin中就好了。</p>
+<h3 id="3、JNI与C-交互时中文乱码"><a href="#3、JNI与C-交互时中文乱码" class="headerlink" title="3、JNI与C++交互时中文乱码"></a>3、JNI与C++交互时中文乱码</h3><p>&emsp;&emsp;所谓的乱码，其实就是字符的表示不一致，也就是字符的编码或者说占用的字节长短不一样所造成的。</p>
+<ul>
+<li>C/C++用的都是最原始的数据，一个字符占用一个字节，如果处理中文，一般都是用GB2312，而此时就是1个汉字占用两个自己了。</li>
+<li>JNI中则是使用了UTF-8，一个ASCII字符占1个字节，中文占3个</li>
+</ul>
+<p>&emsp;&emsp;正是因为对于数据占用字节长度的不一致才造成了乱码现象，因此在本地代码中进行转码即可。</p>
+<p><strong>Java–&gt;C++</strong></p>
+<p>&emsp;&emsp;从Java端传递字符串到C++中时，C++中收到的是jstring。此时可以用JNIEnv中的方法来进行转换。</p>
+<p>&emsp;&emsp;GetStringUTFChars，得到UTF-8的字符串；</p>
+<p>&emsp;&emsp;GetStringChars，得到UTF-16的字符串。</p>
+<p>&emsp;&emsp;然后可以进一步转换为GB2312的编码内容。</p>
+<p><strong>C++–&gt;Java</strong></p>
+<p>&emsp;&emsp;从C++到Java，传递字符串到Java中，不管是回调还是函数返回值，都要进行转换，转为jstring。JNIEnv中也提供了对应的方法来转换。</p>
+<p>NewStringUTF，得到UTF-8的jstring；</p>
+<p>NewString，得到UTF-16的jstring。</p>
+<h2 id="参考资料地址"><a href="#参考资料地址" class="headerlink" title="参考资料地址"></a>参考资料地址</h2><p><strong>JNI官方介绍</strong></p>
+<p><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/" target="_blank" rel="external">https://docs.oracle.com/javase/8/docs/technotes/guides/jni/</a></p>
+<p><strong>Android 开发者官网对JNI的介绍</strong></p>
+<p><a href="https://developer.android.com/training/articles/perf-jni.html" target="_blank" rel="external">https://developer.android.com/training/articles/perf-jni.html</a></p>
+<p><strong>JNI简要介绍</strong></p>
+<p><a href="http://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html#zz-3" target="_blank" rel="external">http://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html#zz-3</a>.</p>
+<p><strong>JNI具体内容翻译</strong></p>
+<p><a href="http://blog.csdn.net/android_hasen/article/details/27679165" target="_blank" rel="external">http://blog.csdn.net/android_hasen/article/details/27679165</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JNI </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[《皮囊》笔记五]]></title>
+      <url>/2017/03/22/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%94/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;可能我们会碰到很多小时候很厉害，长大了却一般般的人，还有那种一直都在激情生活却一直都不落地的人。</p>
+<a id="more"></a>
+<ul>
+<li>天才文展</li>
+</ul>
+<p>&emsp;&emsp;文展，这个在小时候的同龄人中相当有想法，也相当出色的人，最后却没有发展处理想的样子。在作者刚接触文展的时候，便被文展极为成熟的思想所震撼，而我在独到文展整理历史事件和规划自己考试的时候，也是一副惊呆了的样子。一个人在如此小的年纪，便能想清楚自己要做什么和为了自己的目标做规划，是相当难得的。</p>
+<p>&emsp;&emsp;文展，作为一个小小年纪，思想却极为成熟的人，极大地震撼和激烈了作者。我在读完这一章后，也颇为受启发。不管年纪大小，一个能对自己以后的生活做如此细致规划，已经是非常不容易的了。而我们在这个宝贵的年级里，在对待自己的生活时，又是一种怎样的态度呢，相信很多人都是混沌一片。</p>
+<p>&emsp;&emsp;这几年以来，越来越觉得人的一辈子其实很短暂，我们年轻时的每一天都是在为以后的日子做准备，为了能以后过的更理想，现在的每一天都是如此的重要，因为稍有粗心，可能就会大大影响以后的生活感受。因此，<strong>在这个有限的年轻日子里，为自己做一个规划，去实现一些自己极为渴望的目标。</strong></p>
+<ul>
+<li>厚朴</li>
+</ul>
+<p>&emsp;&emsp;厚朴，这个一腔热血，一心热爱青春的人，但是却一直不落地，一直活在自己的想象中。一直没能有一个明朗的生活，导致了最后的悲剧出现。而作者作为厚朴的朋友，多次提到自己想和厚朴说些什么，却总也没能说出口，或者不想说。我对这样的说辞甚是观点不一致。我觉得，作为朋友，应当在很多时候，给予朋友适当的提醒或者引导，干嘛扭扭捏捏欲言又止的，如果能帮助一个朋友更好的进入生活，那干嘛不去做呢，大老爷们的，不需要那么矫情。</p>
+<p>&emsp;&emsp;作者在这一部分还提到了一个女生，到底是否是作者当时的女朋友，作者也没明确的说明，从他的叙述中感觉一直都没和那个女孩有一个清晰的关系。个人觉得，在一段两性关系中，一定要明确好彼此的关系，而不是把自己放在什么清高的地位。所以，作为一个男人，应该果断的给出关系的定义。</p>
+<p>&emsp;&emsp;不过，我对于作者搬出宿舍，自己租房住还是比较认同的，给自己一个清净又舒适的环境。一个自己舒心的住所，是自己一切动力的基础。</p>
+<p>&emsp;&emsp;在这一章节中，让我觉得作为朋友，应该尽朋友的责任，能帮助一个朋友就要及时的去做，而不是只停留在思考中。对于感情的事情，应该及时的做果断的决定，而不是拖拖拉拉的不清不楚，一个清晰的关系，对两个人都好。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[《皮囊》笔记四]]></title>
+      <url>/2017/03/22/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E5%9B%9B/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;真是感觉读书容易，写笔记难啊。</p>
+<ul>
+<li>张美丽</li>
+</ul>
+<p>&emsp;&emsp;这一章节，讲述了作者对于乡村中那个审美启蒙者的记忆。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;张美丽作为当时小镇上鲜有的开放者，受到这样那样的异议。不管是关于她的八卦消息，还是到后来她各种捐款出资，都受到周围人异样的眼光。其实，她想要的就是一种被认同、被尊重。但是，在那个时候，在那个思想还没有很开放的年代里，大家对于这个女人做的很多事情都觉得不可思议，尤其是觉得她作为一个女孩子没有规规矩矩的生活，而是风风火火的折腾。</p>
+<p>&emsp;&emsp;但是在张美丽的眼里，她一直在追求自己喜欢的东西，做自己喜欢的做的事。只是她做的这些事情，与小镇上人的思想不太一直，或者说价值观不一样，导致一直不被认同，一直被看不起。</p>
+<p>&emsp;&emsp;个人觉得在本章最后部分，作者同学聚会时，那位大老板说的话，把张美丽评价为思想和行动上的启蒙者，虽然有点夸张，但确实多少有些味道。正是她带动了小镇的思想变化，而她做的生意也赶上了s市场的变化。</p>
+<p>&emsp;&emsp;一个人在坚持自己事情的时候，如果一直得不到周围人的认同，很多种情况下都会表现出一种沮丧或失望。其实，我觉得这可能就是价值观的不一致而已，只要自己做的是自己喜欢的事，做的是守法不乱纪的事，没什么大不了的，自己开心就好。</p>
+<p>&emsp;&emsp;<strong>一个人很难做到让所有人都认同，做一个真正的自己就好。</strong></p>
+<ul>
+<li>阿小和阿小</li>
+</ul>
+<p>&emsp;&emsp;两个阿小都是作者小时候的玩伴，一个是老家的阿小，一个是香港的阿小。香港的阿小因为从外地过来，又有在香港的亲人，所以香港阿小带来的是一股新鲜的气息，不管是视野还是玩具，都足以吸引周围的小朋友。而老家的阿小则是一个不太喜欢读书，并且读书也不太好，但又不想做渔民的阿小。</p>
+<p>&emsp;&emsp;作者描述了两个阿小不同的发展历程和最后的结局，两个阿小都没有得到自己想要的生活和未来，相比之下的作者，一直顺顺利利，考试走出小镇，又上大学开拓视野，最后走到北京。</p>
+<p>&emsp;&emsp;这个章节的故事，也让我想到了自己小时候的很多玩伴，后来因为大家选择的不同而走了不同的路。其实，每个人的路可能都不一样，每个人也都有自己的生活方式和节奏。现在的我们能想到的基本都是儿时的记忆了，一块到处疯玩，甚至偶尔互相打架。</p>
+<p>&emsp;&emsp;<strong>每个人一辈子只经历一次童年，能在孩童时候有很多开心的故事，便是幸福的。</strong></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[共享单车思考二]]></title>
+      <url>/2017/03/22/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<h2 id="APP找车"><a href="#APP找车" class="headerlink" title="APP找车"></a>APP找车</h2><h3 id="ofo"><a href="#ofo" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;那到底是怎么可以看出附近车子数量的呢？个人推测，是通过APP定位来实现的，当结束骑行后点击APP上的“结束骑行”，此时APP把位置上报到服务器，进而粗略统计某个位置附近可用车子数目。</p>
+<a id="more"></a>
+<p><img src="/2017/03/22/共享单车思考二/bike/ofo_app.jpg" alt=""></p>
+<p>&emsp;&emsp;大家可能有个疑问，那就是既然车子上没有定位装置，APP是如何来显示周围车子数目的呢？一方面靠的是ofo的车辆调度人员，另一方面个人推测是根据用户结束用车的位置来确定车子的位置。假设一个人正常骑车，行驶到目的地后，点击APP上的结束用车，这个时候会上传一个用户手机的位置，系统就会认为这是车子的位置，因为用户结束骑行后，一般都会在车子旁边来用APP结束用车而结费。但是这整个一套流程就有好多限制：</p>
+<ol>
+<li>用户严格按照这个流程来使用车子</li>
+<li>用户不会在获得车锁密码后，采用问题上报的形式来停止计费</li>
+<li>用户结束用车时，一定是在车子附近的</li>
+</ol>
+<p>&emsp;&emsp;虽然这个方法很不准确，但也能有个参照作用。没办法呀，没有智能车锁，就只能靠不严格的程序来进行记录了。等ofo的智能车锁研发出来后，相信会大大改善这个问题。</p>
+<h3 id="摩拜"><a href="#摩拜" class="headerlink" title="摩拜"></a>摩拜</h3><p>&emsp;&emsp;多亏了车子的定位装置，摩拜的车子找起来要方便很多了，但是就这么一个定位问题也影响了摩拜的用户体验，毕竟定位不会百分百准确，因为建筑物遮挡、网络缓慢、定位偏差等问题都会造成位置不是特别准确。我个人就碰到了好多次这个问题，到了APP指示的车子地点，却没有发现任何一辆车子，导致我一度都卸载了这个APP。不过，现在车子投放量很多了，大街上随处可见小橙车，基本可以直接过去扫码开锁。</p>
+<p><img src="/2017/03/22/共享单车思考二/bike/mobike_app.jpg" alt=""></p>
+<p>&emsp;&emsp;摩拜还提供了预定车子的功能，可以提前把一辆车子预约好，在15分钟内过去开锁即可。走到车子附近时，可用APP上的“寻车铃”来进一步定位车子，但是我发现这个按钮一直都是灰色状态，所以一般只能靠运气和对照车辆编号来确定预定的车子。</p>
+<p><img src="/2017/03/22/共享单车思考二/bike/mobike_date.jpg" alt=""></p>
+<h2 id="骑行轨迹"><a href="#骑行轨迹" class="headerlink" title="骑行轨迹"></a>骑行轨迹</h2><p>&emsp;&emsp;既然涉及到了定位，就不得不说一下轨迹的问题了。运动轨迹就是多个定位点组成的线路。根据收集到的位置在地图上进行线路绘制，就出现了我们在APP上看到的轨迹了。</p>
+<h3 id="ofo-1"><a href="#ofo-1" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;有朋友可能会有疑问，既然ofo车子上没有GPS装置，为什么还会有位置记录呢？我在上面的APP找车中提到过手机位置上报的问题，没错，ofo就是收集了用户在骑行中的位置，APP每隔几分钟就上报一次位置，位置多了，就可以绘制轨迹了。</p>
+<p><img src="/2017/03/22/共享单车思考二/bike/ofo_route.jpg" alt=""></p>
+<p>&emsp;&emsp;但是从路径绘制这个功能上来说，还是有问题的。图片中的路径是我从北医三院附近骑行到安立路地铁站附近。但是路径中可以看出来，只给我统计到了北沙滩地铁站附近，并且路线也跑到了非马路上。平时骑ofo的时候，也会偶尔骑个三五分钟，那时候的路径更是只有起点和终点，路线更是横跨建筑物。</p>
+<p>&emsp;&emsp;所以，个人推测他们的路径只是按照时间顺序来连接经纬度，并且大概每隔5分钟左右来让APP上报一次。这就是一个粗略的统计，但是位置数据是很敏感也很有用的数据，数据多了之后就非常有用。</p>
+<p>&emsp;&emsp;某些电子地图就可以根据我们平时的行动变化，来猜测某个位置就是我们自己的家，某个位置就是我们工作的地方，进而进行一些商业上的使用。</p>
+<h3 id="摩拜-1"><a href="#摩拜-1" class="headerlink" title="摩拜"></a>摩拜</h3><p><img src="/2017/03/22/共享单车思考二/bike/mobike_route.jpg" alt=""></p>
+<p>&emsp;&emsp;摩拜单车因为车子上本来就有GPS模块和GSM模块，所以，不管是基站定位还是GPS定位，自然可以进行很好的定位和位置上报。但是考虑到车锁中电池电量和使用时长的问题，不知道摩拜的工程师们有没有借助于手机的位置来上报。</p>
+<p>&emsp;&emsp;从他们绘制的路线上来看，偏差没那么大，还算是准确。能看出路线有大小的弯曲，所以，猜测他们收集位置的频率还是比较高的，骑行过程中收集的位置点还是比较密集的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;不管是小黄车、小橙车还是小蓝车，都是为了我们的生活更美好，他们的出现都说明我们生活中还有很多需要便利的地方，也正是他们的出现，大大的方便了我们短距离的出行。新生事物的出现总会引发社会的强烈反应和讨论，对于共享单车，甚至都得到了政府的很多鼓励，也是很少见，但是对于共享单车的监管还尚在萌芽阶段，各地政府也在积极采取办法来进行监管。</p>
+<p><img src="/2017/03/22/共享单车思考二/bike/ofo_destroy.jpg" alt=""></p>
+<p>&emsp;&emsp;有人说，共享单车就是一面国人素质的照妖镜，把很多人公共素质的低下展现了出来。我们也不难发现到处都有共享单车乱停乱放，甚至毁坏或私用的情况，这种现象必将会持续一段时间，而且短时间内无法消除，毕竟我们无法否认民众素质存在发展不平衡的事实，但是相信这种现象毕竟越来越少，美好的事物总不会消亡。</p>
+<p>&emsp;&emsp;上面粗略的写了这多，其中也肯定有很多不合理甚至错误的地方，只是平时没事的时候，自己瞎捉摸的东西，在这里凑个热闹来写写，还望大家来交流，一起来探讨。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 网络 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[共享单车思考一]]></title>
+      <url>/2017/03/22/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%B8%80/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;最近这些日子，各种共享单车是如火如荼的发展啊，大街小巷都是各种单车，从实际应用上来说，确实方便了大家的出行，尤其是5KM内的交通。网上关于这些共享单车的文章也是铺天盖地，有讲运营的，有讲公司架构的，有讲CEO的，总之囊括各个方面，今天我也来凑个热闹，写一下对于这些车子的简单思考。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;车子无论大小肯定是有车锁的，有智能的，有简单的，今天就粗糙的写一下个人思考。粗略的写写，大牛可以忽略了。选取的车子就是ofo和摩拜，也是我平时骑的两个。</p>
+<p><img src="/2017/03/22/共享单车思考一/bike/bikes.jpg" alt=""></p>
+<h2 id="骑行体验"><a href="#骑行体验" class="headerlink" title="骑行体验"></a>骑行体验</h2><p>&emsp;&emsp;去年9月的时候开始骑这些车子，一开始接触的是摩拜的首批橙色小车，真的伸不开腿啊，而且好沉好沉，但是也确实起到了代步的作用，因为公司离得比较近，所以基本是隔三差五的骑。当时我只是在想一个问题：设计师有没有自己骑过，这么沉的车子，就没考虑过用户的骑行感受么？</p>
+<p>&emsp;&emsp;不过摩拜的开锁方式和实心胎还是比较新颖的，而且也方便管理和统计。</p>
+<p>&emsp;&emsp;后来就出现了ofo的小黄车，轮胎是打气的，虽然车座有点低，但因为是链条传送，并且是打气的轮胎，所以骑行起来还是比较轻便的。单就骑行感受上来讲，ofo更舒服。</p>
+<p>&emsp;&emsp;再后来不管是摩拜还是ofo都又退出了新款的车子，都力图在骑行体验上做提高。自己也都骑过他们各个款式的车子，个人总体感觉摩拜后来推出的带前筐的车子和ofo的小轮车都还不错。对于我来说，只要能升降车座，调整车座高度，骑起来能伸开腿就会比较舒服。</p>
+<p>&emsp;&emsp;骑行感受这个东西，也是仁者见仁，智者见智了。</p>
+<h2 id="开锁方式"><a href="#开锁方式" class="headerlink" title="开锁方式"></a>开锁方式</h2><h3 id="ofo"><a href="#ofo" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;ofo的车子，整个车身都没有一点智能元件，当然这也可能是ofo一开始的策略，管他智能不智能的呢，赶紧投放市场才是王道，让大家赶紧骑上小黄车。当然啦，这也是个人猜测而已。</p>
+<p>&emsp;&emsp;ofo的开锁方式很传统，也没那么智能，只是从APP上输入单车编号，APP就返回车锁密码，用户手动开锁即可。粗略的理解，ofo的后台管理说白了就是一堆开锁密码的管理，基本都是查询。细想的话，其实ofo的后台还是包括很多东西的，计费、行程记录、车辆位置、车辆举报等。但因为没有引入智能车锁，所以某些功能的业务上不会太复杂，这也是一种优势，可以迅速做出产品，投入使用。</p>
+<p>&emsp;&emsp;这种开锁方式也造成一个问题，用户只要开锁一次，就记住了这辆车子的密码，下次再碰到这辆车，又可以继续骑。个人感觉，虽然会有这种情况出现，但因为车子的流动性，以及不同用户去不同目的地，会让同一个用户碰到第二辆车子的几率降低，所以同一个人多次或多天骑同一辆车子的几率还是不会太高的。</p>
+<p>&emsp;&emsp;不过，据悉ofo的智能车锁也已经在研发中了，看报道ofo联合了中国电信和华为来共同研究智能车锁，据悉要用NB-IOT技术，因为采用传统的方式来制作智能车锁还是有诸多限制的。NB-IOT依托于电信运营商，又加上华为是NB-IOT的先驱，所以，无论对于华为、中国电信还是ofo，这件事情都是对NB-IOT技术的实际应用有强大的促进作用。个人猜测，ofo在做智能车锁的时候，应该会考虑到目前投放的小黄车后续的智能管理问题。智能车锁应该要可以安装在现在的这些非智能小黄车上，逐步的来完成智能管理。</p>
+<p>&emsp;&emsp;相信ofo肯定也不止于此，还在做很多工作，随着智能车锁的研发，对应车辆管理等功能会逐步研发出来。从信息系统管理上来说，其实智能车锁只是一部分，系统中的很多工作其实都可以不用去考虑是智能的车锁，还是手动的车锁，它们只需要关注来往数据的交互就可以，以行程记录为例，它自然不需要过多的考虑这些问题，只管处理以经纬度为核心的数据，进行路径的合理记录和绘制等工作即可。</p>
+<p>&emsp;&emsp;相信ofo在后续的信息化工作中会给人很多惊喜。</p>
+<h3 id="摩拜"><a href="#摩拜" class="headerlink" title="摩拜"></a>摩拜</h3><p>&emsp;&emsp;摩拜的车子开锁方式就智能很多了，后轮的智能车锁非常显眼，用摩拜APP扫码开锁。但这个智能车锁在实际使用中也碰到很多问题，比如开锁不及时了，车锁没电了，网络状态不好了等等，诸多问题都会影响正常开锁。</p>
+<p>&emsp;&emsp;技术角度来讲，个人推测的开锁流程如下：</p>
+<ol>
+<li>用户从APP扫码</li>
+<li>APP发出车子的开锁请求到摩拜服务端，请求中包括车子编号和车锁操作（开）</li>
+<li><strong>摩拜服务端给车子的车锁发送开锁指令</strong></li>
+<li>车锁收到开锁指令后，执行开锁动作</li>
+<li><strong>车子开锁成功后，发送开锁成功到摩拜服务端</strong></li>
+<li>APP端或服务端开始计费</li>
+<li>开始骑行</li>
+<li><strong>结束骑行，手动关闭车锁，车锁发送关锁消息到摩拜服务端</strong></li>
+<li>服务端收到关锁消息，执行扣费等业务动作，然后发送消息到用户的APP</li>
+<li>APP上显示骑行结束并显示扣费信息</li>
+</ol>
+<p>&emsp;&emsp;粗略猜测，摩拜单车的整个使用过程大概是这样的。刚开始觉得这也就是一个带有通信模块的硬件设备与服务器交互而已，自己也做过一些。可是后来一想觉得有些不一样的地方，在步骤3中服务端是通过什么途径发送消息到车锁上的呢。<strong>刚开始以为也就是网络，可是因为电量、流量等硬件问题，车锁不会时刻与服务端保持SOCKET连接。</strong>就算车锁每隔一段时间就去连接一次摩拜服务器，来查看是否有开车锁的命令，这也不合理啊，毕竟用户开锁是一个随时都可能发生的事情。<strong>所以猜测可能用到了短信。</strong></p>
+<p>&emsp;&emsp;<strong>服务器收到APP发来的开锁请求后，服务器会给车锁发送开锁短信，短信是特别设计的开锁命令。车锁收到短信后，解析短信内容为开锁命令，执行开锁动作。</strong></p>
+<p>&emsp;&emsp;车子开锁成功后，会发送一个开锁成功的确认信息到服务端，这个时候有两种选择，一是与服务器建立网络连接；二是给服务器回一条短信，服务器解析短信来识别车锁的消息。考虑到后面骑行中还可能有车锁位置上报的问题，所以开锁后车锁可能与服务端建立了一个网络连接。</p>
+<p>&emsp;&emsp;骑行结束，关闭车锁后，车锁也可能是通过网络发送消息到服务端来结束骑行。</p>
+<p>&emsp;&emsp;考虑到单车的常年使用，所以摩拜车锁中硬件部分还是很厉害的，电池是关键，整个车锁的功耗也必须很低，所以在于服务器的连接和GPS位置上报的策略上的设计还是很用心的。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 网络 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[MINA消息过长]]></title>
+      <url>/2017/02/17/MINA%E6%B6%88%E6%81%AF%E8%BF%87%E9%95%BF/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;MINA在处理网络编程问题的时候不失为一个好助手，但使用过程中总会碰到大大小小的问题，最近在使用时便碰到了如此的一个小问题，出现问题的时候查阅源码是个好习惯。</p>
+<a id="more"></a>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>&emsp;&emsp;用MINA发送字符串消息的时候，出现了消息过长的问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.apache.mina.common.BufferDataException: Line is too long</div></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;消息编码和解码的时候用到了TextLineCodecFactory，其实消息过长的问题出现在了解码的时候。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Decode a line using the default delimiter on the current system</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">decodeAuto</span><span class="params">(Context ctx, IoSession session, IoBuffer in, ProtocolDecoderOutput out)</span></span></div><div class="line">        <span class="keyword">throws</span> CharacterCodingException, ProtocolDecoderException &#123;</div><div class="line">    <span class="keyword">int</span> matchCount = ctx.getMatchCount();</div><div class="line"></div><div class="line">    <span class="comment">// Try to find a match</span></div><div class="line">    <span class="keyword">int</span> oldPos = in.position();</div><div class="line">    <span class="keyword">int</span> oldLimit = in.limit();</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (in.hasRemaining()) &#123;</div><div class="line">        <span class="keyword">byte</span> b = in.get();</div><div class="line">        <span class="keyword">boolean</span> matched = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">        <span class="keyword">switch</span> (b) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">'\r'</span>:</div><div class="line">            <span class="comment">// Might be Mac, but we don't auto-detect Mac EOL</span></div><div class="line">            <span class="comment">// to avoid confusion.</span></div><div class="line">            matchCount++;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> <span class="string">'\n'</span>:</div><div class="line">            <span class="comment">// UNIX</span></div><div class="line">            matchCount++;</div><div class="line">            matched = <span class="keyword">true</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            matchCount = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (matched) &#123;</div><div class="line">            <span class="comment">// Found a match.</span></div><div class="line">            <span class="keyword">int</span> pos = in.position();</div><div class="line">            in.limit(pos);</div><div class="line">            in.position(oldPos);</div><div class="line"></div><div class="line">            ctx.append(in);</div><div class="line"></div><div class="line">            in.limit(oldLimit);</div><div class="line">            in.position(pos);</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (ctx.getOverflowPosition() == <span class="number">0</span>) &#123;</div><div class="line">                IoBuffer buf = ctx.getBuffer();</div><div class="line">                buf.flip();</div><div class="line">                buf.limit(buf.limit() - matchCount);</div><div class="line"></div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[buf.limit()];</div><div class="line">                    buf.get(data);</div><div class="line">                    CharsetDecoder decoder = ctx.getDecoder();</div><div class="line"></div><div class="line">                    CharBuffer buffer = decoder.decode(ByteBuffer.wrap(data));</div><div class="line">                    String str = buffer.toString();</div><div class="line">                    writeText(session, str, out);</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    buf.clear();</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">int</span> overflowPosition = ctx.getOverflowPosition();</div><div class="line">                ctx.reset();</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RecoverableProtocolDecoderException(<span class="string">"Line is too long: "</span> + overflowPosition);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            oldPos = pos;</div><div class="line">            matchCount = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Put remainder to buf.</span></div><div class="line">    in.position(oldPos);</div><div class="line">    ctx.append(in);</div><div class="line"></div><div class="line">    ctx.setMatchCount(matchCount);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当读取到消息结束标识后，剩余的空间不够用，所以抛出异常。</p>
+<h2 id="办法"><a href="#办法" class="headerlink" title="办法"></a>办法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TextLineCodecFactory lineCodec=<span class="keyword">new</span> TextLineCodecFactory();</div><div class="line">lineCodec.setDecoderMaxLineLength(<span class="number">1024</span>*<span class="number">1024</span>); <span class="comment">//1M</span></div><div class="line"></div><div class="line">filterChain.addLast(<span class="string">"codec"</span>, <span class="keyword">new</span> ProtocolCodecFilter(lineCodec));</div></pre></td></tr></table></figure>
+<p>给decode中每一行的读取长度做了定义，默认是1K，可以按照自己的需要来改动。</p>
+<h2 id="多看看"><a href="#多看看" class="headerlink" title="多看看"></a>多看看</h2><ul>
+<li>TextLineCodecFactory中设置decoder的长度</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Sets the allowed maximum size of the line to be decoded.</div><div class="line"> * If the size of the line to be decoded exceeds this value, the</div><div class="line"> * decoder will throw a &#123;<span class="doctag">@link</span> BufferDataException&#125;.  The default</div><div class="line"> * value is &lt;tt&gt;1024&lt;/tt&gt; (1KB).</div><div class="line"> * &lt;p&gt;</div><div class="line"> * This method does the same job with &#123;<span class="doctag">@link</span> TextLineDecoder#setMaxLineLength(int)&#125;.</div><div class="line"> * </div><div class="line"> * <span class="doctag">@param</span> maxLineLength the maximum decoded line length</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDecoderMaxLineLength</span><span class="params">(<span class="keyword">int</span> maxLineLength)</span> </span>&#123;</div><div class="line">    decoder.setMaxLineLength(maxLineLength);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>做了这样的设置之后，每次再读取一行数据的时候就会按照1M的数据量去读。</p>
+<ul>
+<li>MINA中的ProtocolCodecFactory自己有4个实现类，来进行编码处理。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Provides &#123;<span class="doctag">@link</span> ProtocolEncoder&#125; and &#123;<span class="doctag">@link</span> ProtocolDecoder&#125; which translates</div><div class="line"> * binary or protocol specific data into message object and vice versa.</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Please refer to</div><div class="line"> * &lt;a href="../../../../../xref-examples/org/apache/mina/examples/reverser/ReverseProtocolProvider.html"&gt;&lt;code&gt;ReverserProtocolProvider&lt;/code&gt;&lt;/a&gt;</div><div class="line"> * example.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@author</span> &lt;a href="http://mina.apache.org"&gt;Apache MINA Project&lt;/a&gt;</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProtocolCodecFactory</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a new (or reusable) instance of &#123;<span class="doctag">@link</span> ProtocolEncoder&#125; which</div><div class="line">     * encodes message objects into binary or protocol-specific data.</div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> session The current session</div><div class="line">     * <span class="doctag">@return</span> The encoder instance</div><div class="line">     * <span class="doctag">@throws</span> Exception If an error occurred while retrieving the encoder</div><div class="line">     */</div><div class="line">    <span class="function">ProtocolEncoder <span class="title">getEncoder</span><span class="params">(IoSession session)</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a new (or reusable) instance of &#123;<span class="doctag">@link</span> ProtocolDecoder&#125; which</div><div class="line">     * decodes binary or protocol-specific data into message objects.</div><div class="line">     * </div><div class="line">     * <span class="doctag">@param</span> session The current session</div><div class="line">     * <span class="doctag">@return</span> The decoder instance</div><div class="line">     * <span class="doctag">@throws</span> Exception If an error occurred while retrieving the decoder</div><div class="line">     */</div><div class="line">    <span class="function">ProtocolDecoder <span class="title">getDecoder</span><span class="params">(IoSession session)</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>作用</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TextLineCodecFactory</td>
+<td>文本消息，按行处理，识别回车换行符</td>
+<td></td>
+</tr>
+<tr>
+<td>DemuxingProtocolCodecFactory</td>
+<td>转送消息到对应CodeFactory</td>
+<td></td>
+</tr>
+<tr>
+<td>PrefixedStringCodecFactory</td>
+<td>处理有固定前缀长度的字符串</td>
+<td></td>
+</tr>
+<tr>
+<td>ObjectSerializationCodecFactory</td>
+<td>Java对象的序列化</td>
+<td>传输对象必须实现序列化接口，且服务端和客户端包路径必须一致</td>
+</tr>
+</tbody>
+</table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;MINA是一个优秀的网络编程辅助工具，但我们不一定能使用到它里面的所有功能，因此应该有选择性的进行学习，以及碰到问题的时候进行适当的源码查阅可以加深我们对于MINA的理解。</p>
+<p>&emsp;&emsp;其实，不只是针对MINA应该查阅源码，对于很多其他的开源框架或类库，多查阅源码和API总会有好处的。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> MINA </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[《皮囊》笔记三]]></title>
+      <url>/2017/02/15/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%89/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;已经有些日子没写这本书的笔记了，虽然很早就读完了，但因为最近事情比较多，所以一直拖着没写，今天得空写一篇。</p>
+<a id="more"></a>
+<ul>
+<li>我的神明朋友</li>
+</ul>
+<p>&emsp;&emsp;今天想写一下“我的神明朋友”这个小节，以作者的母亲为主线，加上和父亲的故事叙事而成。作者此处写到的神明以及他的母亲对待神明的态度，可能和中国其他地方很像，在这个传统文化传承多年的国度里，自然有很多现代人不以为然而老人家们却一直相信的东西。</p>
+<p>&emsp;&emsp;作者的母亲一开始是不相信什么神明的，而后来经过一系列的事情后，自然也就对神明有了很多的敬畏和依赖。很多人都说我们太多的人没有信仰了，内心没有一些依靠，其实仔细想来的话，这些神明也可能就算是我们很多人的信仰吧。因为内心里一直有这些神明，所以时时怀揣着一种敬畏和一种依赖，相信人是有灵魂的，是可以在另一个世界里继续生活的。有了心灵的寄托，便始终感觉背后有个依靠，总觉得冥冥之中自己不是一个人。</p>
+<p>&emsp;&emsp;读完这一小节后，让我联想到了我所在的地方，我也是出生在农村，成长在农村，至今仍然可以看到家里人各种祭天祭地祭神，祈求神明保佑家人平安，祈求整年风调雨顺，也祈求财运滚滚来。尤其是在碰到一些事情的时候，总觉得可能是没有照顾好哪个神，所以总会赶紧去烧纸烧香来祈求一切都顺利。</p>
+<p>&emsp;&emsp;记得上小学的时候，自己生过一场怪病，连续多天发烧头疼咳嗽不止，各种治疗都不管用，只能卧床休息靠吃药打针来维持身体运转。记得那时候还正好赶上外祖父去世办丧事，而我因为身体难以支撑，也没能一直在场，只得休息一阵去一阵。后来，听闻附近村子有个神婆治的不错，于是家人便带我去求诊。因为我之前从来没经历过这种场景，所以当时的我感觉空气都是凝结的，非常的安静。每个人都小心翼翼，生怕高声说话会惊扰了神明。具体也忘记了当时是怎样的一个流程和方式，只记得回来后没几天，我便恢复了正常。</p>
+<p>&emsp;&emsp;至今仍然想不明白我为什么恢复了正常，只知道不敢再去对神明说三道四。不敢说自己相信了这种东西，但至少不会完全的去怀疑。内心有一些信仰和依靠，便会有很多的平心静气和对天地的敬意。</p>
+<p>&emsp;&emsp;<strong>人总要信一些什么，才不至于有一个空洞的心。</strong>至少我是这么觉得的。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[《皮囊》笔记二]]></title>
+      <url>/2017/02/08/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<p>&emsp;&emsp;我想把这两部分放在一起写，也是因为这两部分基本都是有关于作者的父亲生病的故事。有时候，人就是那么脆弱，受不得病魔的折磨，不得已而低头。每个人也少不了面对别人的生老病死，也不可避免的会迎来自己的这一天，而在我们这一辈子的过程中，最好的日子就是健康快乐的时候。</p>
+<a id="more"></a>
+<ul>
+<li>残疾</li>
+</ul>
+<p>&emsp;&emsp;作者父亲因为这样那样的生活经历，无奈最后身体撑不住，落下了残疾。他的父亲起初还想着过段时间就可以恢复，也一直在积极锻炼着，没想到却没有效果，反倒恼羞成怒，把对自己的不满或者怨气直接的发泄出来。</p>
+<p>&emsp;&emsp;当面对身体的不便，自己不能自由的做很多事情，内心自然无法平静，刚开始肯定也无法淡然的接受，尤其是在希望破灭后的失望和沮丧以及对以后生活的无奈等复杂内心，可能是我们健全的人所无法理解的。</p>
+<p>&emsp;&emsp;这也让我想起了家里的一位祖父，从我上中学的时候就一直很关照我，很多话题也能说到一块。在多年前也身体开始了不方便，但也没大碍，生活可以自理。但是，记得大概是前年的时候，一次假日回家还能和他聊天说笑，随后的一段时间里，他突然间病情加重，住院几次，再到国庆节我回家的时候，竟然也不能流利的说话，也竟然不能一下子认出我，再也不能那么聊天说笑。心里突然间很悲伤、很无力，两次见面竟然有如此大的差别，心里甚是不快。人的健康和生命真的是很脆弱，若不用心照顾，真的不堪一击。希望祖父健康顺利下去。</p>
+<ul>
+<li>重症病房里的圣诞节</li>
+</ul>
+<p>&emsp;&emsp;这一章节同样是关于作者父亲生病的事情，不同的是这一段主要发生在医院里，是关于他父亲住院期间作者的见闻和思考，有关于病友的，有关于病人家属的，也有关于医生和护士的……</p>
+<p>&emsp;&emsp;而我个人对于医院的感觉就是压抑和排斥，每次去医院，在走廊里都会有一种非常压抑的感觉，总会感觉到人的渺小和面对疾病时的无力和无奈。也正是一次次的去到那里才更坚定了我努力锻炼身体的决心，身体健康一切都好，只要身体在，一切都还有希望，一切都还有机会。</p>
+<p>&emsp;&emsp;人的生命很宝贵，就只有一次，当感觉到自己的亲人可能在预料的时间内离开我们时，内心自然是阴霾的，会想努力去完成亲人在生前那些愿望，因为能让他们平静的离开可能是我们最可能办到的了。</p>
+<p>&emsp;&emsp;通过这两节的阅读，让我对健康、对生命、对亲人有了更多的认识和思考，一定要在我们有机会的时候，努力去建设我们的身体，善待我们的每一位亲人，珍惜与他们相处的每一天。</p>
+<p>注：此仅为个人即兴想法和感受，每个人的经历不一样，可能感受也会不同吧。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[《皮囊》笔记一]]></title>
+      <url>/2017/02/08/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%80/</url>
+      <content type="html"><![CDATA[<p><img src="/2017/02/08/《皮囊》笔记一/pinang.jpg" alt=""><br>&emsp;&emsp;忘记从哪里看到的这本书了，初次接触时没有什么概念，也是在看了评论，听了同事的介绍，就索性入手了一本来看看。也正是从这本书开始，才慢慢培养自己阅读的习惯。乘地铁的时候，排队的时候，坐车的时候，戴上耳机，沉浸在作者的故事里。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;纵观整本书，其实就是作者从小到大的零散故事汇总，再加上作者的思想回顾和现在观点的总结与感悟。全书有十几个作者的故事，有家人、有朋友、有同学、有社会人……各式各样的人从作者的人生中路过，与作者交织出了这一个个故事。</p>
+<p>&emsp;&emsp;我之所以会很快的读完这本书，也是因为作者的这本故事汇总，也让我回想起了自己的那些事，也让我有了很多思考和感悟，我不去评价这本书写的好与不好，我只想写下作者给予我的一些回想和感悟。</p>
+<ul>
+<li>皮囊</li>
+</ul>
+<p>&emsp;&emsp;作为开篇之故事，作者在此处简单记录了与他的阿太（作者外婆的母亲）的简单故事。阿太的一句”肉体是拿来用的，不是拿来伺候的“可能是对作者影响比较大的话，细细想来，这句话也对我个人有些触动。</p>
+<p>&emsp;&emsp;人不可太过于对自己的身体那般的娇气，不可受不得一点苦和一点累，这些肉体不过是一具皮囊罢了，大不可过于紧张，只要保持自己的身体健康安全便可。用自己的皮囊去追求一些自己内心真正想要的东西，也就是自己骨子里头这一辈子真正的追求。</p>
+<p>&emsp;&emsp;人最初来到这个世界的时候，并没有这样那样的欲望，也不懂得这些欲望都是什么，只有一个干净的身体和心，随着一天天长大和对这个世界的了解加深，慢慢滋生出了这样那样的欲望，而我们这随后的日子便是不断地追逐这样那样的欲望。在这不断地追逐中，真的应该静下来去思考一下，自己想要的到底是什么，是一个与普罗大众一样的生活，还是一个不平凡的一生，不管是什么，只要想清楚了，坚持去做就好。</p>
+<ul>
+<li>母亲的房子</li>
+</ul>
+<p>&emsp;&emsp;作者小时候的家境其实不太理想，房子也不太好，直到他的父亲当海员回来，带回来一笔钱，盖了家里的房子，便开始了家里房子的故事。几经翻修，房子后来像模像样，即使是在后来政府要进行拆迁了，他的母亲还是要坚持盖房子。按照作者的理解，应该是他的母亲想要让这个家庭更有脸面，让作者的父亲更有面子。这座房子是这个家庭的印记，是她和自己的男人共同经历的见证，也是她和自己男人共同生活的记忆所在和情感的延续，用完成修建这座房子来完成她和她男人心里共同的愿望。</p>
+<p>&emsp;&emsp;作者的这段经历，也让我想到了自己老家的房子，在我上小学五年级的时候，我的父亲和母亲拆掉了原来的土坯房子，兴建了红砖水泥房子。而当时的我竟然有种莫名的自豪感，觉得终于有了一个像模像样的地方，而好像也是从那时开始，才渐渐觉得家里的房子其实可以变得更好，也一年年的看到了家里房子的变化，这一年年的变化也在记录着家里越来越好。</p>
+<p>&emsp;&emsp;当时的我还不太懂事，觉得就是盖一座房子，而现在的我再回头去看那一段时期，却感悟出那其实是父亲和母亲在建立一个形象。父亲在十几岁和二十几岁时便失去了他的父母，而我的记忆中竟然没有祖父祖母的任何影子，即使我的父母都说那时候已经有了我。而那时候，家里还是十分困难，父亲和母亲可谓是白手起家，一步步好不容易才走到今天这个样子，而在那时盖一座像样的房子便是父母在一个阶段的事业。他们非常的艰辛，不管怎样的困难，都在尽力去解决，也在一步步挺起脊梁，我很庆幸我能有这样的父亲母亲，也很感恩他们带给我的生活，以及为我创造的成长条件。也正是作者的这段故事，让我对家这个概念的理解更加深刻。</p>
+<p>&emsp;&emsp;夜深了，该睡了，明天继续。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[从内到外的《匠人精神》]]></title>
+      <url>/2017/02/05/%E4%BB%8E%E5%86%85%E5%88%B0%E5%A4%96%E7%9A%84%E3%80%8A%E5%8C%A0%E4%BA%BA%E7%B2%BE%E7%A5%9E%E3%80%8B/</url>
+      <content type="html"><![CDATA[<p><img src="/2017/02/05/从内到外的《匠人精神》/jiangrenjingshen.jpg" alt=""></p>
+<p>&emsp;&emsp;记得第一次知道这本书还是从朋友圈，一个健身教练晒出的书单，在跟他了解后着重去了解了一下，于是入手细度。</p>
+<p>&emsp;&emsp;刚开始，只是想真正了解下这几年大家都在说的“工匠”或者“匠人”精神到底是怎样的一种价值观。越往后读就越发现，作者对于“匠人”的解释或者要求归根到底是对一个人由内而外的要求。从个人内在品质到外在的行为举止，再到掌握的技术，都有严格的要求。他说这是培养一流人才的规则，所谓的一流人才就是不只是会做事，而且要会把事做好的人。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;读完本书后，不敢说对”匠人精神“有一种透彻的了解，但至少知道了这种精神包含从内到外的所有特点。</p>
+<ul>
+<li>个人品质</li>
+</ul>
+<p>&emsp;&emsp;孝顺、为他人着想、时间观念等便是对一个人最起码的要求。一个匠人首先得是一个人，而且得是一个品格良好的人，才可以有资格去学习匠术，用学到的匠书去帮助别人。</p>
+<ul>
+<li>性格</li>
+</ul>
+<p>&emsp;&emsp;必须要乐观开朗、和蔼可亲、好相处等。因为性格上的基本样子会影响一个人在对人对物上的态度，也会影响他做事的方式。</p>
+<ul>
+<li>人际交往</li>
+</ul>
+<p>&emsp;&emsp;作为一个合格的匠人，还应该有良好的人际交流能力，既要能够听得懂别人的话，也要能够描述清楚自己的思想观点。不管是在与客户还是与同事间的交流都应做到如此。</p>
+<ul>
+<li>技术</li>
+</ul>
+<p>&emsp;&emsp;当然了，对于一个匠人的要求，不会少得了在他技术上的层次，不管是在工作前还是工作后，不管是自己的工具还是自己工作的方式，都应该有一个严格的要求。这样才可做出不俗的产品，也会逐渐的提高自己的技能。</p>
+<ul>
+<li>还有很多，不一一列举了。</li>
+</ul>
+<p><img src="/2017/02/05/从内到外的《匠人精神》/jrjs-rules.png" alt=""></p>
+<p>&emsp;&emsp;秋山利辉先生借助于日本以前的”学徒制“，发展出了自己的一套学徒方式，要求一个一流的匠人要经过8年的学习和锻炼，方可自己出去施展拳脚。8年的时间来修炼一门技能，是何等的耐心和严格要求啊。借此来对比我们现在社会中很多人的样子，工作很短的时间后就认为自己无所不能，目空一切或者眼高手低。</p>
+<p>&emsp;&emsp;从事技术行业的人，应该有一种专注于技术的心态，趁年轻多学一些东西，积攒自己的个人价值财富，反复练习技术基本功，秉承一颗技术方便他人的心，沉浸在自己所掌握的技术中。如此下来，日复一日肯定会不断进步，成长为一流的匠人，做出不俗的产品。</p>
+<p>备注：此思维导图为本人根据个人理解总结，只为辅助理解，不同人可能有不同的总结</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Intellij中Java类出现叉号]]></title>
+      <url>/2017/01/20/Intellij%E4%B8%ADJava%E7%B1%BB%E5%87%BA%E7%8E%B0%E5%8F%89%E5%8F%B7/</url>
+      <content type="html"><![CDATA[<p>刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。<br>在尝试中找到一条解决办法：</p>
+<a id="more"></a>
+<ol>
+<li><p>找到project的目录下.idea文件夹中compiler.xml。里面有一个标签叫”&lt;excludeFromCompile&gt;&lt;resourceExtensions /&gt;”，里面列了那个不被编译的类，把这个标签对删掉。</p>
+</li>
+<li><p>在intellij中删掉这个module，重启intellij</p>
+</li>
+<li><p>到module的目录下删掉ciatexam.iml</p>
+</li>
+<li><p>在Intellij中重新导入module，重新配置</p>
+</li>
+<li><p>重新编译，哦了。</p>
+</li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Intellij </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Intellij 编译]]></title>
+      <url>/2017/01/20/Intellij-%E7%BC%96%E8%AF%91/</url>
+      <content type="html"><![CDATA[<p>Intellij IDEA是一个优秀的IDE，平时在写东西的时候回涉及到Compile、Make、Build这三个操作多一些，刚开始接触这个编译器的同学可能对于几个操作会比较困惑，只要简单理解下基本就没事了。</p>
+<a id="more"></a>
+<ol>
+<li><p>Compile<br>编译选定的文件，可以是单个文件，也可以是一个module，不管之前有没有编译过，不管文件有没有更改</p>
+</li>
+<li><p>Make<br>编译选定的文件，但是只编译改变的文件，用来Make一个module</p>
+</li>
+<li><p>Build<br>对整个project进行编译，build一般会生成发布的包，一般耗时较长。</p>
+</li>
+</ol>
+<p>建议使用Make，只编译更改的文件，节省时间。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Intellij </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[常用坐标系]]></title>
+      <url>/2017/01/19/%E5%B8%B8%E7%94%A8%E5%9D%90%E6%A0%87%E7%B3%BB/</url>
+      <content type="html"><![CDATA[<p>由于工作中经常涉及位置服务等问题，不可避免的要接触到各种坐标系的问题，而对于刚开始接触，不明一二的话就会一头雾水，所以特别做了简单地功课，搞清楚。</p>
+<a id="more"></a>
+<h2 id="地球坐标–WGS84"><a href="#地球坐标–WGS84" class="headerlink" title="地球坐标–WGS84"></a>地球坐标–WGS84</h2><p>国际上通用的坐标系。<br>google地图采用此坐标系统（中国范围外）。<br>设备一般包含GPS芯片或者北斗芯片获取的经纬度为WGS84地理坐标系</p>
+<h2 id="火星坐标–GCJ02"><a href="#火星坐标–GCJ02" class="headerlink" title="火星坐标–GCJ02"></a>火星坐标–GCJ02</h2><p>使用国家保密插件对地球坐标进行人为偏移后的坐标，中国国家测绘局指定的地理信息系统坐标。<br>谷歌中国地图、搜搜中国地图和高德地图采用此坐标系统。
+﻿</p>
+<h2 id="百度坐标–BD09"><a href="#百度坐标–BD09" class="headerlink" title="百度坐标–BD09"></a>百度坐标–BD09</h2><p>GCJ02坐标系经加密后的坐标系。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hello World]]></title>
+      <url>/2017/01/02/hello-world/</url>
+      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<a id="more"></a>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>
