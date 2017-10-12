@@ -4,7 +4,7 @@
     
     <entry>
       <title><![CDATA[探秘Java集合框架]]></title>
-      <url>/2017/09/15/%E6%8E%A2%E7%A7%98Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/</url>
+      <url>/%E6%8E%A2%E7%A7%98Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;最近又看了看Java集合方面的内容，想来还是记录下比较好，回头再看是也有个头绪，下面的内容仅作为本人的总结和学习记录，有些混乱，还望想细看的朋友不要捶胸顿足。</p>
 <p>&emsp;&emsp; 在Java1.2之前，其实也有类似于集合方面的数据结构，但是因为缺少统一的规范和接口，所以在使用上极为的不方便，于是在Java1.2时重新设计了Java集合框架。</p>
 <a id="more"></a>
@@ -21,7 +21,7 @@
 <h3 id="Quene"><a href="#Quene" class="headerlink" title="Quene"></a>Quene</h3><p>队列结构，元素先进先出。</p>
 <h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>一组键值对对象。在集合中每一个位置都是按照一个“键”对应一个“值”的结构。替代了之前的Dictionary类。</p>
 <h2 id="集合UML"><a href="#集合UML" class="headerlink" title="集合UML"></a>集合UML</h2><p>对于JDK中的常用集合类做了一个简单的整理，画了一个UML类图，用来帮助理解和记录。</p>
-<p><img src="/2017/09/15/探秘Java集合框架/Collection-UML.png" alt=""></p>
+<p><img src="/探秘Java集合框架/Collection-UML.png" alt=""></p>
 <h1 id="集合特点"><a href="#集合特点" class="headerlink" title="集合特点"></a>集合特点</h1><h2 id="接口和实现类分离"><a href="#接口和实现类分离" class="headerlink" title="接口和实现类分离"></a>接口和实现类分离</h2><p>&emsp;&emsp;Java集合类把接口与实现类做了分离，在程序中只要使用某种接口的集合，只需要在实例化集合类时选择合适的实现类即可，在更换时，也可指更换接口的实现类，而不需要更改接口调用的方法。</p>
 <p>&emsp;&emsp;集合框架中所有的接口都不是有直接的实现类，而是继承对应接口的抽象类，抽象类实现了接口中的方法。</p>
 <p>循环数组是一个有界集合，即内部的元素数量是有限的，如果碰到某些不可预估数量的对象集合，还是用链表比较好。</p>
@@ -96,7 +96,7 @@
     
     <entry>
       <title><![CDATA[Spring Data Redis初步探秘]]></title>
-      <url>/2017/07/10/Spring-Data-Redis%E5%88%9D%E6%AD%A5%E6%8E%A2%E7%A7%98/</url>
+      <url>/Spring-Data-Redis%E5%88%9D%E6%AD%A5%E6%8E%A2%E7%A7%98/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;&emsp;&emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。</p>
 <p>&emsp;&emsp;&emsp;&emsp;在我上一篇文章中，介绍了我按照Spring中JDBC的方式封装Jedis。其实在那个时候我并不知道有SDR，所以就索性自己用回调的方式来写的，后面几天继续研究Redis才了解到了SDR，瞬间觉得世界好大。</p>
 <a id="more"></a>
@@ -113,7 +113,7 @@
 <h4 id="1-3-3-Operational-views进行操作"><a href="#1-3-3-Operational-views进行操作" class="headerlink" title="1.3.3 Operational views进行操作"></a>1.3.3 Operational views进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;SDR还提供了很多的操作视图来帮助我们更方便的使用Redis，对RedisTemplate进行了进一步的封装。此部分将在下面做介绍。</p>
 <p>&emsp;&emsp;&emsp;&emsp;Redis中每种数据类型都有其对应的Operations，这些Operations也可通过RedisTemplate中获得。</p>
 <h2 id="二、序列化"><a href="#二、序列化" class="headerlink" title="二、序列化"></a>二、序列化</h2><p>&emsp;&emsp;&emsp;&emsp;SDR中也提供了存储内容的序列化方法，这个框架把存储到Redis中的数据都认为是bytes。SDR通过<strong>org.springframework.data.redis.serializer.RedisSerializer</strong>接口把数据进行序列化。此接口有多个实现类，均可用于Redis中key和value的序列化。但是比较常用的就是<strong>JdkSerializationRedisSerializer</strong>和<strong>StringRedisSerializer</strong>。</p>
-<p><img src="/2017/07/10/Spring-Data-Redis初步探秘/sdr-serial.png" alt=""></p>
+<p><img src="/Spring-Data-Redis初步探秘/sdr-serial.png" alt=""></p>
 <h3 id="2-1-JdkSerializationRedisSerializer"><a href="#2-1-JdkSerializationRedisSerializer" class="headerlink" title="2.1 JdkSerializationRedisSerializer"></a>2.1 JdkSerializationRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类使用的是JDK自带的序列化机制，通过<strong>ObjectInputStream 和 ObjectOutputStream</strong>进行转换。RedisTemplate中默认开启使用预定义的序列化类，默认为此类，要使用此类进行key和value的序列化，要求被序列化的内容必须实现<strong>Serializable</strong>接口。</p>
 <h3 id="2-2-StringRedisSerializer"><a href="#2-2-StringRedisSerializer" class="headerlink" title="2.2 StringRedisSerializer"></a>2.2 StringRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;专门对字符串类型的key和value进行序列化，根据指定的字符编码进行字符串的转换，默认编码为UTF-8。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>(Charset.forName(<span class="string">"UTF8"</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">(Charset charset)</span> </span>&#123;</div><div class="line">	Assert.notNull(charset, <span class="string">"Charset must not be null!"</span>);</div><div class="line">	<span class="keyword">this</span>.charset = charset;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> (bytes == <span class="keyword">null</span> ? <span class="keyword">null</span> : <span class="keyword">new</span> String(bytes, charset));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(String string) &#123;</div><div class="line">	<span class="keyword">return</span> (string == <span class="keyword">null</span> ? <span class="keyword">null</span> : string.getBytes(charset));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -225,7 +225,7 @@
     
     <entry>
       <title><![CDATA[从Spring乘舟回调到Jedis自我发育回调]]></title>
-      <url>/2017/06/23/%E4%BB%8ESpring%E4%B9%98%E8%88%9F%E5%9B%9E%E8%B0%83%E5%88%B0Jedis%E8%87%AA%E6%88%91%E5%8F%91%E8%82%B2%E5%9B%9E%E8%B0%83/</url>
+      <url>/%E4%BB%8ESpring%E4%B9%98%E8%88%9F%E5%9B%9E%E8%B0%83%E5%88%B0Jedis%E8%87%AA%E6%88%91%E5%8F%91%E8%82%B2%E5%9B%9E%E8%B0%83/</url>
       <content type="html"><![CDATA[<p>从Spring乘舟回调到Jedis自我发育回调</p>
 <p>&emsp;&emsp;&emsp;&emsp;最近这段时间，接触回调模式比较多，使用也比较多，所以今天来简单写一下关于回调的思考。在实际开发中，回调是一种常见且常用的方式，用来实现把一块代码传递到其他代码处来执行。</p>
 <p>下面是<strong>维基百科</strong>对回调的定义：</p>
@@ -234,7 +234,7 @@
 </blockquote>
 <a id="more"></a>
 <h2 id="Spring中的回调"><a href="#Spring中的回调" class="headerlink" title="Spring中的回调"></a>Spring中的回调</h2><p>&emsp;&emsp;&emsp;&emsp;此处简要说一下Spring中在数据库操作方面的回调使用，涉及到JdbcTemplate 和 HibernateTemplate。这两个类都需要打开资源进行数据库操作，操作完后进行资源释放。</p>
-<p><img src="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/spring.png" alt=""></p>
+<p><img src="/从Spring乘舟回调到Jedis自我发育回调/spring.png" alt=""></p>
 <p>&emsp;&emsp;&emsp;&emsp;我们在进行JDBC操作数据库的时候，往往会按照API写一大堆重叠的代码，为了进行一个简单的操作，就必须要重复写诸如打开连接、执行操作等代码。我们在写DAO层的时候，会对JDBC进行封装，依此来简化我们上层的使用。</p>
 <p>&emsp;&emsp;&emsp;&emsp;Spring也是本着封装和减少我们出错等的原则来设计了其内部中对于持久化的集成。尤其在其中的与JDB和Hibernate的融合上，在Spring中使用他们变得更简洁，我们无需手动关心资源的打开与释放等，这要得益于Spring在进行封装的时候使用了回调的一个小机制。</p>
 <p>&emsp;&emsp;&emsp;&emsp;此处我们以JdbcTemplate的部分代码来做分析，下面贴出来的源码只贴出了必要的部分。</p>
@@ -244,7 +244,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcTemplate</span> <span class="keyword">extends</span> <span class="title">JdbcAccessor</span> <span class="keyword">implements</span> <span class="title">JdbcOperations</span> </span>&#123;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 把JDBC的基本操作流程封装起来，供其他方法直接调用，传入回调接口的实现类</div><div class="line"> * <span class="doctag">@param</span> action</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(StatementCallback&lt;T&gt; action)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</div><div class="line">		Assert.notNull(action, <span class="string">"Callback object must not be null"</span>);</div><div class="line">		</div><div class="line">		<span class="comment">/*</span></div><div class="line">		 *  1、获取数据库连接Connection</div><div class="line">		 */</div><div class="line">		Connection con = DataSourceUtils.getConnection(getDataSource());</div><div class="line">		Statement stmt = <span class="keyword">null</span>;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			Connection conToUse = con;</div><div class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span> &amp;&amp;</div><div class="line">					<span class="keyword">this</span>.nativeJdbcExtractor.isNativeConnectionNecessaryForNativeStatements()) &#123;</div><div class="line">				conToUse = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeConnection(con);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="comment">/*</span></div><div class="line">			 * 2、创建SQL执行清单Statement</div><div class="line">			 */</div><div class="line">			stmt = conToUse.createStatement();</div><div class="line">			applyStatementSettings(stmt);</div><div class="line">			Statement stmtToUse = stmt;</div><div class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.nativeJdbcExtractor != <span class="keyword">null</span>) &#123;</div><div class="line">				stmtToUse = <span class="keyword">this</span>.nativeJdbcExtractor.getNativeStatement(stmt);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="comment">//  3、执行Statement，获取操作结果</span></div><div class="line">			T result = action.doInStatement(stmtToUse);</div><div class="line">			handleWarnings(stmt);</div><div class="line">			<span class="keyword">return</span> result;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">catch</span> (SQLException ex) &#123;</div><div class="line">			<span class="comment">// Release Connection early, to avoid potential connection pool deadlock</span></div><div class="line">			<span class="comment">// in the case when the exception translator hasn't been initialized yet.</span></div><div class="line">			JdbcUtils.closeStatement(stmt);</div><div class="line">			stmt = <span class="keyword">null</span>;</div><div class="line">			DataSourceUtils.releaseConnection(con, getDataSource());</div><div class="line">			con = <span class="keyword">null</span>;</div><div class="line">			<span class="keyword">throw</span> getExceptionTranslator().translate(<span class="string">"StatementCallback"</span>, getSql(action), ex);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">finally</span> &#123;</div><div class="line">			<span class="comment">/*</span></div><div class="line">			 * 4、释放资源</div><div class="line">			 */</div><div class="line">			JdbcUtils.closeStatement(stmt);</div><div class="line">			DataSourceUtils.releaseConnection(con, getDataSource());</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">   <span class="comment">/**</span></div><div class="line">    * 可供自定义的DAO中使用的execute方法，可以自己传入sql来执行自定义的sql操作</div><div class="line">    * <span class="doctag">@param</span> sql</div><div class="line">    */</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">final</span> String sql)</span> <span class="keyword">throws</span> DataAccessException </span>&#123;</div><div class="line">		<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</div><div class="line">			logger.debug(<span class="string">"Executing SQL statement ["</span> + sql + <span class="string">"]"</span>);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		<span class="comment">/*</span></div><div class="line">		 * 实现SQL清单回调接口，定义回调函数</div><div class="line">		 */</div><div class="line">		<span class="class"><span class="keyword">class</span> <span class="title">ExecuteStatementCallback</span> <span class="keyword">implements</span> <span class="title">StatementCallback</span>&lt;<span class="title">Object</span>&gt;, <span class="title">SqlProvider</span> </span>&#123;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> Object <span class="title">doInStatement</span><span class="params">(Statement stmt)</span> <span class="keyword">throws</span> SQLException </span>&#123;</div><div class="line">			   <span class="comment">/*</span></div><div class="line">			    * 执行SQL</div><div class="line">			    */</div><div class="line">				stmt.execute(sql);</div><div class="line">				<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">			&#125;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> String <span class="title">getSql</span><span class="params">()</span> </span>&#123;</div><div class="line">				<span class="keyword">return</span> sql;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		execute(<span class="keyword">new</span> ExecuteStatementCallback());</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;&emsp;&emsp;在我们的DAO中，就可以直接注入JdbcTemplate，来调用其中的<strong>execute(final String sql)</strong>方法来传递进入sql来执行，而无需考虑连接打开，连接释放等问题。</p>
 <h2 id="回调应用"><a href="#回调应用" class="headerlink" title="回调应用"></a>回调应用</h2><p>&emsp;&emsp;&emsp;&emsp;起初在研究到Spring中的回调时，并没有太留意，只是觉得很方便，可到了最近几天也在做类似的内容，才发现原来还是有相通的地方。最近这几天在研究Redis，准备在项目中加入简单的消息队列和对象缓存，刚开始写就发现在获取Jedis和归还Jedis上有些许可以改进的地方。</p>
-<p><img src="/2017/06/23/从Spring乘舟回调到Jedis自我发育回调/redis.jpg" alt=""></p>
+<p><img src="/从Spring乘舟回调到Jedis自我发育回调/redis.jpg" alt=""></p>
 <p>&emsp;&emsp;&emsp;&emsp;用Java语言来操作Redis，选用了Jedis来作为客户端操作Redis。用到了Jedis中的连接池来操作，所以会涉及到获取Jedis对象，连接池资源的释放等问题，也有很多重复代码的存在。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(参数)</span></span>&#123;</div><div class="line">    T result = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    Jedis jedis = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        jedis = <span class="keyword">this</span>.getJedisPool().getResource();</div><div class="line">        result = jedis的各种操作</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">//返还到连接池</span></div><div class="line">        jedis.close();</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如此一来便和JDBC应用时碰到了非常类似的问题，在做每一次实际操作的时候，操作之前和之后的代码都是相同的，唯独这些操作的代码是不一样的，所以就考虑抽取这些操作的代码出来，每次只要把这部分操作代码灵活的传递到Jedis代码执行处便可。</p>
@@ -274,7 +274,7 @@
     
     <entry>
       <title><![CDATA[JNA回调]]></title>
-      <url>/2017/05/26/JNA%E5%9B%9E%E8%B0%83/</url>
+      <url>/JNA%E5%9B%9E%E8%B0%83/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;&emsp;&emsp;实际开发中，可能不全都是从Java到本地类库的调用，往往可能还涉及本地代码的回调，这个时候，JNA的回调功能就派上用场了。</p>
 <p>&emsp;&emsp;&emsp;&emsp;本篇中的JNA回调实例，是在上一篇《初识JNA》的基础上写的，下面涉及到的代码均在之前的例子中添加。</p>
 <a id="more"></a>
@@ -315,7 +315,7 @@
 }
 </code></pre>
 <p>&emsp;&emsp;&emsp;&emsp;运行此回调测试，得到以下结果。</p>
-<p><img src="/2017/05/26/JNA回调/result.png" alt=""></p>
+<p><img src="/JNA回调/result.png" alt=""></p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>&emsp;&emsp;&emsp;&emsp;上面的例子中，用了简单的逻辑来实现回调，实际应用中可能伴随着复杂的逻辑，此处只是抽丝剥茧。</p>
 ]]></content>
       
@@ -336,7 +336,7 @@
     
     <entry>
       <title><![CDATA[初识JNA]]></title>
-      <url>/2017/05/26/%E5%88%9D%E8%AF%86JNA/</url>
+      <url>/%E5%88%9D%E8%AF%86JNA/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;JNA（Java Native Access）对JNI进行了包装，提供了一组工具类用于访问本地程序，不需要编写任何Native或JNI代码。只需要在Java接口文件中定义与本地类库中的方法结构一样的native类型的方法即可，不需要实现，JNA会自动联系Java中的接口与本地类库中的方法。</p>
 <p>&emsp;&emsp;原则上来说在有本地类库时，并不需要再写本地代码，而是直接写Java代码即可，但这样做的前提是要有一个编写良好又明确标明方法的类库。如果碰到任务需要在原来本地类库的基础上进行二次包装，就不得不继续编写本地代码了，而我写的这个例子就是按照这样的步骤来的。</p>
 <a id="more"></a>
@@ -350,13 +350,13 @@
 <p>注意方法声明的前面添加了__declspec(dllexport)。</p>
 <h4 id="源码文件jnainterface-cpp"><a href="#源码文件jnainterface-cpp" class="headerlink" title="源码文件jnainterface.cpp"></a>源码文件jnainterface.cpp</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">#include "stdafx.h"</div><div class="line">#include "jnainterface.h"</div><div class="line"></div><div class="line">/************************************************************************/</div><div class="line">/* 无返回值，无参测试方法                                                */</div><div class="line">/************************************************************************/</div><div class="line">void test1() &#123;</div><div class="line">	cout &lt;&lt; "Hello World, this is C++ printer." &lt;&lt; endl;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/************************************************************************/</div><div class="line">/* 有返回值，有参测试方法                                                */</div><div class="line">/************************************************************************/</div><div class="line">char* test2(char* strArg) &#123;</div><div class="line">	//  打印来自Java的字符串</div><div class="line">	cout &lt;&lt; strArg &lt;&lt; endl;</div><div class="line"></div><div class="line">	//  向Java端返回字符串</div><div class="line">	return "From C++ dll.";</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="生成动态库"><a href="#生成动态库" class="headerlink" title="生成动态库"></a>生成动态库</h3><p>&emsp;&emsp;&emsp;&emsp;本地代码完成后，随即就要编译为本地类库，并放到对应目录下。本程序中，在windows下，我把生成的dll文件放到了JDK的bin目录下。</p>
-<p><img src="/2017/05/26/初识JNA/dlllib.png" alt=""></p>
+<p><img src="/初识JNA/dlllib.png" alt=""></p>
 <h3 id="加载动态库"><a href="#加载动态库" class="headerlink" title="加载动态库"></a>加载动态库</h3><p>&emsp;&emsp;&emsp;&emsp;加载动态库，用JNA对于接口的实例来调用接口中的方法。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.jna.Native;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  JNA测试</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@org</span>.junit.<span class="function">Test</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEasemob</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</div><div class="line"></div><div class="line">        JNADemo jnaDemo = Native.loadLibrary(<span class="string">"JavaCpp"</span>, JNADemo.class);</div><div class="line"></div><div class="line">        <span class="comment">//  调用Java接口中的方法，执行C++中的方法体</span></div><div class="line">        jnaDemo.test1();</div><div class="line"></div><div class="line">        <span class="comment">//  向C++类库中传递字符串参数，并得到字符串返回值</span></div><div class="line">        String cpprt = jnaDemo.test2(<span class="string">"FROM Java"</span>);</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"来自C++动态类库："</span> + cpprt);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;&emsp;&emsp;执行上面的代码，得到下面的结果。</p>
-<p><img src="/2017/05/26/初识JNA/result.png" alt=""></p>
+<p><img src="/初识JNA/result.png" alt=""></p>
 <h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>&emsp;&emsp;&emsp;&emsp;不管是使用JNI还是JNA都要特别注意Java与本地类库中类型的对应。在JNA的网站上给出了Java与C的类型对照，可以做参考。</p>
-<p><img src="/2017/05/26/初识JNA/types.png" alt=""></p>
+<p><img src="/初识JNA/types.png" alt=""></p>
 <p>&emsp;&emsp;&emsp;&emsp;对于其中的boolean我也用过，在C++中因为有boolean类型，所以C++代码中可以直接用boolean。</p>
 ]]></content>
       
@@ -377,7 +377,7 @@
     
     <entry>
       <title><![CDATA[JNI回调]]></title>
-      <url>/2017/05/24/JNI%E5%9B%9E%E8%B0%83/</url>
+      <url>/JNI%E5%9B%9E%E8%B0%83/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;在使用JNI的过程中，大多数情况可能都是Java调用本地语言，但不可避免的也会碰到本地语言中调用Java中方法的情况。这就碰到了回调的问题，做了小研究特此记录下来。</p>
 <p>&emsp;&emsp;这里要讲到的回调的例子，是基于上一篇《初始JNI》，增加了回调。</p>
 <a id="more"></a>
@@ -395,11 +395,11 @@
 <p>Java中调用test1来触发此回调函数。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line"><span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">jniDemo.test1();</div></pre></td></tr></table></figure>
 <h2 id="4、执行回调"><a href="#4、执行回调" class="headerlink" title="4、执行回调"></a>4、执行回调</h2><p>运行此程序，得到下图的结果。</p>
-<p><img src="/2017/05/24/JNI回调/result.png" alt=""></p>
+<p><img src="/JNI回调/result.png" alt=""></p>
 <p>可以看到C++中的代码正确的调用了Java中的方法，并传递了参数到Java中。</p>
 <h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><h3 id="查看方法签名"><a href="#查看方法签名" class="headerlink" title="查看方法签名"></a>查看方法签名</h3><p>JDK中本身提供了查看签名的方法。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javap -s JNIDemo</div></pre></td></tr></table></figure>
-<p><img src="/2017/05/24/JNI回调/sign.png" alt=""></p>
+<p><img src="/JNI回调/sign.png" alt=""></p>
 <p>&emsp;&emsp;可以很清晰的看到receiveCPPTest方法的签名是</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(Ljava/lang/String;)V</div></pre></td></tr></table></figure>
 <p>参数是String类型，返回值是void。</p>
@@ -426,7 +426,7 @@
     
     <entry>
       <title><![CDATA[初识JNI]]></title>
-      <url>/2017/05/24/%E5%88%9D%E8%AF%86JNI/</url>
+      <url>/%E5%88%9D%E8%AF%86JNI/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;众所周知，Java是一门跨平台语言，用Java可以完成很多工作。但Java也不是万能的，有时我们可能会需要调用很多本地应用或库，有可能会需要其他程序来调用Java。这就涉及到一个Java与其他语言程序的交互问题。对于本地程序，我们一般都会用C或C++或汇编语言等来编写，然后再编译为基于本地系统和硬件的程序，所以需要有一种让JVM中的程序调用本地程序的技术，这个时候JNI就出现了。当然也会有其他方式来实现本机应用和Java程序间的通讯，但某些情况下确实会用到JNI的方式来实现Java和本地程序的互相调用。</p>
 <p>&emsp;&emsp;JNI (Java Native Interface)是一个标准的编程接口，定义了一种方式来实现JVM中的Java代码和本地代码间的交互。</p>
 <a id="more"></a>
@@ -479,11 +479,11 @@
 <p>2、把Java源文件编译为class文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javac -encoding UTF-8 JNIDemo.java</div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;编译java文件的时候我加了一个参数encoding，因为我的电脑默认编码时GBK，而我用的Java文件编码为UTF-8，所以指定UTF-8编码来编译，避免编码不一致而出错的问题。</p>
-<p><img src="/2017/05/24/初识JNI/javac.png" alt=""></p>
+<p><img src="/初识JNI/javac.png" alt=""></p>
 <p>3、用javah命令把class文件编译为头文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javah JNIDemo</div></pre></td></tr></table></figure>
 <p>此命令把class文件编译为C++的头文件。</p>
-<p><img src="/2017/05/24/初识JNI/javah.png" alt=""></p>
+<p><img src="/初识JNI/javah.png" alt=""></p>
 <p>头文件JNIDemo.h中的内容如下</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></div><div class="line"><span class="comment">/* Header for class JNIDemo */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_JNIDemo</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test1</div><div class="line"> * Signature: ()V</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject)</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Class:     JNIDemo</div><div class="line"> * Method:    test2</div><div class="line"> * Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line"> */</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line">  <span class="params">(JNIEnv *, jobject, jstring)</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></div><div class="line">&#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;可以看出，头文件中已经自动导入了jni.h文件，我们在Java文件中声明的native方法也自动用C++语言声明了出来。而没有被native修饰的方法不会被识别。</p>
@@ -496,16 +496,16 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"JNIDemo.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"StringUtils.h"</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test1</div><div class="line">* Signature: ()V</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_JNIDemo_test1</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj)</span> </div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World, this is C++ printer."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Class:     JNIDemo</div><div class="line">* Method:    test2</div><div class="line">* Signature: (Ljava/lang/String;)Ljava/lang/String;</div><div class="line">*/</div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_JNIDemo_test2</span></span></div><div class="line"><span class="params">(JNIEnv *env, jobject obj, jstring strArg)</span></div><div class="line">&#123;</div><div class="line">	<span class="comment">//  打印来自Java的字符串</span></div><div class="line">	<span class="built_in">cout</span> &lt;&lt; StringUtils::jstring2str(env, strArg) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	jstring returnstr = StringUtils::str2jstring(env, <span class="string">"From C++ dll."</span>);</div><div class="line"></div><div class="line">	<span class="comment">//  向Java端返回字符串</span></div><div class="line">	<span class="keyword">return</span> returnstr;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>5、生成动态库，放到对应目录下</p>
 <p>&emsp;&emsp;本程序中，在Windows下，生成了dll文件，放到了JDK的bin中</p>
-<p><img src="/2017/05/24/初识JNI/dllpath.png" alt=""></p>
+<p><img src="/初识JNI/dllpath.png" alt=""></p>
 <p>6、加载动态库，调用Java类中对应的方法</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * JNI调用测试</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JNITest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">//  加载C++编译的动态类库，</span></div><div class="line">        <span class="comment">// 不用写.dll，直接写文件名字即可，这样是为了跨平台，linux上和windows上的类库后缀不一样</span></div><div class="line">        System.loadLibrary(<span class="string">"JavaCpp"</span>);</div><div class="line"></div><div class="line">        JNIDemo jniDemo = <span class="keyword">new</span> JNIDemo();</div><div class="line"></div><div class="line">        <span class="comment">//  1、测试无参无返回值的方法</span></div><div class="line">        jniDemo.test1();</div><div class="line"></div><div class="line">        <span class="comment">//  2、测试有参有返回值的方法。</span></div><div class="line">        String test2Result = jniDemo.test2(<span class="string">"From Java"</span>);</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"-----test2---begin---"</span>);</div><div class="line">        System.out.println(<span class="string">"strArg--&gt;"</span> + test2Result);</div><div class="line">        System.out.println(<span class="string">"-----test2---end---"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>7、运行</p>
 <p>运行main方法，得到如下输出内容</p>
-<p><img src="/2017/05/24/初识JNI/main.png" alt=""></p>
+<p><img src="/初识JNI/main.png" alt=""></p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>&emsp;&emsp;以上的例子是我在研究完工作内容后做的，工作工程中针对此部分还碰到了很多问题，有几个比较典型的，做一下记录。</p>
-<h3 id="1、class文件到头文件"><a href="#1、class文件到头文件" class="headerlink" title="1、class文件到头文件"></a>1、class文件到头文件</h3><p>   <img src="/2017/05/24/初识JNI/javah-error1.png" alt=""></p>
+<h3 id="1、class文件到头文件"><a href="#1、class文件到头文件" class="headerlink" title="1、class文件到头文件"></a>1、class文件到头文件</h3><p>   <img src="/初识JNI/javah-error1.png" alt=""></p>
 <p>&emsp;&emsp;在class的目中执行javah命令时，碰到了找不到文件的情况，一开始一头雾水，后来多方查找后发现是目录问题。</p>
-<p>   <img src="/2017/05/24/初识JNI/javah-error2.png" alt=""></p>
+<p>   <img src="/初识JNI/javah-error2.png" alt=""></p>
 <p>&emsp;&emsp;切换到class类的顶层目录，再次执行此命令，通过。</p>
 <h3 id="2、JNI调用dll报错找不到依赖的类库"><a href="#2、JNI调用dll报错找不到依赖的类库" class="headerlink" title="2、JNI调用dll报错找不到依赖的类库"></a>2、JNI调用dll报错找不到依赖的类库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">java.lang.UnsatisfiedLinkError: </div><div class="line">D:\develop\Java\1.8\32\jdk1.8.0_65\bin\EasemobLib.dll: </div><div class="line">Can&apos;t find dependent libraries</div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;意思是EasemobLib.dll中依赖的dll没有加载进来，这里推荐一类工具，dll依赖查看工具。可以直接看出自己的dll中都依赖哪些dll，里面缺少哪些。再对应的去找。</p>
@@ -552,7 +552,7 @@
     
     <entry>
       <title><![CDATA[《皮囊》笔记五]]></title>
-      <url>/2017/03/22/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%94/</url>
+      <url>/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%94/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;可能我们会碰到很多小时候很厉害，长大了却一般般的人，还有那种一直都在激情生活却一直都不落地的人。</p>
 <a id="more"></a>
 <ul>
@@ -587,7 +587,7 @@
     
     <entry>
       <title><![CDATA[《皮囊》笔记四]]></title>
-      <url>/2017/03/22/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E5%9B%9B/</url>
+      <url>/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E5%9B%9B/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;真是感觉读书容易，写笔记难啊。</p>
 <ul>
 <li>张美丽</li>
@@ -625,10 +625,10 @@
     
     <entry>
       <title><![CDATA[共享单车思考二]]></title>
-      <url>/2017/03/22/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%BA%8C/</url>
+      <url>/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%BA%8C/</url>
       <content type="html"><![CDATA[<h2 id="APP找车"><a href="#APP找车" class="headerlink" title="APP找车"></a>APP找车</h2><h3 id="ofo"><a href="#ofo" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;那到底是怎么可以看出附近车子数量的呢？个人推测，是通过APP定位来实现的，当结束骑行后点击APP上的“结束骑行”，此时APP把位置上报到服务器，进而粗略统计某个位置附近可用车子数目。</p>
 <a id="more"></a>
-<p><img src="/2017/03/22/共享单车思考二/bike/ofo_app.jpg" alt=""></p>
+<p><img src="/共享单车思考二/bike/ofo_app.jpg" alt=""></p>
 <p>&emsp;&emsp;大家可能有个疑问，那就是既然车子上没有定位装置，APP是如何来显示周围车子数目的呢？一方面靠的是ofo的车辆调度人员，另一方面个人推测是根据用户结束用车的位置来确定车子的位置。假设一个人正常骑车，行驶到目的地后，点击APP上的结束用车，这个时候会上传一个用户手机的位置，系统就会认为这是车子的位置，因为用户结束骑行后，一般都会在车子旁边来用APP结束用车而结费。但是这整个一套流程就有好多限制：</p>
 <ol>
 <li>用户严格按照这个流程来使用车子</li>
@@ -637,20 +637,20 @@
 </ol>
 <p>&emsp;&emsp;虽然这个方法很不准确，但也能有个参照作用。没办法呀，没有智能车锁，就只能靠不严格的程序来进行记录了。等ofo的智能车锁研发出来后，相信会大大改善这个问题。</p>
 <h3 id="摩拜"><a href="#摩拜" class="headerlink" title="摩拜"></a>摩拜</h3><p>&emsp;&emsp;多亏了车子的定位装置，摩拜的车子找起来要方便很多了，但是就这么一个定位问题也影响了摩拜的用户体验，毕竟定位不会百分百准确，因为建筑物遮挡、网络缓慢、定位偏差等问题都会造成位置不是特别准确。我个人就碰到了好多次这个问题，到了APP指示的车子地点，却没有发现任何一辆车子，导致我一度都卸载了这个APP。不过，现在车子投放量很多了，大街上随处可见小橙车，基本可以直接过去扫码开锁。</p>
-<p><img src="/2017/03/22/共享单车思考二/bike/mobike_app.jpg" alt=""></p>
+<p><img src="/共享单车思考二/bike/mobike_app.jpg" alt=""></p>
 <p>&emsp;&emsp;摩拜还提供了预定车子的功能，可以提前把一辆车子预约好，在15分钟内过去开锁即可。走到车子附近时，可用APP上的“寻车铃”来进一步定位车子，但是我发现这个按钮一直都是灰色状态，所以一般只能靠运气和对照车辆编号来确定预定的车子。</p>
-<p><img src="/2017/03/22/共享单车思考二/bike/mobike_date.jpg" alt=""></p>
+<p><img src="/共享单车思考二/bike/mobike_date.jpg" alt=""></p>
 <h2 id="骑行轨迹"><a href="#骑行轨迹" class="headerlink" title="骑行轨迹"></a>骑行轨迹</h2><p>&emsp;&emsp;既然涉及到了定位，就不得不说一下轨迹的问题了。运动轨迹就是多个定位点组成的线路。根据收集到的位置在地图上进行线路绘制，就出现了我们在APP上看到的轨迹了。</p>
 <h3 id="ofo-1"><a href="#ofo-1" class="headerlink" title="ofo"></a>ofo</h3><p>&emsp;&emsp;有朋友可能会有疑问，既然ofo车子上没有GPS装置，为什么还会有位置记录呢？我在上面的APP找车中提到过手机位置上报的问题，没错，ofo就是收集了用户在骑行中的位置，APP每隔几分钟就上报一次位置，位置多了，就可以绘制轨迹了。</p>
-<p><img src="/2017/03/22/共享单车思考二/bike/ofo_route.jpg" alt=""></p>
+<p><img src="/共享单车思考二/bike/ofo_route.jpg" alt=""></p>
 <p>&emsp;&emsp;但是从路径绘制这个功能上来说，还是有问题的。图片中的路径是我从北医三院附近骑行到安立路地铁站附近。但是路径中可以看出来，只给我统计到了北沙滩地铁站附近，并且路线也跑到了非马路上。平时骑ofo的时候，也会偶尔骑个三五分钟，那时候的路径更是只有起点和终点，路线更是横跨建筑物。</p>
 <p>&emsp;&emsp;所以，个人推测他们的路径只是按照时间顺序来连接经纬度，并且大概每隔5分钟左右来让APP上报一次。这就是一个粗略的统计，但是位置数据是很敏感也很有用的数据，数据多了之后就非常有用。</p>
 <p>&emsp;&emsp;某些电子地图就可以根据我们平时的行动变化，来猜测某个位置就是我们自己的家，某个位置就是我们工作的地方，进而进行一些商业上的使用。</p>
-<h3 id="摩拜-1"><a href="#摩拜-1" class="headerlink" title="摩拜"></a>摩拜</h3><p><img src="/2017/03/22/共享单车思考二/bike/mobike_route.jpg" alt=""></p>
+<h3 id="摩拜-1"><a href="#摩拜-1" class="headerlink" title="摩拜"></a>摩拜</h3><p><img src="/共享单车思考二/bike/mobike_route.jpg" alt=""></p>
 <p>&emsp;&emsp;摩拜单车因为车子上本来就有GPS模块和GSM模块，所以，不管是基站定位还是GPS定位，自然可以进行很好的定位和位置上报。但是考虑到车锁中电池电量和使用时长的问题，不知道摩拜的工程师们有没有借助于手机的位置来上报。</p>
 <p>&emsp;&emsp;从他们绘制的路线上来看，偏差没那么大，还算是准确。能看出路线有大小的弯曲，所以，猜测他们收集位置的频率还是比较高的，骑行过程中收集的位置点还是比较密集的。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;不管是小黄车、小橙车还是小蓝车，都是为了我们的生活更美好，他们的出现都说明我们生活中还有很多需要便利的地方，也正是他们的出现，大大的方便了我们短距离的出行。新生事物的出现总会引发社会的强烈反应和讨论，对于共享单车，甚至都得到了政府的很多鼓励，也是很少见，但是对于共享单车的监管还尚在萌芽阶段，各地政府也在积极采取办法来进行监管。</p>
-<p><img src="/2017/03/22/共享单车思考二/bike/ofo_destroy.jpg" alt=""></p>
+<p><img src="/共享单车思考二/bike/ofo_destroy.jpg" alt=""></p>
 <p>&emsp;&emsp;有人说，共享单车就是一面国人素质的照妖镜，把很多人公共素质的低下展现了出来。我们也不难发现到处都有共享单车乱停乱放，甚至毁坏或私用的情况，这种现象必将会持续一段时间，而且短时间内无法消除，毕竟我们无法否认民众素质存在发展不平衡的事实，但是相信这种现象毕竟越来越少，美好的事物总不会消亡。</p>
 <p>&emsp;&emsp;上面粗略的写了这多，其中也肯定有很多不合理甚至错误的地方，只是平时没事的时候，自己瞎捉摸的东西，在这里凑个热闹来写写，还望大家来交流，一起来探讨。</p>
 ]]></content>
@@ -672,11 +672,11 @@
     
     <entry>
       <title><![CDATA[共享单车思考一]]></title>
-      <url>/2017/03/22/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%B8%80/</url>
+      <url>/%E5%85%B1%E4%BA%AB%E5%8D%95%E8%BD%A6%E6%80%9D%E8%80%83%E4%B8%80/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;最近这些日子，各种共享单车是如火如荼的发展啊，大街小巷都是各种单车，从实际应用上来说，确实方便了大家的出行，尤其是5KM内的交通。网上关于这些共享单车的文章也是铺天盖地，有讲运营的，有讲公司架构的，有讲CEO的，总之囊括各个方面，今天我也来凑个热闹，写一下对于这些车子的简单思考。</p>
 <a id="more"></a>
 <p>&emsp;&emsp;车子无论大小肯定是有车锁的，有智能的，有简单的，今天就粗糙的写一下个人思考。粗略的写写，大牛可以忽略了。选取的车子就是ofo和摩拜，也是我平时骑的两个。</p>
-<p><img src="/2017/03/22/共享单车思考一/bike/bikes.jpg" alt=""></p>
+<p><img src="/共享单车思考一/bike/bikes.jpg" alt=""></p>
 <h2 id="骑行体验"><a href="#骑行体验" class="headerlink" title="骑行体验"></a>骑行体验</h2><p>&emsp;&emsp;去年9月的时候开始骑这些车子，一开始接触的是摩拜的首批橙色小车，真的伸不开腿啊，而且好沉好沉，但是也确实起到了代步的作用，因为公司离得比较近，所以基本是隔三差五的骑。当时我只是在想一个问题：设计师有没有自己骑过，这么沉的车子，就没考虑过用户的骑行感受么？</p>
 <p>&emsp;&emsp;不过摩拜的开锁方式和实心胎还是比较新颖的，而且也方便管理和统计。</p>
 <p>&emsp;&emsp;后来就出现了ofo的小黄车，轮胎是打气的，虽然车座有点低，但因为是链条传送，并且是打气的轮胎，所以骑行起来还是比较轻便的。单就骑行感受上来讲，ofo更舒服。</p>
@@ -726,7 +726,7 @@
     
     <entry>
       <title><![CDATA[MINA消息过长]]></title>
-      <url>/2017/02/17/MINA%E6%B6%88%E6%81%AF%E8%BF%87%E9%95%BF/</url>
+      <url>/MINA%E6%B6%88%E6%81%AF%E8%BF%87%E9%95%BF/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;MINA在处理网络编程问题的时候不失为一个好助手，但使用过程中总会碰到大大小小的问题，最近在使用时便碰到了如此的一个小问题，出现问题的时候查阅源码是个好习惯。</p>
 <a id="more"></a>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>&emsp;&emsp;用MINA发送字符串消息的时候，出现了消息过长的问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.apache.mina.common.BufferDataException: Line is too long</div></pre></td></tr></table></figure></p>
@@ -796,7 +796,7 @@
     
     <entry>
       <title><![CDATA[《皮囊》笔记三]]></title>
-      <url>/2017/02/15/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%89/</url>
+      <url>/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%89/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;已经有些日子没写这本书的笔记了，虽然很早就读完了，但因为最近事情比较多，所以一直拖着没写，今天得空写一篇。</p>
 <a id="more"></a>
 <ul>
@@ -827,7 +827,7 @@
     
     <entry>
       <title><![CDATA[《皮囊》笔记二]]></title>
-      <url>/2017/02/08/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%8C/</url>
+      <url>/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%BA%8C/</url>
       <content type="html"><![CDATA[<p>&emsp;&emsp;我想把这两部分放在一起写，也是因为这两部分基本都是有关于作者的父亲生病的故事。有时候，人就是那么脆弱，受不得病魔的折磨，不得已而低头。每个人也少不了面对别人的生老病死，也不可避免的会迎来自己的这一天，而在我们这一辈子的过程中，最好的日子就是健康快乐的时候。</p>
 <a id="more"></a>
 <ul>
@@ -863,8 +863,8 @@
     
     <entry>
       <title><![CDATA[《皮囊》笔记一]]></title>
-      <url>/2017/02/08/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%80/</url>
-      <content type="html"><![CDATA[<p><img src="/2017/02/08/《皮囊》笔记一/pinang.jpg" alt=""><br>&emsp;&emsp;忘记从哪里看到的这本书了，初次接触时没有什么概念，也是在看了评论，听了同事的介绍，就索性入手了一本来看看。也正是从这本书开始，才慢慢培养自己阅读的习惯。乘地铁的时候，排队的时候，坐车的时候，戴上耳机，沉浸在作者的故事里。</p>
+      <url>/%E3%80%8A%E7%9A%AE%E5%9B%8A%E3%80%8B%E7%AC%94%E8%AE%B0%E4%B8%80/</url>
+      <content type="html"><![CDATA[<p><img src="/《皮囊》笔记一/pinang.jpg" alt=""><br>&emsp;&emsp;忘记从哪里看到的这本书了，初次接触时没有什么概念，也是在看了评论，听了同事的介绍，就索性入手了一本来看看。也正是从这本书开始，才慢慢培养自己阅读的习惯。乘地铁的时候，排队的时候，坐车的时候，戴上耳机，沉浸在作者的故事里。</p>
 <a id="more"></a>
 <p>&emsp;&emsp;纵观整本书，其实就是作者从小到大的零散故事汇总，再加上作者的思想回顾和现在观点的总结与感悟。全书有十几个作者的故事，有家人、有朋友、有同学、有社会人……各式各样的人从作者的人生中路过，与作者交织出了这一个个故事。</p>
 <p>&emsp;&emsp;我之所以会很快的读完这本书，也是因为作者的这本故事汇总，也让我回想起了自己的那些事，也让我有了很多思考和感悟，我不去评价这本书写的好与不好，我只想写下作者给予我的一些回想和感悟。</p>
@@ -900,8 +900,8 @@
     
     <entry>
       <title><![CDATA[从内到外的《匠人精神》]]></title>
-      <url>/2017/02/05/%E4%BB%8E%E5%86%85%E5%88%B0%E5%A4%96%E7%9A%84%E3%80%8A%E5%8C%A0%E4%BA%BA%E7%B2%BE%E7%A5%9E%E3%80%8B/</url>
-      <content type="html"><![CDATA[<p><img src="/2017/02/05/从内到外的《匠人精神》/jiangrenjingshen.jpg" alt=""></p>
+      <url>/%E4%BB%8E%E5%86%85%E5%88%B0%E5%A4%96%E7%9A%84%E3%80%8A%E5%8C%A0%E4%BA%BA%E7%B2%BE%E7%A5%9E%E3%80%8B/</url>
+      <content type="html"><![CDATA[<p><img src="/从内到外的《匠人精神》/jiangrenjingshen.jpg" alt=""></p>
 <p>&emsp;&emsp;记得第一次知道这本书还是从朋友圈，一个健身教练晒出的书单，在跟他了解后着重去了解了一下，于是入手细度。</p>
 <p>&emsp;&emsp;刚开始，只是想真正了解下这几年大家都在说的“工匠”或者“匠人”精神到底是怎样的一种价值观。越往后读就越发现，作者对于“匠人”的解释或者要求归根到底是对一个人由内而外的要求。从个人内在品质到外在的行为举止，再到掌握的技术，都有严格的要求。他说这是培养一流人才的规则，所谓的一流人才就是不只是会做事，而且要会把事做好的人。</p>
 <a id="more"></a>
@@ -925,7 +925,7 @@
 <ul>
 <li>还有很多，不一一列举了。</li>
 </ul>
-<p><img src="/2017/02/05/从内到外的《匠人精神》/jrjs-rules.png" alt=""></p>
+<p><img src="/从内到外的《匠人精神》/jrjs-rules.png" alt=""></p>
 <p>&emsp;&emsp;秋山利辉先生借助于日本以前的”学徒制“，发展出了自己的一套学徒方式，要求一个一流的匠人要经过8年的学习和锻炼，方可自己出去施展拳脚。8年的时间来修炼一门技能，是何等的耐心和严格要求啊。借此来对比我们现在社会中很多人的样子，工作很短的时间后就认为自己无所不能，目空一切或者眼高手低。</p>
 <p>&emsp;&emsp;从事技术行业的人，应该有一种专注于技术的心态，趁年轻多学一些东西，积攒自己的个人价值财富，反复练习技术基本功，秉承一颗技术方便他人的心，沉浸在自己所掌握的技术中。如此下来，日复一日肯定会不断进步，成长为一流的匠人，做出不俗的产品。</p>
 <p>备注：此思维导图为本人根据个人理解总结，只为辅助理解，不同人可能有不同的总结</p>
@@ -948,7 +948,7 @@
     
     <entry>
       <title><![CDATA[Intellij中Java类出现叉号]]></title>
-      <url>/2017/01/20/Intellij%E4%B8%ADJava%E7%B1%BB%E5%87%BA%E7%8E%B0%E5%8F%89%E5%8F%B7/</url>
+      <url>/Intellij%E4%B8%ADJava%E7%B1%BB%E5%87%BA%E7%8E%B0%E5%8F%89%E5%8F%B7/</url>
       <content type="html"><![CDATA[<p>刚开始接触Intellij IDEA的时候，由于不熟练，经常搞出一些莫名其妙的问题。曾经碰到过一个神奇的问题，有一天不知道做了什么操作，一点预兆都没有，实在不晓得怎么回事，在某一个java类的左上角出现了灰色叉号，尝试了各种方法，最后还是无奈，有叉号的那个类始终无法被编译。<br>在尝试中找到一条解决办法：</p>
 <a id="more"></a>
 <ol>
@@ -982,7 +982,7 @@
     
     <entry>
       <title><![CDATA[Intellij 编译]]></title>
-      <url>/2017/01/20/Intellij-%E7%BC%96%E8%AF%91/</url>
+      <url>/Intellij-%E7%BC%96%E8%AF%91/</url>
       <content type="html"><![CDATA[<p>Intellij IDEA是一个优秀的IDE，平时在写东西的时候回涉及到Compile、Make、Build这三个操作多一些，刚开始接触这个编译器的同学可能对于几个操作会比较困惑，只要简单理解下基本就没事了。</p>
 <a id="more"></a>
 <ol>
@@ -1013,7 +1013,7 @@
     
     <entry>
       <title><![CDATA[常用坐标系]]></title>
-      <url>/2017/01/19/%E5%B8%B8%E7%94%A8%E5%9D%90%E6%A0%87%E7%B3%BB/</url>
+      <url>/%E5%B8%B8%E7%94%A8%E5%9D%90%E6%A0%87%E7%B3%BB/</url>
       <content type="html"><![CDATA[<p>由于工作中经常涉及位置服务等问题，不可避免的要接触到各种坐标系的问题，而对于刚开始接触，不明一二的话就会一头雾水，所以特别做了简单地功课，搞清楚。</p>
 <a id="more"></a>
 <h2 id="地球坐标–WGS84"><a href="#地球坐标–WGS84" class="headerlink" title="地球坐标–WGS84"></a>地球坐标–WGS84</h2><p>国际上通用的坐标系。<br>google地图采用此坐标系统（中国范围外）。<br>设备一般包含GPS芯片或者北斗芯片获取的经纬度为WGS84地理坐标系</p>
@@ -1039,7 +1039,7 @@
     
     <entry>
       <title><![CDATA[Hello World]]></title>
-      <url>/2017/01/02/hello-world/</url>
+      <url>/hello-world/</url>
       <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <a id="more"></a>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>

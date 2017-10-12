@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;在我上一篇文章中，介绍了我按照">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Data Redis初步探秘">
+<meta property="og:url" content="https://bravehlp.com/Spring-Data-Redis初步探秘/index.html">
+<meta property="og:site_name" content="脚印">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;在我上一篇文章中，介绍了我按照">
+<meta property="og:image" content="https://bravehlp.com/Spring-Data-Redis初步探秘/sdr-serial.png">
+<meta property="og:updated_time" content="2017-07-10T01:50:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Data Redis初步探秘">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;在我上一篇文章中，介绍了我按照">
+<meta name="twitter:image" content="https://bravehlp.com/Spring-Data-Redis初步探秘/sdr-serial.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://bravehlp.com/Spring-Data-Redis初步探秘/"/>
+
+
+
+
+
+  <title>Spring Data Redis初步探秘 | 脚印</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e7acffd52effb38b9c484878336134dc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">脚印</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            大门口
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            我就是我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            没有标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分门别类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            步步为营
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bravehlp.com/Spring-Data-Redis初步探秘/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="葫芦八娃">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="脚印">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring Data Redis初步探秘</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-10T09:39:53+08:00">
+                2017-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/Spring-Data-Redis初步探秘/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="Spring-Data-Redis初步探秘/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/Spring-Data-Redis初步探秘/" class="leancloud_visitors" data-flag-title="Spring Data Redis初步探秘">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;&emsp;&emsp;Spring Data Redis（以下简称SDR）作为Spring Data中重要一员，基于Jedis进行了更为方便的包装，在方便Java中Redis开发的方面起到了重要的作用。SDR中也提供了模板类来进行Redis操作，而让开发者无需再过多的关注资源的获取与释放问题。</p>
+<p>&emsp;&emsp;&emsp;&emsp;在我上一篇文章中，介绍了我按照Spring中JDBC的方式封装Jedis。其实在那个时候我并不知道有SDR，所以就索性自己用回调的方式来写的，后面几天继续研究Redis才了解到了SDR，瞬间觉得世界好大。</p>
+<a id="more"></a>
+<h2 id="一、配置"><a href="#一、配置" class="headerlink" title="一、配置"></a>一、配置</h2><p>&emsp;&emsp;&emsp;&emsp;想要在项目中正常使用SDR，需要进行简单的配置，在Spring的配置文件中分别配置RedisConnectionFactory、RedisTemplate等，即可在代码中注入使用。</p>
+<h3 id="1-1-配置RedisConnectionFactory"><a href="#1-1-配置RedisConnectionFactory" class="headerlink" title="1.1 配置RedisConnectionFactory"></a>1.1 配置RedisConnectionFactory</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">    &lt;property name=&quot;hostName&quot; value=&quot;$&#123;redis.host&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;port&quot; value=&quot;$&#123;redis.port&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;password&quot; value=&quot;$&#123;redis.password&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;usePool&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;!--&lt;property name=&quot;poolConfig&quot; ref=&quot;&quot; /&gt;--&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;RedisConnection是用来与Redis交互，内容形式都是byte数组形式的二进制。</p>
+<h3 id="1-2-配置RedisTemplate"><a href="#1-2-配置RedisTemplate" class="headerlink" title="1.2 配置RedisTemplate"></a>1.2 配置RedisTemplate</h3><p>&emsp;&emsp;&emsp;&emsp;RedisTemplate提供了Redis的高层级方法，对Redis的各种操作进行了抽象，用来管理数据的序列化和Redis连接等，使用RedisTemplate时，不用再去关心连接的打开和释放等问题，SDR把开发者应该考虑的重点-业务开发，突出了出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisTemplate&quot; class=&quot;org.springframework.data.redis.core.RedisTemplate&quot;&gt;</div><div class="line">    &lt;property name=&quot;connectionFactory&quot; ref=&quot;jedisConnectionFactory&quot; /&gt;</div><div class="line">    &lt;property name=&quot;keySerializer&quot; value=&quot;org.springframework.data.redis.serializer.StringRedisSerializer&quot; /&gt;</div><div class="line">    &lt;property name=&quot;valueSerializer&quot; value=&quot;org.springframework.data.redis.serializer.JdkSerializationRedisSerializer&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<h3 id="1-3-进行Redis操作"><a href="#1-3-进行Redis操作" class="headerlink" title="1.3 进行Redis操作"></a>1.3 进行Redis操作</h3><h4 id="1-3-1-RedisConnection进行操作"><a href="#1-3-1-RedisConnection进行操作" class="headerlink" title="1.3.1 RedisConnection进行操作"></a>1.3.1 RedisConnection进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;要通过上面配置的RedisConnectionFactory来获取JedisConnection，通过这个连接去进行Redis操作，操作完成后，再手动关闭和归还JedisConnection对象。</p>
+<p>&emsp;&emsp;&emsp;&emsp;此种方式的麻烦在于依然需要自己控制connection对象的获取与归还，依然会在我们实际开发中有一些羁绊。</p>
+<h4 id="1-3-2-RedisTemplate进行操作"><a href="#1-3-2-RedisTemplate进行操作" class="headerlink" title="1.3.2 RedisTemplate进行操作"></a>1.3.2 RedisTemplate进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;在配置完RedisTemplate后，其实就把JedisConnection的管理工作交给了SDR，这样就把开发者从繁琐的资源管理中解放了出来，可以集中精力在业务开发上。</p>
+<p>&emsp;&emsp;&emsp;&emsp;RedisTemplate像HibernateTemplate和JdbcTemplate一样，使用了在Spring中利用率很高的回调模式。此时可以自定义Serializer进行数据的序列化，通过回调来使用RedisConnection进行Redis操作。</p>
+<p>&emsp;&emsp;&emsp;&emsp;除了Redis各种数据结构的操作外的那些操作，如事务、管道、持久化等操作，也要通过RedisTemplate来执行。</p>
+<h4 id="1-3-3-Operational-views进行操作"><a href="#1-3-3-Operational-views进行操作" class="headerlink" title="1.3.3 Operational views进行操作"></a>1.3.3 Operational views进行操作</h4><p>&emsp;&emsp;&emsp;&emsp;SDR还提供了很多的操作视图来帮助我们更方便的使用Redis，对RedisTemplate进行了进一步的封装。此部分将在下面做介绍。</p>
+<p>&emsp;&emsp;&emsp;&emsp;Redis中每种数据类型都有其对应的Operations，这些Operations也可通过RedisTemplate中获得。</p>
+<h2 id="二、序列化"><a href="#二、序列化" class="headerlink" title="二、序列化"></a>二、序列化</h2><p>&emsp;&emsp;&emsp;&emsp;SDR中也提供了存储内容的序列化方法，这个框架把存储到Redis中的数据都认为是bytes。SDR通过<strong>org.springframework.data.redis.serializer.RedisSerializer</strong>接口把数据进行序列化。此接口有多个实现类，均可用于Redis中key和value的序列化。但是比较常用的就是<strong>JdkSerializationRedisSerializer</strong>和<strong>StringRedisSerializer</strong>。</p>
+<p><img src="/Spring-Data-Redis初步探秘/sdr-serial.png" alt=""></p>
+<h3 id="2-1-JdkSerializationRedisSerializer"><a href="#2-1-JdkSerializationRedisSerializer" class="headerlink" title="2.1 JdkSerializationRedisSerializer"></a>2.1 JdkSerializationRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类使用的是JDK自带的序列化机制，通过<strong>ObjectInputStream 和 ObjectOutputStream</strong>进行转换。RedisTemplate中默认开启使用预定义的序列化类，默认为此类，要使用此类进行key和value的序列化，要求被序列化的内容必须实现<strong>Serializable</strong>接口。</p>
+<h3 id="2-2-StringRedisSerializer"><a href="#2-2-StringRedisSerializer" class="headerlink" title="2.2 StringRedisSerializer"></a>2.2 StringRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;专门对字符串类型的key和value进行序列化，根据指定的字符编码进行字符串的转换，默认编码为UTF-8。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>(Charset.forName(<span class="string">"UTF8"</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringRedisSerializer</span><span class="params">(Charset charset)</span> </span>&#123;</div><div class="line">	Assert.notNull(charset, <span class="string">"Charset must not be null!"</span>);</div><div class="line">	<span class="keyword">this</span>.charset = charset;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> (bytes == <span class="keyword">null</span> ? <span class="keyword">null</span> : <span class="keyword">new</span> String(bytes, charset));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(String string) &#123;</div><div class="line">	<span class="keyword">return</span> (string == <span class="keyword">null</span> ? <span class="keyword">null</span> : string.getBytes(charset));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-3-GenericToStringSerializer"><a href="#2-3-GenericToStringSerializer" class="headerlink" title="2.3 GenericToStringSerializer"></a>2.3 GenericToStringSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类也可以实现对象和字节数组间的转换，但是要依赖于Spring中的ConversionService，进行对象和String之间的转换，然后再进行String与字节数组间的转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (bytes == <span class="keyword">null</span>) &#123;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		String string = <span class="keyword">new</span> String(bytes, charset);</div><div class="line">		<span class="keyword">return</span> converter.convert(string, type);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(T object) &#123;</div><div class="line">		<span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">		&#125;</div><div class="line">		String string = converter.convert(object, String.class);</div><div class="line">		<span class="keyword">return</span> string.getBytes(charset);</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-4-Jackson2JsonRedisSerializer-和-JacksonJsonRedisSerializer"><a href="#2-4-Jackson2JsonRedisSerializer-和-JacksonJsonRedisSerializer" class="headerlink" title="2.4 Jackson2JsonRedisSerializer 和 JacksonJsonRedisSerializer"></a>2.4 Jackson2JsonRedisSerializer 和 JacksonJsonRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;这两个类内部都使用了jackson进行对象与json之间的转换，使用的时候需要指定对象的Class类型，也都是泛型类，需要指定对象的类型。其实这两个类的内部是一样的，只是在1.7版本后就废弃了JacksonJsonRedisSerializer，而使用Jackson2JsonRedisSerializer。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">JacksonJsonRedisSerializer</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>.javaType = getJavaType(type);</div><div class="line">&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">JacksonJsonRedisSerializer</span><span class="params">(JavaType javaType)</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>.javaType = javaType;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> <span class="keyword">throws</span> SerializationException </span>&#123;</div><div class="line">	<span class="keyword">if</span> (SerializationUtils.isEmpty(bytes)) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">return</span> (T) <span class="keyword">this</span>.objectMapper.readValue(bytes, <span class="number">0</span>, bytes.length, javaType);</div><div class="line">	&#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Could not read JSON: "</span> + ex.getMessage(), ex);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(Object t) <span class="keyword">throws</span> SerializationException &#123;</div><div class="line">	<span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123;</div><div class="line">		<span class="keyword">return</span> SerializationUtils.EMPTY_ARRAY;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.objectMapper.writeValueAsBytes(t);</div><div class="line">	&#125; <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Could not write JSON: "</span> + ex.getMessage(), ex);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-5-GenericJackson2JsonRedisSerializer"><a href="#2-5-GenericJackson2JsonRedisSerializer" class="headerlink" title="2.5 GenericJackson2JsonRedisSerializer"></a>2.5 GenericJackson2JsonRedisSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;此类与Jackson2JsonRedisSerializer内部的序列化和反序列化基本类似，方法都一样，只不过GenericJackson2JsonRedisSerializer是通用类型的，并非泛型类。</p>
+<h3 id="2-6-OxmSerializer"><a href="#2-6-OxmSerializer" class="headerlink" title="2.6 OxmSerializer"></a>2.6 OxmSerializer</h3><p>&emsp;&emsp;&emsp;&emsp;执行xml与对象间的序列化和反序列化，有多种实现方式。几乎没用过，也没怎么去研究过。</p>
+<h2 id="三、Operations"><a href="#三、Operations" class="headerlink" title="三、Operations"></a>三、Operations</h2><p>&emsp;&emsp;&emsp;&emsp;RedisTemplate提供了操作视图的方式来执行Redis动作，在各种Operations中仍然是用到了RedisTemplate中执行Redis时的回调方式，即对RedisTemplate中的多种API进行了封装，以方便开发者来使用。</p>
+<h3 id="3-1-初探SDR的Operations"><a href="#3-1-初探SDR的Operations" class="headerlink" title="3.1 初探SDR的Operations"></a>3.1 初探SDR的Operations</h3><p>&emssp;&emsp;&emsp;&emsp;对于Redis中各种类型的数据也都有对应的Operations来操作，下面的表格引用自SDR的官方文档，自己简单翻译了一下。</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ValueOperations</td>
+<td>string类型数据的操作</td>
+</tr>
+<tr>
+<td>ListOperations</td>
+<td>list数据操作</td>
+</tr>
+<tr>
+<td>SetOperations</td>
+<td>set数据操作</td>
+</tr>
+<tr>
+<td>ZSetOperations</td>
+<td>sorted set数据操作</td>
+</tr>
+<tr>
+<td>HashOperations</td>
+<td>hash数据操作</td>
+</tr>
+<tr>
+<td>HyperLogLogOperations</td>
+<td>HyperLogLog操作</td>
+</tr>
+<tr>
+<td>GeoOperations</td>
+<td>地理空间操作</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;&emsp;&emsp;上面这个表格里各个接口中的方法，都可以自由指定<code>key</code>和<code>value</code>，而下面这个表格中就是已经绑定好key，直接进行对应操作即可。</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BoundValueOperations</td>
+<td>string类型数据的操作</td>
+</tr>
+<tr>
+<td>BoundListOperations</td>
+<td>list数据操作</td>
+</tr>
+<tr>
+<td>BoundSetOperations</td>
+<td>set数据操作</td>
+</tr>
+<tr>
+<td>BoundZSetOperations</td>
+<td>sorted set数据操作</td>
+</tr>
+<tr>
+<td>BoundHashOperations</td>
+<td>hash数据操作</td>
+</tr>
+<tr>
+<td>BoundGeoOperations</td>
+<td>地理空间操作操作</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-2-源码观察Operations"><a href="#3-2-源码观察Operations" class="headerlink" title="3.2 源码观察Operations"></a>3.2 源码观察Operations</h4><p>SDR中提供的Operations需要通过<code>RedisTemplate</code>来产生，都通过<code>bound类型Ops</code>和<code>opsFor类型</code>来产生<code>Bound类型Operations</code>和<code>类型Operations</code>，类型都是上面表格中写的那些。</p>
+<p>&emsp;&emsp;&emsp;&emsp;下面这段代码中，展示了RedisTemplate中获取绑定和非绑定Operations的源码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> BoundValueOperations&lt;K, V&gt; <span class="title">boundValueOps</span><span class="params">(K key)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span> DefaultBoundValueOperations&lt;K, V&gt;(key, <span class="keyword">this</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> ValueOperations&lt;K, V&gt; <span class="title">opsForValue</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> (valueOps == <span class="keyword">null</span>) &#123;</div><div class="line">		valueOps = <span class="keyword">new</span> DefaultValueOperations&lt;K, V&gt;(<span class="keyword">this</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> valueOps;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;目前，SDR中提供的都是各种接口的默认实现，并没有给定自定义实现Operations的接口的方式。</p>
+<h3 id="3-3-Operations简单使用"><a href="#3-3-Operations简单使用" class="headerlink" title="3.3 Operations简单使用"></a>3.3 Operations简单使用</h3><p>&emsp;&emsp;&emsp;&emsp;下面的代码中是Operations使用的举例，用最简单的方式来编写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 非绑定形式的Operation设值和取值</div><div class="line"> * <span class="doctag">@param</span> key</div><div class="line"> * <span class="doctag">@param</span> value</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStringValueSample</span><span class="params">(String key, String value)</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 非绑定key的形式下需要指定key</div><div class="line">     */</div><div class="line">    ValueOperations&lt;String, String&gt; valueOperations = redisTemplate.opsForValue();</div><div class="line">    valueOperations.set(key, value);</div><div class="line"></div><div class="line">    valueOperations.get(key);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 绑定形式的Operation设置和取值</div><div class="line"> * <span class="doctag">@param</span> key</div><div class="line"> * <span class="doctag">@param</span> value</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBoundSample</span><span class="params">(String key, String value)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">/*</span></div><div class="line">     * 绑定形式下，在获取Operations时，就指定好key，后续操作无需再指定key</div><div class="line">     */</div><div class="line">    BoundValueOperations&lt;String, String&gt; boundValueOperations = redisTemplate.boundValueOps(key);</div><div class="line">    boundValueOperations.set(value);</div><div class="line"></div><div class="line">    boundValueOperations.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;&emsp;&emsp;这篇文章是我对于Spring Data Redis的一个认识总结，简要概括了我对于这个小型框架的了解。其实对于Redis来讲，它的源码本身就不多，很多人也都积极去研究源码，这对于我们深刻了解和使用有很大帮助。对于Java的开发者们来说，Jedis源码也没那么多，再到Spring Data Redis逻辑也没有太过于复杂和繁多，所以，不管是在学习的时候还是在工作的时候，多看看源码，整体做掌握还是很有帮助的。</p>
+<p>&emsp;&emsp;&emsp;&emsp;本篇博客是我初次基础SDR所写，如果有不正确或者缺漏的地方，还望大家予以指正和补充，一起学习。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>大爷给小弟的零花钱</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/reward/wechatpay.jpg" alt="葫芦八娃 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/uploads/reward/alipay.jpg" alt="葫芦八娃 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/从Spring乘舟回调到Jedis自我发育回调/" rel="next" title="从Spring乘舟回调到Jedis自我发育回调">
+                <i class="fa fa-chevron-left"></i> 从Spring乘舟回调到Jedis自我发育回调
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/探秘Java集合框架/" rel="prev" title="探秘Java集合框架">
+                探秘Java集合框架 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a>
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/uploads/avatar.jpg"
+              alt="葫芦八娃" />
+          
+            <p class="site-author-name" itemprop="name">葫芦八娃</p>
+            <p class="site-description motion-element" itemprop="description">一路迈步，印记满途</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/bravehlp" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、配置"><span class="nav-number">1.</span> <span class="nav-text">一、配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-配置RedisConnectionFactory"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 配置RedisConnectionFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-配置RedisTemplate"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 配置RedisTemplate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-进行Redis操作"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 进行Redis操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-RedisConnection进行操作"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1 RedisConnection进行操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-RedisTemplate进行操作"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2 RedisTemplate进行操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-3-Operational-views进行操作"><span class="nav-number">1.3.3.</span> <span class="nav-text">1.3.3 Operational views进行操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、序列化"><span class="nav-number">2.</span> <span class="nav-text">二、序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-JdkSerializationRedisSerializer"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 JdkSerializationRedisSerializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-StringRedisSerializer"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 StringRedisSerializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-GenericToStringSerializer"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 GenericToStringSerializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Jackson2JsonRedisSerializer-和-JacksonJsonRedisSerializer"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Jackson2JsonRedisSerializer 和 JacksonJsonRedisSerializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-GenericJackson2JsonRedisSerializer"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 GenericJackson2JsonRedisSerializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-OxmSerializer"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 OxmSerializer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Operations"><span class="nav-number">3.</span> <span class="nav-text">三、Operations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-初探SDR的Operations"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 初探SDR的Operations</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-源码观察Operations"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.2 源码观察Operations</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Operations简单使用"><span class="nav-number">3.2.</span> <span class="nav-text">3.3 Operations简单使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">葫芦八娃</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">NexT.Gemini</a> v5.1.2</div>
+
+
+        
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63834071";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://bravehlp.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://bravehlp.com/Spring-Data-Redis初步探秘/';
+          this.page.identifier = 'Spring-Data-Redis初步探秘/';
+          this.page.title = 'Spring Data Redis初步探秘';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://bravehlp.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("VbeD4aWaeKSkUb92NLw3uiP2-gzGzoHsz", "KTLwU2qDrT36A5uQQDaj7P1l");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
