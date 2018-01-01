@@ -3,6 +3,90 @@
   
     
     <entry>
+      <title><![CDATA[Java虚拟机内存模型]]></title>
+      <url>/2018/01/01/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</url>
+      <content type="html"><![CDATA[<p>&nbsp;&nbsp;做开发做到一定阶段，必要要对自己所用的工具有一些深入的了解，不仅要知其然，还要知其所以然，方能更上一层楼。近日得空，又回顾了一下JVM的内容，发现自己做总结要远比自己单纯看书要难的多，但是当总结完后，就会有更深刻的了解。</p>
+<a id="more"></a>
+<p>&nbsp;&nbsp;对于Java虚拟机这部分，要了解的东西其实有很多。个人认为，首先还是要先了解它的结构，尤其是内存模型，这样也可更方便自己进行后面内容的深入理解。</p>
+<p>&nbsp;&nbsp;其内存模型中其实包括很多部分，主要的有程序计数器、虚拟机栈、堆等，有的也是只属于单独线程，并不是线程间共享的内存空间，所以，此次我按照是否是线程独享进行了目录分类进行理解和画图。另外，在最后也简单介绍了“直接内存”相关的内容。</p>
+<p><img src="/2018/01/01/Java虚拟机内存模型/model.png" alt=""></p>
+<h1 id="线程独享"><a href="#线程独享" class="headerlink" title="线程独享"></a>线程独享</h1><hr>
+<p>&nbsp;&nbsp;对于线程独享的内存空间，每个线程都会有自己独立的区域，互相不影响，这部分有程序计数器、虚拟机栈和本地方法栈。</p>
+<p>程序计数器记录当前线程执行的情况；</p>
+<p>虚拟机栈是Java方法执行的内存模型；</p>
+<p>本地方法栈是Native方法执行的内存模型。</p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p><img src="/2018/01/01/Java虚拟机内存模型/counter.png" alt=""><br>&nbsp;&nbsp;它一块比较小的内存空间，是<strong>当前线程</strong>执行的字节码的行号指示器，会记录程序执行到哪一行。字节码解释器会按照这个计数器的记录来选择要执行的字节码指令。</p>
+<p>&nbsp;&nbsp;<strong>每个线程都有自己独立的程序计数器。</strong>Java虚拟机会按照线程的轮流切换，来给每个线程分配处理器的执行时间，进而实现多个线程的执行，但同一时刻，一个处理器也只能处理一条线程的指令。为了在切换线程的时候能够准确找到此线程上次执行的位置，一个程序的计数器就是必不可少的，每个线程都有自己独立的计数器来记录自己执行到了哪里。</p>
+<ul>
+<li>线程执行Java方法时，计数器会记录字节码指令的地址；</li>
+<li>线程执行Native方法是，计数器的值为空</li>
+</ul>
+<p><strong>注意：Java虚拟机规范中没有对程序计数器的内存区域做OutOfMemoryError规定</strong></p>
+<h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p><img src="/2018/01/01/Java虚拟机内存模型/stack.png" alt=""><br>&nbsp;&nbsp;它是线程私有的，其生命周期与线程相同，用来描述Java方法执行的内存模型，每个方法在执行的时候都会创建一个栈帧。</p>
+<h3 id="栈帧"><a href="#栈帧" class="headerlink" title="栈帧"></a>栈帧</h3><p>&nbsp;&nbsp;它是程序运行的基本方法单元。需要执行一个方法时，一个栈帧就会进入虚拟机栈，执行完毕后，就会出栈。它包括局部变量表、操作数栈、动态链接、方法出口等信息。其实，对于栈帧中的几个组成部分，我们平时谈论局部变量表比较多。</p>
+<pre><code>局部变量的组成：
+    1、基本数据类型
+
+    boolean、byte、char、short、int、float、long、double。
+
+    long和double占2个局部变量空间，其他占据1个局部变量空间。
+
+    2、对象引用
+    * 指向对象起始地址的引用指针
+    * 指向代表对象的句柄
+    * 指向与对象相关的其他内容
+
+    3、returnAddress
+
+    指向一条字节码指令的地址
+</code></pre><h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><ul>
+<li>StackOverflow</li>
+</ul>
+<p>&nbsp;&nbsp;线程请求的栈深度大于虚拟机允许的深度，就会报此异常。</p>
+<ul>
+<li>OutOfMemoryError</li>
+</ul>
+<p>&nbsp;&nbsp;在Java的虚拟机规范中允许设置虚拟机栈为动态扩展或固定长度。如果设置为动态扩展模式，但是又无法申请到足够的内存是就会报此异常。</p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p><img src="/2018/01/01/Java虚拟机内存模型/native-stack.png" alt=""><br>&nbsp;&nbsp;它与Java虚拟机栈作用类似，都是方法执行的基本单元，只不过本地方法栈是针对Native方法，而且也没有对这个栈中使用的语言、使用方式与数据结构做严格规定。有的虚拟机也会把本地方法栈和虚拟机栈合二为一。也会抛出StackOverflow和OutOfMemoryError的异常。</p>
+<h1 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h1><hr>
+<p>&nbsp;&nbsp;此部分是所有线程共享的内存空间，各个线程均可以把自己的数据放到此处，但是并不会互相间混乱，这部分有Java堆和方法区。</p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p><img src="/2018/01/01/Java虚拟机内存模型/heap.png" alt=""><br>&nbsp;&nbsp;堆内存是虚拟机管理的内存中最大的一块，<strong>所有线程共享</strong>的区域，用于<strong>存放对象的实例</strong>。也是垃圾回收的重点管理区域，大体分为新生代和老年代进行管理，当然也就会有新生代和老年代的垃圾回收了。</p>
+<p>&nbsp;&nbsp;因为多次执行垃圾回收以及最初分配的问题，此部分区域很有可能出现物理上不连续，但是逻辑上连续的情况。此部分区域可设计成固定大小，也可设计成可扩展的形式，如果堆内存不足并且也没法继续扩展时，就会抛出OutOfMemoryError的异常。</p>
+<p>&nbsp;&nbsp;对于可扩展的模式，可以对其大小进行设置：</p>
+<ul>
+<li><p>-Xms    最小堆内存</p>
+</li>
+<li><p>-Xmx    最大堆内存</p>
+</li>
+</ul>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p><img src="/2018/01/01/Java虚拟机内存模型/method.png" alt=""><br>&nbsp;&nbsp;方法区用于<strong>存储已经被JVM加载的类信息、常量、静态变量、即时编译器编译后的代码等数据</strong>，是<strong>所有线程都可以访问</strong>的内存区域。此部分也经常和永久区联系在一起，jdk1.8之前都是永久区的概念，而在jdk1.8及以后就变为了元数据区。</p>
+<p>&nbsp;&nbsp;此部分很少进行垃圾回收，也允许不进行垃圾回收，一旦进行垃圾回收，一般是进行常量池的回收和类型卸载。</p>
+<p>&nbsp;&nbsp;此部分区域不够内存分配时，也会抛出异常OutOfMemoryError。</p>
+<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>&nbsp;&nbsp;此部分区域其实是方法区的一部分，用于存放类的常量池信息。常量池信息属于Class文件，用于存放编译器生成的各种字面量和符号引用。但是此区域的常量信息并不都是只有在编译期间生成的，也有运行期间动态进入的。</p>
+<p>&nbsp;&nbsp;如果常量池无法申请到内存时，就会抛出异常OutOfMemoryError。</p>
+<h1 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h1><hr>
+<p><img src="/2018/01/01/Java虚拟机内存模型/direct.png" alt=""><br>&nbsp;&nbsp;直接内存并不是虚拟机运行时数据区的一部分，但是此部分内存也会被频繁使用，并且作用也很重要，NIO就用到了这一部分。</p>
+<p>&nbsp;&nbsp;NIO会使用Native函数来分配Java堆内存之外的内存，把相关NIO用到的一些数据，尤其是Native函数会用到的一些数据放到此区域，然后在Java堆中用DirectByteBuffer对象做一个此内存区域的引用。</p>
+<p>&nbsp;&nbsp;因为直接内存与Java堆内存并没有分配上的限制，所以其大小与堆内存无关，但是与物理内存有关，也依然有可能出现OutOfMemoryError的异常。</p>
+<p>&nbsp;&nbsp;以上的个人总结是从读书和查资料而学习到的，里面也很有可能存在错误之处，还望看官们不吝赐教。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 技术 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[一则逻辑题的分析]]></title>
       <url>/2017/10/16/%E4%B8%80%E5%88%99%E9%80%BB%E8%BE%91%E9%A2%98%E7%9A%84%E5%88%86%E6%9E%90/</url>
       <content type="html"><![CDATA[<p>最近备考管理类研究生，碰到一则有意思的题，同学间讨论的比较多，今天思考了一下，大体写一下。肯定有朋友有更好的方法，此处我用的仅仅是个人做题时的方法。</p>
