@@ -7,7 +7,7 @@
 
 <html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -143,7 +143,7 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -157,7 +157,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -419,30 +419,30 @@
 <p>&emsp;&emsp;&emsp;&emsp;定义了回调函数的指针MsgCallback，可以在需要进行回调的地方调用。</p>
 <h3 id="源码文件"><a href="#源码文件" class="headerlink" title="源码文件"></a>源码文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 注册回调函数，把Java中的回调接口加入到此处                            */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">regisMsgCallback</span><span class="params">(<span class="keyword">int</span>(*callback)</span><span class="params">(<span class="keyword">char</span>*)</span>)</span></div><div class="line">&#123;</div><div class="line">	MsgCallback = callback;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="comment">/* 测试回调函数                                                          */</span></div><div class="line"><span class="comment">/************************************************************************/</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">testCallback</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	MsgCallback(<span class="string">"C++ callback test."</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>&emsp;&emsp;&emsp;&emsp;在本例中只是从Java里面调用了一个测试方法testCallback()来触发回调，实际应用中可以根据业务来实际操作。</p>
-<h2 id="Java中注册回调函数"><a href="#Java中注册回调函数" class="headerlink" title="Java中注册回调函数"></a>Java中注册回调函数</h2><pre><code class="java"><span class="keyword">import</span> com.sun.jna.Native;
+<h2 id="Java中注册回调函数"><a href="#Java中注册回调函数" class="headerlink" title="Java中注册回调函数"></a>Java中注册回调函数</h2><pre><code class="lang-java">import com.sun.jna.Native;
 
-<span class="comment">/**
+/**
  *  JNA测试
- */</span>
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>{
+ */
+public class Test {
 
-    <span class="meta">@org</span>.junit.<span class="function">Test
-    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEasemob</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>{
+    @org.junit.Test
+    public void testEasemob() throws InterruptedException {
 
-        JNADemo jnaDemo = Native.loadLibrary(<span class="string">"JavaCpp"</span>, JNADemo.class);
+        JNADemo jnaDemo = Native.loadLibrary(&quot;JavaCpp&quot;, JNADemo.class);
 
-        <span class="comment">//  调用Java接口中的方法，执行C++中的方法体</span>
-<span class="comment">//        jnaDemo.test1();</span>
-<span class="comment">//</span>
-<span class="comment">//        //  向C++类库中传递字符串参数，并得到字符串返回值</span>
-<span class="comment">//        String cpprt = jnaDemo.test2("FROM Java");</span>
-<span class="comment">//</span>
-<span class="comment">//        System.out.println("来自C++动态类库：" + cpprt);</span>
+        //  调用Java接口中的方法，执行C++中的方法体
+//        jnaDemo.test1();
+//
+//        //  向C++类库中传递字符串参数，并得到字符串返回值
+//        String cpprt = jnaDemo.test2(&quot;FROM Java&quot;);
+//
+//        System.out.println(&quot;来自C++动态类库：&quot; + cpprt);
 
-        <span class="comment">//  注册消息回调接口</span>
-        jnaDemo.regisMsgCallback(<span class="keyword">new</span> MsgCallbackImpl());
+        //  注册消息回调接口
+        jnaDemo.regisMsgCallback(new MsgCallbackImpl());
 
-        <span class="comment">//  测试回调接口中的回调函数</span>
+        //  测试回调接口中的回调函数
         jnaDemo.testCallback();
     }
 
@@ -663,7 +663,7 @@ var jiathis_config={
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -674,7 +674,7 @@ var jiathis_config={
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -685,7 +685,7 @@ var jiathis_config={
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1358,12 +1358,14 @@ var jiathis_config={
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
   
 
   
+  
+
 
   
 

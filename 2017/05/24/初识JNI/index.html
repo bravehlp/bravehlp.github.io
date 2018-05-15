@@ -7,7 +7,7 @@
 
 <html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -145,7 +145,7 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -159,7 +159,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -500,12 +500,12 @@
 <li>JNI中则是使用了UTF-8，一个ASCII字符占1个字节，中文占3个</li>
 </ul>
 <p>&emsp;&emsp;正是因为对于数据占用字节长度的不一致才造成了乱码现象，因此在本地代码中进行转码即可。</p>
-<p><strong>Java–&gt;C++</strong></p>
+<p><strong>Java—&gt;C++</strong></p>
 <p>&emsp;&emsp;从Java端传递字符串到C++中时，C++中收到的是jstring。此时可以用JNIEnv中的方法来进行转换。</p>
 <p>&emsp;&emsp;GetStringUTFChars，得到UTF-8的字符串；</p>
 <p>&emsp;&emsp;GetStringChars，得到UTF-16的字符串。</p>
 <p>&emsp;&emsp;然后可以进一步转换为GB2312的编码内容。</p>
-<p><strong>C++–&gt;Java</strong></p>
+<p><strong>C++—&gt;Java</strong></p>
 <p>&emsp;&emsp;从C++到Java，传递字符串到Java中，不管是回调还是函数返回值，都要进行转换，转为jstring。JNIEnv中也提供了对应的方法来转换。</p>
 <p>NewStringUTF，得到UTF-8的jstring；</p>
 <p>NewString，得到UTF-16的jstring。</p>
@@ -729,7 +729,7 @@ var jiathis_config={
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -740,7 +740,7 @@ var jiathis_config={
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -751,7 +751,7 @@ var jiathis_config={
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1424,12 +1424,14 @@ var jiathis_config={
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
   
 
   
+  
+
 
   
 
